@@ -1,0 +1,71 @@
+{
+  "columns": {
+    "base_produit": [
+      "alternateur 2p",
+      "alternateur 4p lisses",
+      "alternateur 4 et 4p+ saillants",
+      "moteur synchrone DOL vitesse fixe",
+      "moteur synchrone vit variable",
+      "asynchrone à cage",
+      "asynchrone à bagues"
+    ],
+    "Coeffs_type_affaire": [
+      "Identique JE ou PDR",
+      "Remplacement"
+    ],
+    "Coeffs_secteur": [
+      "Machines spéciales",
+      "Nucléaire qualifié",
+      "Nucléaire non qualifié",
+      "Marine militaire"
+    ]
+  },
+
+  "rows": {
+    "Départ et Suivi": {
+      "Enclenchement": {
+        "réunion": [4, 4, 4, 4, 4, 4, 4, 1, 1, 1, 3, 3, 3],
+        "lancement structure gen IFS (caméléon)": [8, 8, 8, 8, 8, 8, 8, 1, 1, 1, 1, 1, 1]
+      },
+      "Suivi": {
+        "SUIVI FOURNISSEUR": [20, 20, 20, 20, 20, 20, 20, 1, 1, 1, 3, 2, 3],
+        "SUIVI FABRICATION machine": [20, 20, 20, 20, 20, 20, 20, 1, 1, 1, 3, 2, 3],
+        "SUIVI FABRICATION armoires": [20, 20, 20, 20, 20, 20, 20, 1, 1, 1, 3, 2, 3],
+        "SUIVI ESSAIS machine": [10, 10, 10, 10, 10, 10, 10, 1, 1, 1, 1, 1, 1],
+        "SUIVI ESSAIS armoires": [10, 10, 10, 10, 10, 10, 10, 1, 1, 1, 1, 1, 1],
+        "SUIVI CLIENT/ REUNION": [20, 20, 20, 0, 20, 20, 20, 1, 1, 1, 3, 2, 3],
+        "tracé d'ensemble (3D)": [40, 40, 40, 40, 40, 30, 40, 0, 1, 1, 1, 1, 1],
+        "revue de conception (ensemble)": [20, 20, 30, 20, 20, 20, 20, 0, 1.2, 1, 1, 1, 1]
+      }
+    },
+    "PLANS FAB / SPEC d'Achat / LDN": {
+      "Stator": {
+        "bobinage/connexions/sortie puissance": [100, 40, 8, 60, 60, 8, 8, 0.2, 1.2, 1, 1, 1, 1],
+        "tôlerie (lanterne tôlée)": [60, 8, 8, 30, 30, 8, 8, 0.2, 1.2, 1, 1, 1, 1],
+        "carcasse": [120, 30, 30, 75, 75, 35, 35, 0.2, 1.5, 1, 1, 1, 1]
+      },
+      "Rotor": {
+        "bobinage/connexions/calages/frettes": [100, 8, 35, 35, 35, 35, 80, 0.2, 1.2, 1, 1, 1, 1],
+        "tolerie": [0, 8, 40, 40, 40, 20, 30, 0.2, 1.2, 1, 1, 1, 1],
+        "arbre / ventilateur": [100, 8, 40, 40, 40, 35, 40, 0.2, 1.2, 1, 1, 1, 1],
+        "AE/HNB/bagues (excitation statique/bagues et balais JEMAB)": [33, 33, 33, 33, 33, 0, 25, 0.2, 1.2, 1, 1, 1, 1],
+        "PMG": [33, 33, 33, 0, 0, 0, 0, 0.2, 1.2, 1, 1, 1, 1],
+        "roue RT (diodes/module gate/pulsin/résitance démarrage/balast)": [10, 10, 10, 60, 60, 0, 0, 0.26, 1.56, 1, 1, 1, 1]
+      },
+      "Habillages": {
+        "paliers": [30, 15, 30, 30, 30, 30, 30, 0.2, 1.2, 1, 1, 1, 1],
+        "système de refroidissement": [30, 30, 30, 30, 30, 30, 30, 0.2, 1.2, 1, 1, 1, 1],
+        "Boites à bornes de puissance base": [4, 4, 4, 4, 4, 8, 8, 0.2, 1.2, 1, 1, 1, 1],
+        "boites filerie base": [4, 4, 4, 4, 4, 4, 4, 1.3, 1.3, 11, 16, 16, 16],
+        "outillages de base": [8, 8, 8, 8, 8, 8, 8, 0.2, 1.2, 1, 1, 1, 1]
+      },
+      "armoires": {
+        "armoire excitation régulation AER": [140, 140, 140, 140, 140, 0, 0, 1.3, 1.3, 1, 1, 1, 1],
+        "armoire phase neutre APN": [8, 8, 8, 8, 8, 0, 0, 0.2, 1.2, 11, 13.5, 13.5, 13.5],
+        "armoire résistance de mise à la terre": [4, 4, 4, 4, 4, 0, 0, 0.2, 1.2, 1, 1, 1, 1],
+        "drive BT": [0, 0, 0, 0, 0, 0, 0, 0.2, 1.2, 1, 1, 1, 1],
+        "développement logiciels (soft pour drive ou gestion régulaton)": [0, 0, 0, 0, 0, 0, 0, 0.2, 1.2, 1, 1, 1, 1]
+      }
+    }
+  }
+}

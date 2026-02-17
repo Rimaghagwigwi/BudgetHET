@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+    <!-- Chemins des fichiers de données -->
+    <paths>
+        <path key="base_data">data/base_data.json</path>
+        <path key="options">data/options.json</path>
+        <path key="tasks">data/tasks_matrix.json</path>
+        <path key="LPDC">data/LPDC.json</path>
+        <path key="calculs">data/calculs.json</path>
+    </paths>
+
+    <!-- Configuration de l'interface utilisateur -->
+    <ui>
+        <!-- Thème de l'application (ex: Fusion, Windows, WindowsVista) -->
+        <theme>Fusion</theme>
+        
+        <window>
+            <title>Chiffrage HET</title>
+            <width>1080</width>
+            <height>720</height>
+        </window>
+    </ui>
+</config>

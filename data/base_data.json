@@ -1,0 +1,24 @@
+{
+  "products": {
+    "asynchrone": ["asynchrone à cage", "asynchrone à bagues"],
+    "synchrone": ["alternateur 2p", "alternateur 4p lisses", "alternateur 4 et 4p+ saillants", "moteur synchrone DOL vitesse fixe", "moteur synchrone vit variable"], 
+    "Marine": ["MEP", "ANR/DNR", "TAR"]
+  },
+  "DAS": {
+    "Machines spéciales": [
+      "Oil & Gas", "Industrie", "Marine civile"
+    ],
+    "Marine militaire": [
+      "Marine militaire"
+    ],
+    "Nucléaire": [
+      "Nucléaire qualifié", "Nucléaire non qualifié"
+    ]
+  },
+  "personnes": [
+    "Walid BOUGHANMI", "Thérèse VANDEWYNCKEL", "Medhi BELHAJ", "Nicolas SCATOLI", "Antoine DONFUT"
+  ],
+  "types_affaires": [
+    "Neuf", "Remplacement", "Identique JE ou PDR"
+  ]
+}

@@ -1,0 +1,1738 @@
+{
+  "coeff_selon_DAS": {
+    "Machine spéciales": 1.0,
+    "Nucléaire qualifié": 1.8,
+    "Nucléaire non qualifié": 1.5,
+    "Marine militaire": 0
+  },
+  "documents": [
+    {
+      "index": 1,
+      "label": "Langue des documents contractuels <> F/A",
+      "hours": 5.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 2,
+      "label": "Langue du Manuel d'entretien MEE <> F/A",
+      "hours": 5.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 3,
+      "label": "Courbes électriques spécifiques",
+      "hours": 20.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 4,
+      "label": "Plan masses et inerties rotor (Rotor mass inertia drawing)",
+      "hours": 8.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Oil & Gas",
+        "Industrie",
+        "Marine civile",
+        "Nucléaire non qualifié",
+        "Nucléaire qualifié",
+        "Marine militaire"
+      ],
+      "option_possible": false
+    },
+    {
+      "index": 5,
+      "label": "plan vue en coupe (section view)",
+      "hours": 15.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Oil & Gas",
+        "Industrie",
+        "Marine civile",
+        "Nucléaire non qualifié",
+        "Nucléaire qualifié",
+        "Marine militaire"
+      ],
+      "option_possible": false
+    },
+    {
+      "index": 6,
+      "label": "Données torsionelles (torsion data model)",
+      "hours": 15.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Nucléaire non qualifié",
+        "Marine militaire"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 7,
+      "label": "Analyse torsionnelle",
+      "hours": 25.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 8,
+      "label": "Spécification de peinture",
+      "hours": 8.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Nucléaire non qualifié",
+        "Marine militaire"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 9,
+      "label": "Liste des consommateurs (utility list)",
+      "hours": 8.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Nucléaire non qualifié",
+        "Marine militaire"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 10,
+      "label": "manuel de maintenance",
+      "hours": 40.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire non qualifié",
+        "Nucléaire qualifié",
+        "Marine militaire",
+        "Oil & Gas",
+        "Industrie",
+        "Marine civile"
+
+      ],
+      "option_possible": false
+    },
+    {
+      "index": 11,
+      "label": "Notice d'assemblage exemple 6an21405",
+      "hours": 30.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Marine militaire",
+        "Nucléaire non qualifié"
+      ],
+      "option_possible": false
+    },
+    {
+      "index": 12,
+      "label": "liste des instrum",
+      "hours": 15.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire non qualifié",
+        "Nucléaire qualifié",
+        "Marine militaire",
+        "Oil & Gas",
+        "Industrie",
+        "Marine civile"
+
+      ],
+      "option_possible": false
+    },
+    {
+      "index": 13,
+      "label": "schéma instrum 4ra",
+      "hours": 15.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire non qualifié",
+        "Nucléaire qualifié",
+        "Marine militaire",
+        "Oil & Gas",
+        "Industrie",
+        "Marine civile"
+
+      ],
+      "option_possible": false
+    },
+    {
+      "index": 14,
+      "label": "schéma unifilaire armoire APN/machine synchrone uniquement",
+      "hours": 15.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire non qualifié",
+        "Nucléaire qualifié",
+        "Marine militaire",
+        "Oil & Gas",
+        "Industrie",
+        "Marine civile"
+
+      ],
+      "option_possible": false
+    },
+    {
+      "index": 15,
+      "label": "Plan de démontage du rotor (rotor removal drawing)",
+      "hours": 30.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire non qualifié",
+        "Nucléaire qualifié",
+        "Marine militaire",
+        "Oil & Gas",
+        "Industrie",
+        "Marine civile"
+
+      ],
+      "option_possible": false
+    },
+    {
+      "index": 16,
+      "label": "Plan de transport de la machine (handling drawing)",
+      "hours": 8.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 17,
+      "label": "Plan d'ancrage (fundations drawing)",
+      "hours": 8.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 18,
+      "label": "Plan encombrement 3D (enveloppe)",
+      "hours": 30.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 19,
+      "label": "Liste des graisses ou huiles préconisées",
+      "hours": 8.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 20,
+      "label": "Liste des pièces de rechange",
+      "hours": 15.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 21,
+      "label": "Spécification d'emballage, de transport et de stockage",
+      "hours": 20.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 22,
+      "label": "Plan plaque signalétique",
+      "hours": 8.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire non qualifié",
+        "Nucléaire qualifié",
+        "Marine militaire"
+      ],
+      "option_possible": false
+    },
+    {
+      "index": 23,
+      "label": "DR/DI",
+      "hours": 50.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Nucléaire non qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 24,
+      "label": "descriptif technique de la machine (exemple 6an21174)",
+      "hours": 30.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Marine militaire",
+        "Nucléaire non qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 25,
+      "label": "Analyse de risque Qualification (exemple 6an21175)",
+      "hours": 30.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 26,
+      "label": "Fiability synthesis note - maintainability disponibility",
+      "hours": 30.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 27,
+      "label": "Verification report and validation for ANSYS software 6SC28558",
+      "hours": 5.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 28,
+      "label": "Note précisant les dispositions prévues à la conception pour limiter l’irradiation des composants sensibles (exemple 6an21252)",
+      "hours": 15.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 29,
+      "label": "Procédure de mise en propreté (exemple 6gc21089)",
+      "hours": 10.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 30,
+      "label": "Qualification synthesis report (NSQ) note de synthèse de qualification (exemple 6an21370)",
+      "hours": 50.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 31,
+      "label": "Qualification sustainability report (FMQ) Fiche de Maintien de Qualification exemple 6an21391",
+      "hours": 25.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 32,
+      "label": "Note d'opérabilité au Séisme exemple 6an21235",
+      "hours": 200.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 33,
+      "label": "programme de qualification de la machine nucléaire",
+      "hours": 30.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 34,
+      "label": "note de calcul thermique machine",
+      "hours": 15.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Marine militaire",
+        "Nucléaire non qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 35,
+      "label": "note de calcul thermique  système refroidissemnt",
+      "hours": 30.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire non qualifié",
+        "Nucléaire qualifié",
+        "Marine militaire"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 36,
+      "label": "calcul modal carcasse",
+      "hours": 35.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Marine militaire",
+        "Nucléaire non qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 37,
+      "label": "calcul paliers (roulement ou palier lisse)",
+      "hours": 20.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Marine militaire",
+        "Nucléaire non qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 38,
+      "label": "Efforts transmis aux ancrages",
+      "hours": 8.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 39,
+      "label": "spec appro cuivre stator",
+      "hours": 5.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Nucléaire non qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 40,
+      "label": "spec appro tôles rotor",
+      "hours": 5.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Nucléaire non qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 41,
+      "label": "spec appro tôles stator",
+      "hours": 5.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Nucléaire non qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 42,
+      "label": "spec appro cuivre rotor",
+      "hours": 5.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Nucléaire non qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 43,
+      "label": "spec appro arbre (+plan)",
+      "hours": 25.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Nucléaire non qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 44,
+      "label": "spec appro carcasse (+plan)",
+      "hours": 25.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Nucléaire non qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 45,
+      "label": "spec appro cercle rotor (+plan)",
+      "hours": 5.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Nucléaire non qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 46,
+      "label": "spec paliers",
+      "hours": 8.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Nucléaire non qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 47,
+      "label": "spec appro réfrigérant",
+      "hours": 8.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Nucléaire non qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 48,
+      "label": "Spécification d'approvisionnement Pièces de fonderie usinées exemple 6an21271",
+      "hours": 8.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 49,
+      "label": "cahier de brasage",
+      "hours": 50.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 50,
+      "label": "cahier de soudure ",
+      "hours": 50.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 51,
+      "label": "programme d'esssais",
+      "hours": 20.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire non qualifié",
+        "Nucléaire qualifié",
+        "Marine militaire",
+        "Oil & Gas",
+        "Industrie",
+        "Marine civile"
+
+      ],
+      "option_possible": false
+    },
+    {
+      "index": 52,
+      "label": "calcul cage rotor",
+      "hours": 40.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Nucléaire non qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 53,
+      "label": "Liste des Outillages Spéciaux",
+      "hours": 8.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 54,
+      "label": "Matrice de Conformité aux Spécifications, Liste des Ecarts",
+      "hours": 50.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Marine militaire",
+        "Nucléaire non qualifié"
+      ],
+      "option_possible": false
+    },
+    {
+      "index": 55,
+      "label": "Note de Tenue Mécanique de l'Arbre",
+      "hours": 50.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Nucléaire non qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 56,
+      "label": "data sheet",
+      "hours": 20.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire non qualifié",
+        "Nucléaire qualifié",
+        "Marine militaire",
+        "Oil & Gas",
+        "Industrie",
+        "Marine civile"
+
+      ],
+      "option_possible": false
+    },
+    {
+      "index": 57,
+      "label": "Plan encombrement",
+      "hours": 30.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire non qualifié",
+        "Nucléaire qualifié",
+        "Marine militaire",
+        "Oil & Gas",
+        "Industrie",
+        "Marine civile"
+
+      ],
+      "option_possible": false
+    },
+    {
+      "index": 58,
+      "label": "plan boites à bornes",
+      "hours": 10.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire non qualifié",
+        "Nucléaire qualifié",
+        "Marine militaire",
+        "Oil & Gas",
+        "Industrie",
+        "Marine civile"
+
+      ],
+      "option_possible": false
+    },
+    {
+      "index": 59,
+      "label": "plan armoire P/N",
+      "hours": 10.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire non qualifié",
+        "Nucléaire qualifié",
+        "Marine militaire",
+        "Oil & Gas",
+        "Industrie",
+        "Marine civile"
+
+      ],
+      "option_possible": false
+    },
+    {
+      "index": 60,
+      "label": "plan AER",
+      "hours": 10.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire non qualifié",
+        "Nucléaire qualifié",
+        "Marine militaire",
+        "Oil & Gas",
+        "Industrie",
+        "Marine civile"
+
+      ],
+      "option_possible": false
+    },
+    {
+      "index": 61,
+      "label": "plan refrigérant (hydro ou aéro)",
+      "hours": 5.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Marine militaire",
+        "Nucléaire non qualifié"
+      ],
+      "option_possible": false
+    },
+    {
+      "index": 62,
+      "label": "plan des paliers",
+      "hours": 5.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Marine militaire",
+        "Nucléaire non qualifié"
+      ],
+      "option_possible": false
+    },
+    {
+      "index": 63,
+      "label": "Note Descriptive des Codes de Calcul utilisés",
+      "hours": 8.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Marine militaire",
+        "Nucléaire non qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 64,
+      "label": "analyse latérale",
+      "hours": 50.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Marine militaire",
+        "Nucléaire non qualifié"
+      ],
+      "option_possible": false
+    },
+    {
+      "index": 65,
+      "label": "Autre document imposé (NB : hours à fournir)",
+      "hours": 1.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 66,
+      "label": "plan qualité",
+      "hours": 0.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire non qualifié",
+        "Nucléaire qualifié",
+        "Marine militaire",
+        "Oil & Gas",
+        "Industrie",
+        "Marine civile"
+
+      ],
+      "option_possible": false
+    },
+    {
+      "index": 67,
+      "label": "RFF",
+      "hours": 0.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire non qualifié",
+        "Nucléaire qualifié",
+        "Marine militaire",
+        "Oil & Gas",
+        "Industrie",
+        "Marine civile"
+
+      ],
+      "option_possible": false
+    },
+    {
+      "index": 68,
+      "label": "rapport d'intervention",
+      "hours": 0.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 69,
+      "label": "document list (LPDC)",
+      "hours": 0.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 70,
+      "label": "MANUFACTURING SCHEDULE",
+      "hours": 0.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 71,
+      "label": "data sheet format client",
+      "hours": 8.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 72,
+      "label": "PIPING AND INSTRUMENT DIAGRAMS (P&ID’S)",
+      "hours": 20.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 73,
+      "label": "PACKING LIST",
+      "hours": 0.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 74,
+      "label": "DESCRIPTION OF THE PRESSURIZATION system",
+      "hours": 20.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 75,
+      "label": "MOTOR INSTRUMENT DATA SHEET",
+      "hours": 20.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 76,
+      "label": "PRESSURIZATION/PURGE SYSTEM CIRCUIT DIAGRAM",
+      "hours": 20.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 77,
+      "label": "lignage",
+      "hours": 10.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 78,
+      "label": "NOISE MOTOR DATA SHEET",
+      "hours": 10.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 79,
+      "label": "Reverse engineering procedure and report",
+      "hours": 30.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 80,
+      "label": "Harmonics on voltage waveform",
+      "hours": 20.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 81,
+      "label": "Voltage drop calculation on load sequence (séquence de charge",
+      "hours": 15.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié",
+        "Marine militaire",
+        "Nucléaire non qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 82,
+      "label": "Basic Design Technical Comparison and Data Sheet (exemple 6sn21125)",
+      "hours": 15.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 83,
+      "label": "Equivalency between UE and US standards",
+      "hours": 15.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 84,
+      "label": "Nuclear Safety Related  Components Classification - List of CGI SR and NSR",
+      "hours": 20.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 85,
+      "label": "Fault torques (couples CCT et faux-couplage)",
+      "hours": 8.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Marine militaire"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 86,
+      "label": "spec appro sonde stator",
+      "hours": 8.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 87,
+      "label": "AMDEC",
+      "hours": 50.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 88,
+      "label": "Rapports d'Essais de type alternateur",
+      "hours": 5.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 89,
+      "label": "Qualification environnementale",
+      "hours": 20.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 90,
+      "label": "Justification technique du choix du matériau de l’arbre (exemple 6SN21041)",
+      "hours": 100.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 91,
+      "label": "spécification de contrôle CND",
+      "hours": 30.0,
+      "applicable_pour": [
+        "asynchrone",
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 92,
+      "label": "Descriptif de Fonctionnement APN",
+      "hours": 8.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 93,
+      "label": "Programme  de Qualification APN",
+      "hours": 10.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 94,
+      "label": "Note de Synthèse de Qualification (NSQ) APN",
+      "hours": 25.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 95,
+      "label": "Fiches de Maintien de Qualification (FMQ) APN",
+      "hours": 5.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 96,
+      "label": "Dossier d'Identification ( DI/DR ) APN",
+      "hours": 15.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 97,
+      "label": "Spécification d'Approvisionnement APN",
+      "hours": 8.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 98,
+      "label": "Etude de Fiabilité  AMDEC APN",
+      "hours": 10.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 99,
+      "label": "Plan d'Encombrement de l'Armoire Phase-Neutre (Plan de Serrurerie avec Implantation des Composants)",
+      "hours": 8.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 100,
+      "label": "Programme d'Essais de Type (idem Routine) APN",
+      "hours": 5.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 101,
+      "label": "Rapport d'Essais de Type APN",
+      "hours": 5.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 102,
+      "label": "Procédure de Qualification Sismique APN",
+      "hours": 5.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 103,
+      "label": "Rapport de Qualification Sismique  APN",
+      "hours": 10.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 104,
+      "label": "Procédure  de Qualification CEM APN",
+      "hours": 10.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 105,
+      "label": "Rapport d'Essais de Qualification CEM  APN",
+      "hours": 10.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 106,
+      "label": "Rapport de Qualification APN",
+      "hours": 15.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 107,
+      "label": "Procédure de Mise en peinture APN",
+      "hours": 10.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 108,
+      "label": "Spécification d'Emballage, de Stockage et de Transport APN",
+      "hours": 8.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 109,
+      "label": "Manuel d'Exploitation et d'Entretien de l'Equipement APN",
+      "hours": 25.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 110,
+      "label": "Liste des Pièces de Rechange APN",
+      "hours": 5.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 111,
+      "label": "Descriptif de Fonctionnement AER",
+      "hours": 8.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 112,
+      "label": "Programme  de Qualification AER",
+      "hours": 10.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 113,
+      "label": "Note de Synthèse de Qualification (NSQ) AER",
+      "hours": 25.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 114,
+      "label": "Fiches de Maintien de Qualification (FMQ) AER",
+      "hours": 5.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 115,
+      "label": "Dossier d'Identification ( DI/DR ) AER",
+      "hours": 15.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 116,
+      "label": "Spécification d'Approvisionnement AER",
+      "hours": 8.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 117,
+      "label": "Etude de Fiabilité  AMDEC AER",
+      "hours": 10.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 118,
+      "label": "Plan d'Encombrement AER ",
+      "hours": 8.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 119,
+      "label": "Programme d'Essais de Type (idem Routine) AER",
+      "hours": 5.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 120,
+      "label": "Rapport d'Essais de Type AER",
+      "hours": 5.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 121,
+      "label": "Procédure de Qualification Sismique AER",
+      "hours": 5.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 122,
+      "label": "Rapport de Qualification Sismique  AER",
+      "hours": 10.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 123,
+      "label": "Procédure  de Qualification CEM AER",
+      "hours": 10.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 124,
+      "label": "Rapport d'Essais de Qualification CEM  AER",
+      "hours": 10.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 125,
+      "label": "Rapport de Qualification AER",
+      "hours": 15.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 126,
+      "label": "Procédure de Mise en peinture AER",
+      "hours": 10.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 127,
+      "label": "Spécification d'Emballage, de Stockage et de Transport AER",
+      "hours": 8.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 128,
+      "label": "Manuel d'Exploitation et d'Entretien de l'Equipement AER",
+      "hours": 25.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 129,
+      "label": "Liste des Pièces de Rechange AER",
+      "hours": 5.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 130,
+      "label": "Spécification d'Approvisionnement du Régulateur de Tension",
+      "hours": 5.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 131,
+      "label": "Schéma du Régulateur de Tension - Nomenclature du Régulateur de Tension",
+      "hours": 10.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 132,
+      "label": "Schéma Electrique de l'armoire  d'Excitation Régulation -Nomenclature de l'armoire  d'Excitation Régulation",
+      "hours": 10.0,
+      "applicable_pour": [
+        "synchrone"
+      ],
+      "secteur_obligatoire": [
+        "Nucléaire qualifié"
+      ],
+      "option_possible": true
+    }
+  ]
+}
