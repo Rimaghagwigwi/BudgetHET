@@ -1,0 +1,14 @@
+{
+    "labo": [
+        {
+        "index": 1,
+        "label": "Labo Métalo",
+        "hours": 0
+        },
+        {
+        "index": 2,
+        "label": "Labo isolant",
+        "hours": 0
+        }
+    ]
+}

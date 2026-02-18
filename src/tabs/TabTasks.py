@@ -113,8 +113,8 @@ class TaskTableWidget(QTableWidget):
             chk_layout.setContentsMargins(0, 0, 0, 0)
             chk_layout.addWidget(checkbox)
             self.setCellWidget(row, 0, chk_widget)
-            checkbox.stateChanged.connect(
-                lambda state, ref=task["ref"]: self.checkbox_toggled.emit(state == Qt.CheckState.Checked, ref)
+            checkbox.checkStateChanged.connect(
+                lambda _state, ref=task["ref"], cb=checkbox: self.checkbox_toggled.emit(cb.isChecked(), ref)
             )
 
         # Ref

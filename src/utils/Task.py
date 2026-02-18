@@ -30,9 +30,14 @@ class GeneralTask(AbstractTask):
 
     @override
     def default_hours(self, context: Dict[str, Any]) -> float:
-        base = self.base_hours_machine.get(context.get("product", ""), 0.0)
-        coeff_affaire = self.coeff_type_affaire.get(context.get("affaire", ""), 1.0)
-        coeff_secteur = self.coeff_secteur.get(context.get("secteur", ""), 1.0)
+        product = context.get("product", "")
+        affaire = context.get("affaire", "")
+        secteur = context.get("secteur", "")
+        
+        base = self.base_hours_machine.get(product, 0.0)
+        coeff_affaire = self.coeff_type_affaire.get(affaire, 1.0)
+        coeff_secteur = self.coeff_secteur.get(secteur, 1.0)
+        
         return base * coeff_affaire * coeff_secteur
     
     @override
@@ -61,9 +66,11 @@ class LPDCDocument(AbstractTask):
 
     def is_active(self, context: Dict[str, Any]) -> bool:
         """Détermine si le document est sélectionné en fonction du secteur."""
-        if context.get("machine_type", "") not in self.applicable_pour:
+        machine_type = context.get("machine_type", "")
+        if machine_type not in self.applicable_pour:
             return False
-        if context.get("secteur", "") in self.secteur_obligatoire:
+        secteur = context.get("secteur", "")
+        if secteur in self.secteur_obligatoire:
             return True
         if self.option_possible:
             return self.is_selected
@@ -117,22 +124,24 @@ class Calcul(AbstractTask):
         self.category = category
         self.hours = hours
         self.selection = selection
-
-    is_selected: bool = False # For options (Choix)
-    manual_hours: Optional[float] = None
+        self.is_selected: bool = False
+        # manual_hours is set in AbstractTask.__init__
 
     def is_mandatory(self, context: Dict[str, Any]) -> bool:
-        return self.selection.get(context.get("machine_type", ""), "Non") == "Oui"
+        machine_type = context.get("machine_type", "")
+        return self.selection.get(machine_type, "Non") == "Oui"
 
     def is_available_as_option(self, context: Dict[str, Any]) -> bool:
-        return self.selection.get(context.get("machine_type", ""), "Non") == "Choix"
+        machine_type = context.get("machine_type", "")
+        return self.selection.get(machine_type, "Non") == "Choix"
     
     def is_active(self, context: Dict[str, Any]) -> bool:
         return self.is_mandatory(context) or (self.is_available_as_option(context) and self.is_selected)
 
     @override
     def default_hours(self, context: Dict[str, Any]) -> float:
-        return self.hours.get(context.get("machine_type", ""), 0.0)
+        machine_type = context.get("machine_type", "")
+        return self.hours.get(machine_type, 0.0)
 
     @override
     def effective_hours(self, context: Dict[str, Any]) -> float:
@@ -141,4 +150,22 @@ class Calcul(AbstractTask):
         elif self.manual_hours is not None:
             return self.manual_hours
         else:
-            return self.hours.get(context.get("machine_type", ""), 0.0)
+            machine_type = context.get("machine_type", "")
+            return self.hours.get(machine_type, 0.0)
+        
+class Labo(AbstractTask):
+    def __init__(self, index: int, label: str, hours: float):
+        super().__init__(label)
+        self.index = index
+        self.hours = hours
+
+    @override
+    def default_hours(self, context: Dict[str, Any]) -> float:
+        return self.hours
+    
+    @override
+    def effective_hours(self, context: Dict[str, Any]) -> float:
+        if self.manual_hours is not None:
+            return self.manual_hours
+        else:
+            return self.default_hours(context)

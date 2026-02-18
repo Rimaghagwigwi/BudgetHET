@@ -1,0 +1,719 @@
+{
+    "tasks": {
+        "Départ et Suivi": {
+            "Enclenchement": {
+                "réunion": {
+                    "base": {
+                        "ALT_2P": 4,
+                        "ALT_4P_L": 4,
+                        "ALT_4P_S": 4,
+                        "MOTEUR_V_FIXE": 4,
+                        "MOTEUR_V_VAR": 4,
+                        
+                        "ASYNCH_CAGE": 4,
+                        "ASYNCH_BAGUES": 4
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 1,
+                        "REMPLACEMENT": 1
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 2,
+                        "MARINE_CIVILE": 1,
+
+                        "NUC_QUALIFIE": 3,
+                        "NUC_NON_QUALIFIE": 3,
+
+                        "MIL": 1
+                    }
+                },
+                "lancement structure gen IFS (caméléon)": {
+                    "base": {
+                        "ALT_2P": 8,
+                        "ALT_4P_L": 8,
+                        "ALT_4P_S": 8,
+                        "MOTEUR_V_FIXE": 8,
+                        "MOTEUR_V_VAR": 8,
+                        "ASYNCH_CAGE": 8,
+                        "ASYNCH_BAGUES": 8
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 1,
+                        "REMPLACEMENT": 1
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 1,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 1,
+                        "NUC_NON_QUALIFIE": 1,
+                        "MIL": 1
+                    }
+                },
+                "tracé d'ensemble (3D)": {
+                    "base": {
+                        "ALT_2P": 40,
+                        "ALT_4P_L": 40,
+                        "ALT_4P_S": 40,
+                        "MOTEUR_V_FIXE": 40,
+                        "MOTEUR_V_VAR": 40,
+                        "ASYNCH_CAGE": 30,
+                        "ASYNCH_BAGUES": 40
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 0,
+                        "REMPLACEMENT": 1
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 1,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 1,
+                        "NUC_NON_QUALIFIE": 1,
+                        "MIL": 1
+                    }
+                },
+                "revue de conception (ensemble)": {
+                    "base": {
+                        "ALT_2P": 20,
+                        "ALT_4P_L": 20,
+                        "ALT_4P_S": 30,
+                        "MOTEUR_V_FIXE": 20,
+                        "MOTEUR_V_VAR": 20,
+                        "ASYNCH_CAGE": 20,
+                        "ASYNCH_BAGUES": 20
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 0,
+                        "REMPLACEMENT": 1.2
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 1,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 1,
+                        "NUC_NON_QUALIFIE": 1,
+                        "MIL": 1
+                    }
+                }
+            },
+            "Suivi": {
+                "SUIVI FOURNISSEUR": {
+                    "base": {
+                        "ALT_2P": 20,
+                        "ALT_4P_L": 20,
+                        "ALT_4P_S": 20,
+                        "MOTEUR_V_FIXE": 20,
+                        "MOTEUR_V_VAR": 20,
+                        "ASYNCH_CAGE": 20,
+                        "ASYNCH_BAGUES": 20
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 1,
+                        "REMPLACEMENT": 1
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 2,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 3,
+                        "NUC_NON_QUALIFIE": 2,
+                        "MIL": 0
+                    }
+                },
+                "SUIVI FABRICATION machine": {
+                    "base": {
+                        "ALT_2P": 20,
+                        "ALT_4P_L": 20,
+                        "ALT_4P_S": 20,
+                        "MOTEUR_V_FIXE": 20,
+                        "MOTEUR_V_VAR": 20,
+                        "ASYNCH_CAGE": 20,
+                        "ASYNCH_BAGUES": 20
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 1,
+                        "REMPLACEMENT": 1
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 2,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 3,
+                        "NUC_NON_QUALIFIE": 2,
+                        "MIL": 0
+                    }
+                },
+                "SUIVI FABRICATION armoires": {
+                    "base": {
+                        "ALT_2P": 20,
+                        "ALT_4P_L": 20,
+                        "ALT_4P_S": 20,
+                        "MOTEUR_V_FIXE": 20,
+                        "MOTEUR_V_VAR": 20,
+                        "ASYNCH_CAGE": 0,
+                        "ASYNCH_BAGUES": 0
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 1,
+                        "REMPLACEMENT": 1
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 2,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 3,
+                        "NUC_NON_QUALIFIE": 2,
+                        "MIL": 0
+                    }
+                },
+                "SUIVI ESSAIS machine": {
+                    "base": {
+                        "ALT_2P": 10,
+                        "ALT_4P_L": 10,
+                        "ALT_4P_S": 10,
+                        "MOTEUR_V_FIXE": 10,
+                        "MOTEUR_V_VAR": 10,
+                        "ASYNCH_CAGE": 10,
+                        "ASYNCH_BAGUES": 10
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 1,
+                        "REMPLACEMENT": 1
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 1,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 1,
+                        "NUC_NON_QUALIFIE": 1,
+                        "MIL": 1
+                    }
+                },
+                "SUIVI ESSAIS armoires": {
+                    "base": {
+                        "ALT_2P": 10,
+                        "ALT_4P_L": 10,
+                        "ALT_4P_S": 10,
+                        "MOTEUR_V_FIXE": 10,
+                        "MOTEUR_V_VAR": 10,
+                        "ASYNCH_CAGE": 0,
+                        "ASYNCH_BAGUES": 0
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 1,
+                        "REMPLACEMENT": 1
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 1,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 1,
+                        "NUC_NON_QUALIFIE": 1,
+                        "MIL": 1
+                    }
+                },
+                "SUIVI CLIENT/ REUNION": {
+                    "base": {
+                        "ALT_2P": 20,
+                        "ALT_4P_L": 20,
+                        "ALT_4P_S": 20,
+                        "MOTEUR_V_FIXE": 20,
+                        "MOTEUR_V_VAR": 20,
+                        "ASYNCH_CAGE": 20,
+                        "ASYNCH_BAGUES": 20
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 1,
+                        "REMPLACEMENT": 1
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 2,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 3,
+                        "NUC_NON_QUALIFIE": 2,
+                        "MIL": 0
+                    }
+                }
+            }
+        },
+        "PLANS FAB / SPEC d'Achat / LDN": {
+            "Stator": {
+                "bobinage/connexions/sortie puissance": {
+                    "base": {
+                        "ALT_2P": 100,
+                        "ALT_4P_L": 40,
+                        "ALT_4P_S": 8,
+                        "MOTEUR_V_FIXE": 60,
+                        "MOTEUR_V_VAR": 60,
+                        "ASYNCH_CAGE": 8,
+                        "ASYNCH_BAGUES": 8
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 0.2,
+                        "REMPLACEMENT": 1.2
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 1,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 1,
+                        "NUC_NON_QUALIFIE": 1,
+                        "MIL": 1
+                    }
+                },
+                "tôlerie (lanterne tôlée)": {
+                    "base": {
+                        "ALT_2P": 60,
+                        "ALT_4P_L": 8,
+                        "ALT_4P_S": 8,
+                        "MOTEUR_V_FIXE": 30,
+                        "MOTEUR_V_VAR": 30,
+                        "ASYNCH_CAGE": 8,
+                        "ASYNCH_BAGUES": 8
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 0.2,
+                        "REMPLACEMENT": 1.2
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 1,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 1,
+                        "NUC_NON_QUALIFIE": 1,
+                        "MIL": 1
+                    }
+                },
+                "carcasse": {
+                    "base": {
+                        "ALT_2P": 120,
+                        "ALT_4P_L": 30,
+                        "ALT_4P_S": 30,
+                        "MOTEUR_V_FIXE": 75,
+                        "MOTEUR_V_VAR": 75,
+                        "ASYNCH_CAGE": 35,
+                        "ASYNCH_BAGUES": 35
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 0.2,
+                        "REMPLACEMENT": 1.5
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 1,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 1,
+                        "NUC_NON_QUALIFIE": 1,
+                        "MIL": 1
+                    }
+                }
+            },
+            "Rotor": {
+                "bobinage/connexions/calages/frettes": {
+                    "base": {
+                        "ALT_2P": 100,
+                        "ALT_4P_L": 8,
+                        "ALT_4P_S": 35,
+                        "MOTEUR_V_FIXE": 35,
+                        "MOTEUR_V_VAR": 35,
+                        "ASYNCH_CAGE": 35,
+                        "ASYNCH_BAGUES": 80
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 0.2,
+                        "REMPLACEMENT": 1.2
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 1,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 1,
+                        "NUC_NON_QUALIFIE": 1,
+                        "MIL": 1
+                    }
+                },
+                "tolerie": {
+                    "base": {
+                        "ALT_2P": 0,
+                        "ALT_4P_L": 8,
+                        "ALT_4P_S": 40,
+                        "MOTEUR_V_FIXE": 40,
+                        "MOTEUR_V_VAR": 40,
+                        "ASYNCH_CAGE": 20,
+                        "ASYNCH_BAGUES": 30
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 0.2,
+                        "REMPLACEMENT": 1.2
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 1,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 1,
+                        "NUC_NON_QUALIFIE": 1,
+                        "MIL": 1
+                    }
+                },
+                "arbre / ventilateur": {
+                    "base": {
+                        "ALT_2P": 100,
+                        "ALT_4P_L": 8,
+                        "ALT_4P_S": 40,
+                        "MOTEUR_V_FIXE": 40,
+                        "MOTEUR_V_VAR": 40,
+                        "ASYNCH_CAGE": 35,
+                        "ASYNCH_BAGUES": 40
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 0.2,
+                        "REMPLACEMENT": 1.2
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 1,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 1,
+                        "NUC_NON_QUALIFIE": 1,
+                        "MIL": 1
+                    }
+                },
+                "AE/HNB/bagues (excitation statique/bagues et balais JEMAB)": {
+                    "base": {
+                        "ALT_2P": 33,
+                        "ALT_4P_L": 33,
+                        "ALT_4P_S": 33,
+                        "MOTEUR_V_FIXE": 33,
+                        "MOTEUR_V_VAR": 33,
+                        "ASYNCH_CAGE": 0,
+                        "ASYNCH_BAGUES": 25
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 0.2,
+                        "REMPLACEMENT": 1.2
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 1,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 1,
+                        "NUC_NON_QUALIFIE": 1,
+                        "MIL": 1
+                    }
+                },
+                "PMG": {
+                    "base": {
+                        "ALT_2P": 33,
+                        "ALT_4P_L": 33,
+                        "ALT_4P_S": 33,
+                        "MOTEUR_V_FIXE": 0,
+                        "MOTEUR_V_VAR": 0,
+                        "ASYNCH_CAGE": 0,
+                        "ASYNCH_BAGUES": 0
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 0.2,
+                        "REMPLACEMENT": 1.2
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 1,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 1,
+                        "NUC_NON_QUALIFIE": 1,
+                        "MIL": 1
+                    }
+                },
+                "roue RT (diodes/module gate/pulsin/résitance démarrage/balast)": {
+                    "base": {
+                        "ALT_2P": 10,
+                        "ALT_4P_L": 10,
+                        "ALT_4P_S": 10,
+                        "MOTEUR_V_FIXE": 60,
+                        "MOTEUR_V_VAR": 60,
+                        "ASYNCH_CAGE": 0,
+                        "ASYNCH_BAGUES": 0
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 0.26,
+                        "REMPLACEMENT": 1.56
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 1,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 1,
+                        "NUC_NON_QUALIFIE": 1,
+                        "MIL": 1
+                    }
+                }
+            },
+            "Habillages": {
+                "paliers": {
+                    "base": {
+                        "ALT_2P": 30,
+                        "ALT_4P_L": 15,
+                        "ALT_4P_S": 30,
+                        "MOTEUR_V_FIXE": 30,
+                        "MOTEUR_V_VAR": 30,
+                        "ASYNCH_CAGE": 30,
+                        "ASYNCH_BAGUES": 30
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 0.2,
+                        "REMPLACEMENT": 1.2
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 1,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 1,
+                        "NUC_NON_QUALIFIE": 1,
+                        "MIL": 1
+                    }
+                },
+                "système de refroidissement": {
+                    "base": {
+                        "ALT_2P": 30,
+                        "ALT_4P_L": 30,
+                        "ALT_4P_S": 30,
+                        "MOTEUR_V_FIXE": 30,
+                        "MOTEUR_V_VAR": 30,
+                        "ASYNCH_CAGE": 30,
+                        "ASYNCH_BAGUES": 30
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 0.2,
+                        "REMPLACEMENT": 1.2
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 1,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 1,
+                        "NUC_NON_QUALIFIE": 1,
+                        "MIL": 1
+                    }
+                },
+                "Boites à bornes de puissance base": {
+                    "base": {
+                        "ALT_2P": 4,
+                        "ALT_4P_L": 4,
+                        "ALT_4P_S": 4,
+                        "MOTEUR_V_FIXE": 4,
+                        "MOTEUR_V_VAR": 4,
+                        "ASYNCH_CAGE": 8,
+                        "ASYNCH_BAGUES": 8
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 0.2,
+                        "REMPLACEMENT": 1.2
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 1,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 1,
+                        "NUC_NON_QUALIFIE": 1,
+                        "MIL": 1
+                    }
+                },
+                "boites filerie base": {
+                    "base": {
+                        "ALT_2P": 4,
+                        "ALT_4P_L": 4,
+                        "ALT_4P_S": 4,
+                        "MOTEUR_V_FIXE": 4,
+                        "MOTEUR_V_VAR": 4,
+                        "ASYNCH_CAGE": 4,
+                        "ASYNCH_BAGUES": 4
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 1.3,
+                        "REMPLACEMENT": 1.3
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 11,
+                        "OIL_GAS": 1,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 16,
+                        "NUC_NON_QUALIFIE": 16,
+                        "MIL": 16
+                    }
+                },
+                "outillages de base": {
+                    "base": {
+                        "ALT_2P": 8,
+                        "ALT_4P_L": 8,
+                        "ALT_4P_S": 8,
+                        "MOTEUR_V_FIXE": 8,
+                        "MOTEUR_V_VAR": 8,
+                        "ASYNCH_CAGE": 8,
+                        "ASYNCH_BAGUES": 8
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 0.2,
+                        "REMPLACEMENT": 1.2
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 1,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 1,
+                        "NUC_NON_QUALIFIE": 1,
+                        "MIL": 1
+                    }
+                }
+            },
+            "armoires": {
+                "armoire excitation régulation AER": {
+                    "base": {
+                        "ALT_2P": 140,
+                        "ALT_4P_L": 140,
+                        "ALT_4P_S": 140,
+                        "MOTEUR_V_FIXE": 140,
+                        "MOTEUR_V_VAR": 140,
+                        "ASYNCH_CAGE": 0,
+                        "ASYNCH_BAGUES": 0
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 1.3,
+                        "REMPLACEMENT": 1.3
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 1,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 1,
+                        "NUC_NON_QUALIFIE": 1,
+                        "MIL": 1
+                    }
+                },
+                "armoire phase neutre APN": {
+                    "base": {
+                        "ALT_2P": 8,
+                        "ALT_4P_L": 8,
+                        "ALT_4P_S": 8,
+                        "MOTEUR_V_FIXE": 8,
+                        "MOTEUR_V_VAR": 8,
+                        "ASYNCH_CAGE": 0,
+                        "ASYNCH_BAGUES": 0
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 0.2,
+                        "REMPLACEMENT": 1.2
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 11,
+                        "OIL_GAS": 1,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 13.5,
+                        "NUC_NON_QUALIFIE": 13.5,
+                        "MIL": 13.5
+                    }
+                },
+                "armoire résistance de mise à la terre": {
+                    "base": {
+                        "ALT_2P": 4,
+                        "ALT_4P_L": 4,
+                        "ALT_4P_S": 4,
+                        "MOTEUR_V_FIXE": 4,
+                        "MOTEUR_V_VAR": 4,
+                        "ASYNCH_CAGE": 0,
+                        "ASYNCH_BAGUES": 0
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 0.2,
+                        "REMPLACEMENT": 1.2
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 1,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 1,
+                        "NUC_NON_QUALIFIE": 1,
+                        "MIL": 1
+                    }
+                },
+                "drive BT": {
+                    "base": {
+                        "ALT_2P": 0,
+                        "ALT_4P_L": 0,
+                        "ALT_4P_S": 0,
+                        "MOTEUR_V_FIXE": 0,
+                        "MOTEUR_V_VAR": 0,
+                        "ASYNCH_CAGE": 0,
+                        "ASYNCH_BAGUES": 0
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 0.2,
+                        "REMPLACEMENT": 1.2
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 1,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 1,
+                        "NUC_NON_QUALIFIE": 1,
+                        "MIL": 1
+                    }
+                },
+                "développement logiciels (soft pour drive ou gestion régulaton)": {
+                    "base": {
+                        "ALT_2P": 0,
+                        "ALT_4P_L": 0,
+                        "ALT_4P_S": 0,
+                        "MOTEUR_V_FIXE": 0,
+                        "MOTEUR_V_VAR": 0,
+                        "ASYNCH_CAGE": 0,
+                        "ASYNCH_BAGUES": 0
+                    },
+                    "coeff_type_affaire": {
+                        "NEUF": 1,
+                        "IDENTIQUE_JE": 0.2,
+                        "REMPLACEMENT": 1.2
+                    },
+                    "coeff_secteur": {
+                        "INDUS": 1,
+                        "OIL_GAS": 1,
+                        "MARINE_CIVILE": 1,
+                        "NUC_QUALIFIE": 1,
+                        "NUC_NON_QUALIFIE": 1,
+                        "MIL": 1
+                    }
+                }
+            }
+        }
+    }
+}

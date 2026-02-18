@@ -2,7 +2,7 @@ from dataclasses import dataclass
 import json
 import xml.etree.ElementTree as ET
 from typing import Dict, List, Optional, Any
-from src.utils.Task import GeneralTask, LPDCDocument, Option, Calcul
+from src.utils.Task import GeneralTask, LPDCDocument, Option, Calcul, Labo
 
 class ApplicationData:
     def __init__(self, config_path="config.xml"):
@@ -17,6 +17,7 @@ class ApplicationData:
         self.lpdc_docs: List[LPDCDocument] = []
         self.calculs: List[Calcul] = []
         self.options: List[Option] = []
+        self.labo: List[Labo] = []
 
     def load_config(self, config_path):
         tree = ET.parse(config_path)
@@ -45,41 +46,38 @@ class ApplicationData:
         # 1. Données générales
         base_data = self.raw_data.get("base_data", {})
 
-        # Types d'affaires disponibles: Neuf, Remplacement, etc
-        self.types_affaires: List[str] = base_data.get("types_affaires", [])
+        # Types d'affaires disponibles: Dict[code: label] - ex: {"NEUF": "Neuf", ...}
+        self.types_affaires: Dict[str, str] = base_data.get("types_affaire", {})
         
-        # Secteurs disponibles: Dict[Das: List[Secteurs du DAS]]
-        self.secteurs: Dict[str, List[str]] = base_data.get("DAS", {})
+        # DAS disponibles: Dict[code: label] - ex: {"MS": "Machines spéciales", ...}
+        self.das: Dict[str, str] = base_data.get("DAS", {})
+        
+        # Secteurs disponibles: Dict[DAS: Dict[code: label]]
+        self.secteurs: Dict[str, Dict[str, str]] = base_data.get("sectors", {})
 
-        # Catégories de produits disponibles: Dict[Catégorie: List[Produits de la catégorie]]
-        self.categories_produit: Dict[str, List[str]] = base_data.get("products", {})
+        # Types de produits: Dict[code: label] - ex: {"SYNCH": "Synchrone", ...}
+        self.types_produit: Dict[str, str] = base_data.get("product_types", {})
+
+        # Catégories de produits disponibles: Dict[Catégorie: Dict[code: label]]
+        self.categories_produit: Dict[str, Dict[str, str]] = base_data.get("products", {})
 
         # Personnes disponibles pour réalisation et validation
-        self.personnes: List[str] = base_data.get("personnes", [])
+        self.personnes: List[str] = base_data.get("people", [])
 
         # 2. Tâches générales
-        cols = self.raw_data['tasks'].get("columns", {})
-        rows = self.raw_data['tasks'].get("rows", {})
+        tasks_data = self.raw_data['tasks'].get("tasks", {})
 
         index = 1
-        for category, sub_categories in rows.items():
+        for category, sub_categories in tasks_data.items():
             self.tasks[category] = {}
             for sub_category, task_list in sub_categories.items():
                 self.tasks[category][sub_category] = []
-                for label, table in task_list.items():
-                    base_hours_machine = {}
-                    i = 0
-                    for machine_type in cols.get("base_produit", []):
-                        base_hours_machine[machine_type] = table[i]
-                        i += 1
-                    coeff_type_affaire = {}
-                    for affaire_type in cols.get("Coeffs_type_affaire", []):
-                        coeff_type_affaire[affaire_type] = table[i]
-                        i += 1
-                    coeff_secteur = {}
-                    for secteur in cols.get("Coeffs_secteur", []):
-                        coeff_secteur[secteur] = table[i]
-                        i += 1
+                for label, task_data in task_list.items():
+                    # Nouvelle structure: task_data contient directement base, coeff_type_affaire, coeff_secteur
+                    base_hours_machine = task_data.get("base", {})
+                    coeff_type_affaire = task_data.get("coeff_type_affaire", {})
+                    coeff_secteur = task_data.get("coeff_secteur", {})
+                    
                     general_task = GeneralTask(
                         index=index,
                         label=label,
@@ -116,7 +114,7 @@ class ApplicationData:
             self.calculs.append(calculation)
         
         # 5. Options
-        category_list = self.raw_data["options"].get("options", {})
+        category_list: Dict[str, List[dict]] = self.raw_data["options"].get("options", {})
         for cat_name, opts_list in category_list.items():
             for option in opts_list:
                 option = Option(
@@ -126,3 +124,13 @@ class ApplicationData:
                     hours=option.get("hours", 0.0)
                 )
                 self.options.append(option)
+
+        # 6. Labo
+        labo_list: List[dict] = self.raw_data['labo'].get("labo", [])
+        for item in labo_list:
+            labo_task = Labo(
+                index=item.get("index", 0),
+                label=item.get("label", ""),
+                hours=item.get("hours", {})
+            )
+            self.labo.append(labo_task)

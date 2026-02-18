@@ -1,24 +1,54 @@
 {
-  "products": {
-    "asynchrone": ["asynchrone à cage", "asynchrone à bagues"],
-    "synchrone": ["alternateur 2p", "alternateur 4p lisses", "alternateur 4 et 4p+ saillants", "moteur synchrone DOL vitesse fixe", "moteur synchrone vit variable"], 
-    "Marine": ["MEP", "ANR/DNR", "TAR"]
-  },
-  "DAS": {
-    "Machines spéciales": [
-      "Oil & Gas", "Industrie", "Marine civile"
+    "people": [
+      "Walid BOUGHANMI",
+      "Antoine DONFUT"
     ],
-    "Marine militaire": [
-      "Marine militaire"
-    ],
-    "Nucléaire": [
-      "Nucléaire qualifié", "Nucléaire non qualifié"
-    ]
-  },
-  "personnes": [
-    "Walid BOUGHANMI", "Thérèse VANDEWYNCKEL", "Medhi BELHAJ", "Nicolas SCATOLI", "Antoine DONFUT"
-  ],
-  "types_affaires": [
-    "Neuf", "Remplacement", "Identique JE ou PDR"
-  ]
+
+
+    "product_types": {
+        "SYNCH": "Synchrone",
+        "ASYNCH": "Asynchrone"
+    },
+
+    "products": {
+        "SYNCH": {
+            "ALT_2P": "alternateur 2p",
+            "ALT_4P_L": "alternateur 4p lisses",
+            "ALT_4P_S": "alternateur 4 et 4p+ saillants",
+            "MOTEUR_V_FIXE": "moteur synchrone DOL vitesse fixe",
+            "MOTEUR_V_VAR": "moteur synchrone vit variable"
+        },
+        "ASYNCH": {
+            "ASYNCH_CAGE": "asynchrone à cage",
+            "ASYNCH_BAGUES": "asynchrone à bagues"
+        }
+    },
+
+    "types_affaire": {
+        "NEUF": "Neuf",
+        "IDENTIQUE_JE": "Identique machine JE",
+        "REMPLACEMENT": "Remplacement lieu et place"
+    },
+
+    "DAS": {
+        "MS": "Machines spéciales",
+        "NUC": "Nucléaire",
+        "MIL": "Marine militaire"
+    },
+
+    "sectors": {
+        "MS": {
+            "INDUS": "Industrie", 
+            "OIL_GAS": "Oil & Gas", 
+            "MARINE_CIVILE": "Marine civile"
+        },
+        "NUC": {
+            "NUC_QUALIFIE": "Nucléaire qualifié",
+            "NUC_NON_QUALIFIE": "Nucléaire non qualifié"
+        },
+        "MIL": {
+            "MIL": "Marine militaire"
+        }
+    }
 }
+  

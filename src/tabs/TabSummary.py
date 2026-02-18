@@ -31,14 +31,44 @@ class CollapsibleSection(QTreeWidget):
             }
         """)
 
+    def _get_expanded_paths(self) -> set:
+        """Sauvegarde les chemins des n\u0153uds d\u00e9pli\u00e9s."""
+        expanded = set()
+        for i in range(self.topLevelItemCount()):
+            self._collect_expanded(self.topLevelItem(i), "", expanded)
+        return expanded
+
+    def _collect_expanded(self, item: QTreeWidgetItem, path: str, expanded: set):
+        current = f"{path}/{item.text(0)}"
+        if item.isExpanded():
+            expanded.add(current)
+        for i in range(item.childCount()):
+            self._collect_expanded(item.child(i), current, expanded)
+
+    def _restore_expanded(self, paths: set):
+        """Restaure l'\u00e9tat d\u00e9pli\u00e9 des n\u0153uds."""
+        for i in range(self.topLevelItemCount()):
+            self._apply_expand(self.topLevelItem(i), "", paths)
+
+    def _apply_expand(self, item: QTreeWidgetItem, path: str, paths: set):
+        current = f"{path}/{item.text(0)}"
+        if current in paths:
+            item.setExpanded(True)
+        for i in range(item.childCount()):
+            self._apply_expand(item.child(i), current, paths)
+
     def build_tree(self, items: Dict[str, Any], context: Dict[str, Any]):
-        """Construit l'arbre à partir d'un dictionnaire de données."""
+        """Construit l'arbre \u00e0 partir d'un dictionnaire de donn\u00e9es."""
+        expanded = self._get_expanded_paths()
+
         self.clear()
-        
         for label, value in items.items():
             self._add_node(label, value, None, context)
-        
-        self.expandAll()
+
+        if expanded:
+            self._restore_expanded(expanded)
+        else:
+            self.collapseAll()
 
     def _add_node(self, label: str, value: Any, parent: QTreeWidgetItem | None, context: Dict[str, Any]):
         """Ajoute récursivement un nœud à l'arbre."""
@@ -229,6 +259,7 @@ class TabSummaryController:
 
         # Connecter les signaux du model
         self.model.project_changed.connect(self._on_project_changed)
+        self.model.data_updated.connect(self._on_data_updated)
         
         # Connecter les signaux de la vue
         self.view.divers_changed.connect(self._on_divers_changed)
@@ -248,12 +279,23 @@ class TabSummaryController:
         
         # Mettre à jour les totaux
         self._update_totals()
+    
+    def _on_data_updated(self):
+        """Appelé lors de modifications mineures (valeurs, checkboxes) - met à jour l'arbre."""
+
+        project = self.model.project
+        
+        # Reconstruire l'arbre avec les nouvelles valeurs
+        tree_items = project.generate_summary_tree()
+        self.view.tree.build_tree(tree_items, project.context())
+        
+        # Mettre à jour les totaux
+        self._update_totals()
 
     def _update_totals(self):
         """Recalcule et affiche tous les totaux."""
         project: Project = self.model.project
-        
-        # Calculer le sous-total de base
+
         first_machine = project.compute_total_firstmachine()
         
         # Calculer le total pour n machines
@@ -278,8 +320,10 @@ class TabSummaryController:
         """Appelé quand le pourcentage divers change."""
         self.model.project.divers_percent = percent / 100
         self._update_totals()
+        # Pas besoin d'émettre data_updated car c'est juste un changement de total
 
     def _on_rex_coeff_changed(self, coeff: float):
         """Appelé quand le coefficient REX change."""
         self.model.project.manual_rex_coeff = coeff
         self._update_totals()
+        # Pas besoin d'émettre data_updated car c'est juste un changement de total

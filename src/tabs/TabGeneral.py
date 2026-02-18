@@ -1,6 +1,6 @@
-from ast import List
+from typing import List
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QFormLayout, QLineEdit, QDoubleSpinBox, 
+    QWidget, QVBoxLayout, QFormLayout, QLineEdit, QDoubleSpinBox, QSpinBox,
     QComboBox, QPushButton, QDateEdit, QTextEdit, QLabel
 )
 from PyQt6.QtCore import pyqtSignal, QDate
@@ -86,15 +86,28 @@ class TabGeneral(QWidget):
         layout.addWidget(self.btn_apply)
         layout.addStretch()
     
-    def set_combo_items(self, combo: QComboBox, items: list):
+    def set_combo_items(self, combo: QComboBox, items):
+        """
+        Remplit un QComboBox avec des items.
+        - Si items est une liste : ajoute directement les éléments
+        - Si items est un dict : affiche les valeurs et stocke les clés comme données
+        """
         combo.clear()
-        combo.addItems(items)
+        if isinstance(items, dict):
+            for code, label in items.items():
+                combo.addItem(label, code)
+        elif isinstance(items, list):
+            combo.addItems(items)
+        else:
+            combo.addItems(list(items))
     
     def get_value(self, widget):
         if isinstance(widget, QLineEdit):
             return widget.text()
         elif isinstance(widget, QComboBox):
-            return widget.currentText()
+            # Retourne currentData() si disponible (code), sinon currentText() (label)
+            data = widget.currentData()
+            return data if data is not None else widget.currentText()
         elif isinstance(widget, QDoubleSpinBox):
             return widget.value()
         elif isinstance(widget, QDateEdit):
@@ -117,11 +130,11 @@ class TabGeneralController:
             self.view.set_combo_items(self.view.combo_type_affaire, self.model.app_data.types_affaires)
 
             # DAS et secteurs
-            self.view.set_combo_items(self.view.combo_das, self.model.app_data.secteurs.keys())
+            self.view.set_combo_items(self.view.combo_das, self.model.app_data.das)
             self.update_secteur_list()
 
             # Catégories produit
-            self.view.set_combo_items(self.view.combo_category, self.model.app_data.categories_produit.keys())
+            self.view.set_combo_items(self.view.combo_category, self.model.app_data.types_produit)
             self.update_product_list()
 
             # Personnes
@@ -133,14 +146,22 @@ class TabGeneralController:
         
     
     def update_secteur_list(self):
-        das = self.view.combo_das.currentText()
-        secteurs = self.model.app_data.secteurs.get(das, [])
-        self.view.set_combo_items(self.view.combo_secteur, secteurs)
+        """Met à jour la liste des secteurs en fonction du DAS sélectionné"""
+        das_code = self.view.combo_das.currentData()  # Récupère le code du DAS
+        if das_code:
+            secteurs = self.model.app_data.secteurs.get(das_code, {})
+            self.view.set_combo_items(self.view.combo_secteur, secteurs)
+        else:
+            self.view.combo_secteur.clear()
 
     def update_product_list(self):
-        category = self.view.combo_category.currentText()
-        products = self.model.app_data.categories_produit.get(category, [])
-        self.view.set_combo_items(self.view.combo_product, products)
+        """Met à jour la liste des produits en fonction du type de produit sélectionné"""
+        type_code = self.view.combo_category.currentData()  # Récupère le code du type
+        if type_code:
+            products = self.model.app_data.categories_produit.get(type_code, {})
+            self.view.set_combo_items(self.view.combo_product, products)
+        else:
+            self.view.combo_product.clear()
 
     def apply_defaults(self):
         self.update_project_from_ui()
@@ -195,7 +216,7 @@ class TabGeneralController:
                 widget.textChanged.connect(self.update_project_from_ui)
             elif isinstance(widget, QComboBox):
                 widget.currentTextChanged.connect(self.update_project_from_ui)
-            elif isinstance(widget, QDoubleSpinBox):
+            elif isinstance(widget, (QSpinBox, QDoubleSpinBox)):
                 widget.valueChanged.connect(self.update_project_from_ui)
             elif isinstance(widget, QDateEdit):
                 widget.dateChanged.connect(self.update_project_from_ui)

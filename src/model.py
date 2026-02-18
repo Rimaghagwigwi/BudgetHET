@@ -1,7 +1,6 @@
-from dataclasses import dataclass
 from typing import Dict, List, Optional, Any
 from src.utils.ApplicationData import ApplicationData
-from src.utils.Task import AbstractTask, GeneralTask, LPDCDocument, Option, Calcul
+from src.utils.Task import AbstractTask, GeneralTask, LPDCDocument, Labo, Option, Calcul
 from PyQt6.QtCore import QObject, pyqtSignal
 
 
@@ -36,48 +35,41 @@ class Project:
         self.lpdc_docs: List[LPDCDocument] = []
         self.options: List[Option] = []
         self.calculs: List[Calcul] = []
+        self.labo: List[Labo] = []
     
     def context(self) -> Dict[str, str]:
         return {
             "product": self.product,
             "machine_type": self.machine_type,
             "affaire": self.affaire,
-            "secteur": self.secteur
+            "secteur": self.secteur,
         }
 
     def apply_defaults(self):
         """Applique les valeurs par défaut après avoir choisi le type de machine, le secteur et le type d'affaire."""
-
-        print(f"Application des valeurs par défaut pour Machine: {self.machine_type}, Secteur: {self.secteur}, Type d'affaire: {self.affaire}")
+        
+        ctx = self.context()
+        
         self.tasks = self.app_data.tasks.copy()
-        self.lpdc_docs = [doc for doc in self.app_data.lpdc_docs if doc.is_active(self.context()) or doc.option_possible]
+        self.lpdc_docs = [doc for doc in self.app_data.lpdc_docs if doc.is_active(ctx) or doc.option_possible]
         self.options = self.app_data.options.copy()
-        self.calculs = [calc for calc in self.app_data.calculs if calc.is_available_as_option(self.context()) or calc.is_mandatory(self.context())]
+        self.calculs = [calc for calc in self.app_data.calculs if calc.is_available_as_option(ctx) or calc.is_mandatory(ctx)]
+        self.labo = self.app_data.labo.copy()
     
     def get_task_default_hours(self, task: GeneralTask) -> float:
         return task.default_hours(self.context())
-    
-    def calculate_total_task_list_hours(self, tasks: List[GeneralTask]) -> float:
-        total_hours = 0.0
-        for task in tasks:
-            hours = task.effective_hours(self.context())
-            total_hours += hours
-        
-        return total_hours
-    
+
     def get_all_tasks(self) -> List[GeneralTask]:
-        all_tasks = []
-        for _, subcategory in self.tasks.items():
-            for _, tasks in subcategory.items():
-                all_tasks.extend(tasks)
-        return all_tasks
+        """Retourne la liste plate de toutes les tâches générales."""
+        return [task for subcats in self.tasks.values() for tasks in subcats.values() for task in tasks]
 
     def generate_summary_tree(self) -> Dict[str, Any]:
         return {
             "Tâches Générales": self.tasks,
             "Pièces et documents contractuels": self.lpdc_docs,
             "Options": self.options,
-            "Calculs": self.calculs
+            "Calculs": self.calculs,
+            "Laboratoire": self.labo,
         }
     
     def compute_tree_hours(self, node) -> float:
@@ -91,12 +83,10 @@ class Project:
 
     def compute_total_firstmachine(self) -> float:
         """Calcule le sous-total de base (toutes les tâches)."""
-        self.first_machine_total = sum([
-            self.compute_tree_hours(self.tasks),
-            self.compute_tree_hours(self.lpdc_docs),
-            self.compute_tree_hours(self.options),
-            self.compute_tree_hours(self.calculs)
-        ])
+        self.first_machine_total = sum(
+            self.compute_tree_hours(data)
+            for data in [self.tasks, self.lpdc_docs, self.options, self.calculs, self.labo]
+        )
         return self.first_machine_total
     
     def _compute_multi_machine_coeff(self, quantity: int) -> float:
@@ -120,13 +110,15 @@ class Project:
         self.total_with_divers = self.n_machines_total * (1 + self.divers_percent)
         return self.total_with_divers
     
-    def calculate_total_hours(self):
+    def calculate_total_hours(self) -> float:
         self.total_with_rex = self.total_with_divers * self.manual_rex_coeff
         return self.total_with_rex
-    
+
+
 class Model(QObject):
-    project_changed: pyqtSignal = pyqtSignal()
-    
+    project_changed = pyqtSignal()  # Émis lors de l'application des paramètres par défaut
+    data_updated = pyqtSignal()     # Émis lors de modifications mineures (valeurs, checkboxes)
+
     def __init__(self, app_data: ApplicationData):
         super().__init__()
         self.app_data = app_data

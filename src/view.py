@@ -1,7 +1,9 @@
-from PyQt6.QtWidgets import QWidget, QStackedWidget, QMainWindow, QVBoxLayout, QHBoxLayout, QPushButton, QTabWidget
+from PyQt6.QtWidgets import QWidget, QMainWindow, QVBoxLayout, QHBoxLayout, QTabWidget
+
+from src.utils.ApplicationData import ApplicationData
 
 class MainWindow(QMainWindow): 
-    def __init__(self, app_data=None):
+    def __init__(self, app_data: ApplicationData=None):
         super().__init__()
 
         title = "Chiffrage HET"
@@ -32,8 +34,3 @@ class MainWindow(QMainWindow):
 
     def add_tab(self, widget: QWidget, title: str):
         self.tabs.addTab(widget, title)
-
-    def show_tab(self, index):
-        self.tabs.setCurrentIndex(index)
-    
-

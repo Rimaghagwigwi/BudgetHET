@@ -1,19 +1,16 @@
 {
-    "metadata": {
-        "date": "2026-01-19"
-    },
     "calculs": [
         {
         "index": 1,
         "label": "Calcul magnétique et thermique machine",
         "category": "Electromécanique",
         "hours": {
-            "asynchrone": 8,
-            "synchrone": 8
+            "ASYNCH": 8,
+            "SYNCH": 8
             },
         "selection": {
-            "asynchrone": "Oui",
-            "synchrone": "Oui"
+            "ASYNCH": "Oui",
+            "SYNCH": "Oui"
             }
         },
         {
@@ -21,12 +18,12 @@
         "label": "Calcul Bout d'arbre,  Clavette,  Manchon (torsion)",
         "category": "Conception mécanique",
         "hours": {
-            "asynchrone": 8,
-            "synchrone": 8
+            "ASYNCH": 8,
+            "SYNCH": 8
             },
         "selection": {
-            "asynchrone": "Oui",
-            "synchrone": "Oui"
+            "ASYNCH": "Oui",
+            "SYNCH": "Oui"
             }
         },
         {
@@ -34,12 +31,12 @@
         "label": "Calcul diamètres équivalents en flexion",
         "category": "Conception mécanique",
         "hours": {
-            "asynchrone": 4,
-            "synchrone": 4
+            "ASYNCH": 4,
+            "SYNCH": 4
             },
         "selection": {
-            "asynchrone": "Oui",
-            "synchrone": "Oui"
+            "ASYNCH": "Oui",
+            "SYNCH": "Oui"
             }
         },
         {
@@ -47,12 +44,12 @@
         "label": "Calcul diamètres équivalents en torsion",
         "category": "Conception mécanique",
         "hours": {
-            "asynchrone": 4,
-            "synchrone": 4
+            "ASYNCH": 4,
+            "SYNCH": 4
             },
         "selection": {
-            "asynchrone": "Oui",
-            "synchrone": "Oui"
+            "ASYNCH": "Oui",
+            "SYNCH": "Oui"
             }
         },
         {
@@ -60,12 +57,12 @@
         "label": "Analyse latérale simplifiée VCFELX",
         "category": "Conception mécanique",
         "hours": {
-            "asynchrone": 8,
-            "synchrone": 8
+            "ASYNCH": 8,
+            "SYNCH": 8
             },
         "selection": {
-            "asynchrone": "Oui",
-            "synchrone": "Oui"
+            "ASYNCH": "Oui",
+            "SYNCH": "Oui"
             }
         },
         {
@@ -73,12 +70,12 @@
         "label": "Analyse latérale Rotorinsa",
         "category": "Conception mécanique",
         "hours": {
-            "asynchrone": 16,
-            "synchrone": 16
+            "ASYNCH": 16,
+            "SYNCH": 16
             },
         "selection": {
-            "asynchrone": "Choix",
-            "synchrone": "Choix"
+            "ASYNCH": "Choix",
+            "SYNCH": "Choix"
             }
         },
         {
@@ -86,12 +83,12 @@
         "label": "Calcul MODELE simplifié de torsion",
         "category": "Conception mécanique",
         "hours": {
-            "asynchrone": 8,
-            "synchrone": 8
+            "ASYNCH": 8,
+            "SYNCH": 8
             },
         "selection": {
-            "asynchrone": "Choix",
-            "synchrone": "Choix"
+            "ASYNCH": "Choix",
+            "SYNCH": "Choix"
             }
         },
         {
@@ -99,12 +96,12 @@
         "label": "Calcul couples transitoires (equations couples elec)",
         "category": "Electromécanique",
         "hours": {
-            "asynchrone": 2,
-            "synchrone": 2
+            "ASYNCH": 2,
+            "SYNCH": 2
             },
         "selection": {
-            "asynchrone": "Oui",
-            "synchrone": "Oui"
+            "ASYNCH": "Oui",
+            "SYNCH": "Oui"
             }
         },
         {
@@ -112,12 +109,12 @@
         "label": "Calcul Couples transitoires (couple8 + VCTOR si requis par client ou analyse résultat client)",
         "category": "Conception mécanique",
         "hours": {
-            "asynchrone": 16,
-            "synchrone": 16
+            "ASYNCH": 16,
+            "SYNCH": 16
             },
         "selection": {
-            "asynchrone": "Oui",
-            "synchrone": "Oui"
+            "ASYNCH": "Oui",
+            "SYNCH": "Oui"
             }
         },
         {
@@ -125,12 +122,12 @@
         "label": "Calcul Serrage Tôlerie Rotor",
         "category": "Conception mécanique",
         "hours": {
-            "asynchrone": 4,
-            "synchrone": 4
+            "ASYNCH": 4,
+            "SYNCH": 4
             },
         "selection": {
-            "asynchrone": "Oui",
-            "synchrone": "Oui"
+            "ASYNCH": "Oui",
+            "SYNCH": "Oui"
             }
         },
         {
@@ -138,25 +135,25 @@
         "label": "Calcul Frettage",
         "category": "Mécanique ANSYS",
         "hours": {
-            "asynchrone": 15,
-            "synchrone": 15
+            "ASYNCH": 15,
+            "SYNCH": 15
             },
         "selection": {
-            "asynchrone": "Choix",
-            "synchrone": "Choix"
+            "ASYNCH": "Choix",
+            "SYNCH": "Choix"
             }
         },
         {
         "index": 12,
-        "label": "Calcul Tenue méca barres rotor AS (cage)/ bobinage rotor synchrone (ansys)/ frettage tete bobine jisalt",
+        "label": "Calcul Tenue méca barres rotor AS (cage)/ bobinage rotor SYNCH (ansys)/ frettage tete bobine jisalt",
         "category": "Mécanique ANSYS",
         "hours": {
-            "asynchrone": 4,
-            "synchrone": 16
+            "ASYNCH": 4,
+            "SYNCH": 16
             },
         "selection": {
-            "asynchrone": "Oui",
-            "synchrone": "Oui"
+            "ASYNCH": "Oui",
+            "SYNCH": "Oui"
             }
         },
         {
@@ -164,12 +161,12 @@
         "label": "Calcul ventilateurs internes (méca, fréq)",
         "category": "Mécanique ANSYS",
         "hours": {
-            "asynchrone": 10,
-            "synchrone": 10
+            "ASYNCH": 10,
+            "SYNCH": 10
             },
         "selection": {
-            "asynchrone": "Oui",
-            "synchrone": "Oui"
+            "ASYNCH": "Oui",
+            "SYNCH": "Oui"
             }
         },
         {
@@ -177,12 +174,12 @@
         "label": "Calcul ventilateurs externes (méca, fréq)",
         "category": "Mécanique ANSYS",
         "hours": {
-            "asynchrone": 10,
-            "synchrone": 10
+            "ASYNCH": 10,
+            "SYNCH": 10
             },
         "selection": {
-            "asynchrone": "Choix",
-            "synchrone": "Choix"
+            "ASYNCH": "Choix",
+            "SYNCH": "Choix"
             }
         },
         {
@@ -190,12 +187,12 @@
         "label": "Calcul serrage joue",
         "category": "Conception mécanique",
         "hours": {
-            "asynchrone": 2,
-            "synchrone": 2
+            "ASYNCH": 2,
+            "SYNCH": 2
             },
         "selection": {
-            "asynchrone": "Oui",
-            "synchrone": "Oui"
+            "ASYNCH": "Oui",
+            "SYNCH": "Oui"
             }
         },
         {
@@ -203,12 +200,12 @@
         "label": "Calcul Tiges de serrage/barreaux",
         "category": "Conception mécanique",
         "hours": {
-            "asynchrone": 4,
-            "synchrone": 4
+            "ASYNCH": 4,
+            "SYNCH": 4
             },
         "selection": {
-            "asynchrone": "Oui",
-            "synchrone": "Oui"
+            "ASYNCH": "Oui",
+            "SYNCH": "Oui"
             }
         },
         {
@@ -216,12 +213,12 @@
         "label": "Calcul Fixation lanterne",
         "category": "Mécanique ANSYS",
         "hours": {
-            "asynchrone": 4,
-            "synchrone": 4
+            "ASYNCH": 4,
+            "SYNCH": 4
             },
         "selection": {
-            "asynchrone": "Oui",
-            "synchrone": "Oui"
+            "ASYNCH": "Oui",
+            "SYNCH": "Oui"
             }
         },
         {
@@ -229,12 +226,12 @@
         "label": "Contraintes intercalaires externes (doigt de serrage)",
         "category": "Conception mécanique",
         "hours": {
-            "asynchrone": 4,
-            "synchrone": 4
+            "ASYNCH": 4,
+            "SYNCH": 4
             },
         "selection": {
-            "asynchrone": "Choix",
-            "synchrone": "Choix"
+            "ASYNCH": "Choix",
+            "SYNCH": "Choix"
             }
         },
         {
@@ -242,12 +239,12 @@
         "label": "Définition bobinage Coupe d'encoche (plbob)",
         "category": "Bobinage",
         "hours": {
-            "asynchrone": 4,
-            "synchrone": 4
+            "ASYNCH": 4,
+            "SYNCH": 4
             },
         "selection": {
-            "asynchrone": "Oui",
-            "synchrone": "Oui"
+            "ASYNCH": "Oui",
+            "SYNCH": "Oui"
             }
         },
         {
@@ -255,12 +252,12 @@
         "label": "Calculs carcasse (méca +freq propres+raideur Ansys)",
         "category": "Mécanique ANSYS",
         "hours": {
-            "asynchrone": 24,
-            "synchrone": 24
+            "ASYNCH": 24,
+            "SYNCH": 24
             },
         "selection": {
-            "asynchrone": "Oui",
-            "synchrone": "Oui"
+            "ASYNCH": "Oui",
+            "SYNCH": "Oui"
             }
         },
         {
@@ -268,12 +265,12 @@
         "label": "Calcul au séisme",
         "category": "Mécanique ANSYS",
         "hours": {
-            "asynchrone": 100,
-            "synchrone": 100
+            "ASYNCH": 100,
+            "SYNCH": 100
             },
         "selection": {
-            "asynchrone": "Choix",
-            "synchrone": "Choix"
+            "ASYNCH": "Choix",
+            "SYNCH": "Choix"
             }
         },
         {
@@ -281,12 +278,12 @@
         "label": "Calcul Pivoterie - calcul roulements/paliers lisses",
         "category": "Conception mécanique",
         "hours": {
-            "asynchrone": 10,
-            "synchrone": 20
+            "ASYNCH": 10,
+            "SYNCH": 20
             },
         "selection": {
-            "asynchrone": "Oui",
-            "synchrone": "Oui"
+            "ASYNCH": "Oui",
+            "SYNCH": "Oui"
             }
         },
         {
@@ -294,12 +291,12 @@
         "label": "Calcul Aéraulique - Calcul aéraulique machine",
         "category": "Aéraulique et Thermique",
         "hours": {
-            "asynchrone": 15,
-            "synchrone": 15
+            "ASYNCH": 15,
+            "SYNCH": 15
             },
         "selection": {
-            "asynchrone": "Oui",
-            "synchrone": "Oui"
+            "ASYNCH": "Oui",
+            "SYNCH": "Oui"
             }
         },
         {
@@ -307,12 +304,12 @@
         "label": "Calcul Aéraulique - Aéro-réfrigérant",
         "category": "Aéraulique et Thermique",
         "hours": {
-            "asynchrone": 4,
-            "synchrone": 4
+            "ASYNCH": 4,
+            "SYNCH": 4
             },
         "selection": {
-            "asynchrone": "Choix",
-            "synchrone": "Choix"
+            "ASYNCH": "Choix",
+            "SYNCH": "Choix"
             }
         },
         {
@@ -320,12 +317,12 @@
         "label": "Calcul Autres - Lignage",
         "category": "Conception mécanique",
         "hours": {
-            "asynchrone": 4,
-            "synchrone": 4
+            "ASYNCH": 4,
+            "SYNCH": 4
             },
         "selection": {
-            "asynchrone": "Oui",
-            "synchrone": "Oui"
+            "ASYNCH": "Oui",
+            "SYNCH": "Oui"
             }
         },
         {
@@ -333,12 +330,12 @@
         "label": "Calcul Autres - Réactions ancrage",
         "category": "Conception mécanique",
         "hours": {
-            "asynchrone": 4,
-            "synchrone": 4
+            "ASYNCH": 4,
+            "SYNCH": 4
             },
         "selection": {
-            "asynchrone": "Oui",
-            "synchrone": "Oui"
+            "ASYNCH": "Oui",
+            "SYNCH": "Oui"
             }
         },
         {
@@ -346,12 +343,12 @@
         "label": "Calcul Autres - Dimensionnement ancrages et vis de fixation",
         "category": "Conception mécanique",
         "hours": {
-            "asynchrone": 4,
-            "synchrone": 4
+            "ASYNCH": 4,
+            "SYNCH": 4
             },
         "selection": {
-            "asynchrone": "Choix",
-            "synchrone": "Choix"
+            "ASYNCH": "Choix",
+            "SYNCH": "Choix"
             }
         },
         {
@@ -359,12 +356,12 @@
         "label": "Calcul Autres - Tuyauteries (vitesse, pression)",
         "category": "Conception mécanique",
         "hours": {
-            "asynchrone": 8,
-            "synchrone": 8
+            "ASYNCH": 8,
+            "SYNCH": 8
             },
         "selection": {
-            "asynchrone": "Non",
-            "synchrone": "Choix"
+            "ASYNCH": "Non",
+            "SYNCH": "Choix"
             }
         },
         {
@@ -372,12 +369,12 @@
         "label": "Calcul Autres - Liaisons boulonnées diverses",
         "category": "Conception mécanique",
         "hours": {
-            "asynchrone": 8,
-            "synchrone": 8
+            "ASYNCH": 8,
+            "SYNCH": 8
             },
         "selection": {
-            "asynchrone": "Oui",
-            "synchrone": "Oui"
+            "ASYNCH": "Oui",
+            "SYNCH": "Oui"
             }
         },
         {
@@ -385,12 +382,12 @@
         "label": "Calcul magnetique (JMAG) pour THD, scientifique spécial…",
         "category": "Electromécanique",
         "hours": {
-            "asynchrone": 24,
-            "synchrone": 24
+            "ASYNCH": 24,
+            "SYNCH": 24
             },
         "selection": {
-            "asynchrone": "Choix",
-            "synchrone": "Choix"
+            "ASYNCH": "Choix",
+            "SYNCH": "Choix"
             }
         },
         {
@@ -398,12 +395,12 @@
         "label": "Calcul diode (roue RT)",
         "category": "Electromécanique",
         "hours": {
-            "asynchrone": 0,
-            "synchrone": 4
+            "ASYNCH": 0,
+            "SYNCH": 4
             },
         "selection": {
-            "asynchrone": "Non",
-            "synchrone": "Oui"
+            "ASYNCH": "Non",
+            "SYNCH": "Oui"
             }
         },
         {
@@ -411,12 +408,12 @@
         "label": "Calcul AE",
         "category": "Electromécanique",
         "hours": {
-            "asynchrone": 0,
-            "synchrone": 4
+            "ASYNCH": 0,
+            "SYNCH": 4
             },
         "selection": {
-            "asynchrone": "Non",
-            "synchrone": "Choix"
+            "ASYNCH": "Non",
+            "SYNCH": "Choix"
             }
         },
         {
@@ -424,12 +421,12 @@
         "label": "Calcul HNB",
         "category": "Electromécanique",
         "hours": {
-            "asynchrone": 0,
-            "synchrone": 12
+            "ASYNCH": 0,
+            "SYNCH": 12
             },
         "selection": {
-            "asynchrone": "Non",
-            "synchrone": "Choix"
+            "ASYNCH": "Non",
+            "SYNCH": "Choix"
             }
         },
         {
@@ -437,12 +434,12 @@
         "label": "Calcul/définition module gate/pulse sin/resist balast/resistance démarrage",
         "category": "Electromécanique",
         "hours": {
-            "asynchrone": 0,
-            "synchrone": 8
+            "ASYNCH": 0,
+            "SYNCH": 8
             },
         "selection": {
-            "asynchrone": "Non",
-            "synchrone": "Choix"
+            "ASYNCH": "Non",
+            "SYNCH": "Choix"
             }
         },
         {
@@ -450,12 +447,12 @@
         "label": "Calcul PMG",
         "category": "Electromécanique",
         "hours": {
-            "asynchrone": 0,
-            "synchrone": 8
+            "ASYNCH": 0,
+            "SYNCH": 8
             },
         "selection": {
-            "asynchrone": "Non",
-            "synchrone": "Choix"
+            "ASYNCH": "Non",
+            "SYNCH": "Choix"
             }
         },
         {
@@ -463,12 +460,12 @@
         "label": "Calcul tolerie",
         "category": "Electromécanique",
         "hours": {
-            "asynchrone": 4,
-            "synchrone": 4
+            "ASYNCH": 4,
+            "SYNCH": 4
             },
         "selection": {
-            "asynchrone": "Oui",
-            "synchrone": "Oui"
+            "ASYNCH": "Oui",
+            "SYNCH": "Oui"
             }
         },
         {
@@ -476,12 +473,12 @@
         "label": "Définition schéma bobinage",
         "category": "Bobinage",
         "hours": {
-            "asynchrone": 4,
-            "synchrone": 4
+            "ASYNCH": 4,
+            "SYNCH": 4
             },
         "selection": {
-            "asynchrone": "Oui",
-            "synchrone": "Oui"
+            "ASYNCH": "Oui",
+            "SYNCH": "Oui"
             }
         }
     ]
