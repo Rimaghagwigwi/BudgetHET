@@ -12,6 +12,10 @@ class ApplicationData:
         for key, path in self.paths.items():
             with open(path, 'r', encoding='utf-8') as f:
                 self.raw_data[key] = json.load(f)
+
+        self.lpdc_coefficients: Dict[str, float] = {}
+        self.calcul_secteur_coeff: Dict[str, Dict[str, float]] = {} # Dict[type_affaire: Dict[activité: coeff]]
+        self.option_category_coeff: Dict[str, Dict[str, float]] = {} # Dict[type_affaire: Dict[category: coeff]]
         
         self.tasks: Dict[str, Dict[str, List[GeneralTask]]] = {} # Dict[category: Dict[sub-category: List[GeneralTask]]]
         self.lpdc_docs: List[LPDCDocument] = []
@@ -88,6 +92,8 @@ class ApplicationData:
                     self.tasks[category][sub_category].append(general_task)
                     index += 1
         # 3. LPDC
+        self.lpdc_coefficients = self.raw_data["LPDC"]["coeff_secteur"]
+
         docs_source: List[dict] = self.raw_data["LPDC"].get("documents", [])
         
         for doc in docs_source:
@@ -102,6 +108,8 @@ class ApplicationData:
             self.lpdc_docs.append(document)
         
         # 4. Calculs
+        self.calcul_coeff_type_affaire = self.raw_data["calculs"]["coeff_type_affaire"]
+
         calc_list: List[dict] = self.raw_data['calculs'].get("calculs", [])
         for calc in calc_list:
             calculation = Calcul(
@@ -114,13 +122,15 @@ class ApplicationData:
             self.calculs.append(calculation)
         
         # 5. Options
-        category_list: Dict[str, List[dict]] = self.raw_data["options"].get("options", {})
-        for cat_name, opts_list in category_list.items():
+        self.category_list: Dict[str, str] = self.raw_data["options"]["categories"]
+        self.option_category_coeff: Dict[str, Dict[str, float]] = self.raw_data["options"]["category_coeff"]
+        options_list: Dict[str, List[dict]] = self.raw_data["options"].get("options", {})
+        for cat_id, opts_list in options_list.items():
             for option in opts_list:
                 option = Option(
                     index=option.get("index", 0),
                     label=option.get("label", ""),
-                    category=cat_name,
+                    category=cat_id,
                     hours=option.get("hours", 0.0)
                 )
                 self.options.append(option)
@@ -131,6 +141,6 @@ class ApplicationData:
             labo_task = Labo(
                 index=item.get("index", 0),
                 label=item.get("label", ""),
-                hours=item.get("hours", {})
+                hours=item.get("hours", 0.0)
             )
             self.labo.append(labo_task)

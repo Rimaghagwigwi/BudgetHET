@@ -77,14 +77,37 @@ class TabGeneral(QWidget):
         
         # 14. Description
         self.text_description = QTextEdit()
-        self.text_description.setMaximumHeight(100)
         form.addRow("Description :", self.text_description)
         
         self.btn_apply = QPushButton("Appliquer Paramètres par Défaut")
         
+        
         layout.addLayout(form)
-        layout.addWidget(self.btn_apply)
         layout.addStretch()
+        layout.addWidget(self.btn_apply)
+
+        self.setStyleSheet("""
+            QWidget {
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+            }
+                           
+            QLabel {
+                font-weight: bold;
+            }
+            QLineEdit, QComboBox, QSpinBox, QDateEdit, QTextEdit {
+                padding: 5px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+            QPushButton {
+                background-color: #007BFF;
+                color: white;
+                padding: 8px 16px;
+                border: none;
+                border-radius: 4px;
+            }
+        """)
     
     def set_combo_items(self, combo: QComboBox, items):
         """

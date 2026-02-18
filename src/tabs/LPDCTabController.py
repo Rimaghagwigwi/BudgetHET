@@ -35,19 +35,22 @@ class LPDCTabController(BaseTaskTabController):
                       is_optional: bool) -> TaskTableWidget:
         """Crée et remplit une table de documents LPDC."""
         table = TaskTableWidget(label=label, task_type="Document", is_optional=is_optional)
+        table.context = self.model.project.context()
         self._connect_table(table)
 
         if docs:
             table.add_category("Documents")
             for doc in docs:
-                table.add_task(
-                    "Documents",
-                    ref=doc.index,
-                    label=doc.label,
-                    default_hours=doc.hours,
-                    manual_hours=doc.manual_hours,
-                )
+                table.add_task("Documents", doc)
             table.show_table()
             table.adjust_height_to_content()
 
         return table
+    
+    def _on_project_changed(self):
+        """Reconstruit les tables quand le projet change."""
+        self.tables = self._build_tables()
+        self.view.display_tables(self.tables)
+
+        line_edit = self.view.add_global_coefficient("Coefficient secteur d'activité", self.model.project.lpdc_coeff)
+        line_edit.editingFinished.connect(lambda: self._on_global_coefficient_change(float(line_edit.text()), "lpdc"))

@@ -545,13 +545,13 @@
                 },
                 "boites filerie base": {
                     "base": {
-                        "ALT_2P": 4,
-                        "ALT_4P_L": 4,
-                        "ALT_4P_S": 4,
-                        "MOTEUR_V_FIXE": 4,
-                        "MOTEUR_V_VAR": 4,
-                        "ASYNCH_CAGE": 4,
-                        "ASYNCH_BAGUES": 4
+                        "ALT_2P": 40,
+                        "ALT_4P_L": 40,
+                        "ALT_4P_S": 40,
+                        "MOTEUR_V_FIXE": 40,
+                        "MOTEUR_V_VAR": 40,
+                        "ASYNCH_CAGE": 40,
+                        "ASYNCH_BAGUES": 40
                     },
                     "coeff_type_affaire": {
                         "NEUF": 1,
@@ -559,12 +559,12 @@
                         "REMPLACEMENT": 1.3
                     },
                     "coeff_secteur": {
-                        "INDUS": 11,
-                        "OIL_GAS": 1,
-                        "MARINE_CIVILE": 1,
-                        "NUC_QUALIFIE": 16,
-                        "NUC_NON_QUALIFIE": 16,
-                        "MIL": 16
+                        "INDUS": 1.1,
+                        "OIL_GAS": 1.6,
+                        "MARINE_CIVILE": 1.1,
+                        "NUC_QUALIFIE": 1.6,
+                        "NUC_NON_QUALIFIE": 1.6,
+                        "MIL": 1.1
                     }
                 },
                 "outillages de base": {
@@ -619,11 +619,11 @@
                 },
                 "armoire phase neutre APN": {
                     "base": {
-                        "ALT_2P": 8,
-                        "ALT_4P_L": 8,
-                        "ALT_4P_S": 8,
-                        "MOTEUR_V_FIXE": 8,
-                        "MOTEUR_V_VAR": 8,
+                        "ALT_2P": 80,
+                        "ALT_4P_L": 80,
+                        "ALT_4P_S": 80,
+                        "MOTEUR_V_FIXE": 80,
+                        "MOTEUR_V_VAR": 80,
                         "ASYNCH_CAGE": 0,
                         "ASYNCH_BAGUES": 0
                     },
@@ -633,12 +633,12 @@
                         "REMPLACEMENT": 1.2
                     },
                     "coeff_secteur": {
-                        "INDUS": 11,
-                        "OIL_GAS": 1,
-                        "MARINE_CIVILE": 1,
-                        "NUC_QUALIFIE": 13.5,
-                        "NUC_NON_QUALIFIE": 13.5,
-                        "MIL": 13.5
+                        "INDUS": 1.1,
+                        "OIL_GAS": 1.35,
+                        "MARINE_CIVILE": 1.1,
+                        "NUC_QUALIFIE": 1.35,
+                        "NUC_NON_QUALIFIE": 1.35,
+                        "MIL": 1.1
                     }
                 },
                 "armoire résistance de mise à la terre": {

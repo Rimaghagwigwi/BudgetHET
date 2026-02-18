@@ -1,9 +1,41 @@
-{
+{   
+    "categories": {
+        "ELECMAG": "Electromagnétique",
+        "BOB": "Bobinage",
+        "CONCEPT_MECA": "Conception mécanique",
+        "MECA_ANSYS": "Mécanique ANSYS",
+        "AERO_THERMIQUE": "Aéraulique et Thermique"
+    },
+
+    "coeff_type_affaire": {
+        "NEUF": {
+            "ELECMAG": 1,
+            "BOB": 1,
+            "CONCEPT_MECA": 1,
+            "MECA_ANSYS": 1,
+            "AERO_THERMIQUE": 1
+        },
+        "IDENTIQUE_JE": {
+            "ELECMAG": 0.5,
+            "BOB": 0.5,
+            "CONCEPT_MECA": 0.2,
+            "MECA_ANSYS": 0.2,
+            "AERO_THERMIQUE": 0.2
+        },
+        "REMPLACEMENT": {
+            "ELECMAG": 1,
+            "BOB": 1,
+            "CONCEPT_MECA": 1.2,
+            "MECA_ANSYS": 1.2,
+            "AERO_THERMIQUE": 1.2
+        }
+    },
+
     "calculs": [
         {
         "index": 1,
         "label": "Calcul magnétique et thermique machine",
-        "category": "Electromécanique",
+        "category": "ELECMAG",
         "hours": {
             "ASYNCH": 8,
             "SYNCH": 8
@@ -16,7 +48,7 @@
         {
         "index": 2,
         "label": "Calcul Bout d'arbre,  Clavette,  Manchon (torsion)",
-        "category": "Conception mécanique",
+        "category": "CONCEPT_MECA",
         "hours": {
             "ASYNCH": 8,
             "SYNCH": 8
@@ -29,7 +61,7 @@
         {
         "index": 3,
         "label": "Calcul diamètres équivalents en flexion",
-        "category": "Conception mécanique",
+        "category": "CONCEPT_MECA",
         "hours": {
             "ASYNCH": 4,
             "SYNCH": 4
@@ -42,7 +74,7 @@
         {
         "index": 4,
         "label": "Calcul diamètres équivalents en torsion",
-        "category": "Conception mécanique",
+        "category": "CONCEPT_MECA",
         "hours": {
             "ASYNCH": 4,
             "SYNCH": 4
@@ -55,7 +87,7 @@
         {
         "index": 5,
         "label": "Analyse latérale simplifiée VCFELX",
-        "category": "Conception mécanique",
+        "category": "CONCEPT_MECA",
         "hours": {
             "ASYNCH": 8,
             "SYNCH": 8
@@ -68,7 +100,7 @@
         {
         "index": 6,
         "label": "Analyse latérale Rotorinsa",
-        "category": "Conception mécanique",
+        "category": "CONCEPT_MECA",
         "hours": {
             "ASYNCH": 16,
             "SYNCH": 16
@@ -81,7 +113,7 @@
         {
         "index": 7,
         "label": "Calcul MODELE simplifié de torsion",
-        "category": "Conception mécanique",
+        "category": "CONCEPT_MECA",
         "hours": {
             "ASYNCH": 8,
             "SYNCH": 8
@@ -94,7 +126,7 @@
         {
         "index": 8,
         "label": "Calcul couples transitoires (equations couples elec)",
-        "category": "Electromécanique",
+        "category": "ELECMAG",
         "hours": {
             "ASYNCH": 2,
             "SYNCH": 2
@@ -107,7 +139,7 @@
         {
         "index": 9,
         "label": "Calcul Couples transitoires (couple8 + VCTOR si requis par client ou analyse résultat client)",
-        "category": "Conception mécanique",
+        "category": "CONCEPT_MECA",
         "hours": {
             "ASYNCH": 16,
             "SYNCH": 16
@@ -120,7 +152,7 @@
         {
         "index": 10,
         "label": "Calcul Serrage Tôlerie Rotor",
-        "category": "Conception mécanique",
+        "category": "CONCEPT_MECA",
         "hours": {
             "ASYNCH": 4,
             "SYNCH": 4
@@ -133,7 +165,7 @@
         {
         "index": 11,
         "label": "Calcul Frettage",
-        "category": "Mécanique ANSYS",
+        "category": "MECA_ANSYS",
         "hours": {
             "ASYNCH": 15,
             "SYNCH": 15
@@ -146,7 +178,7 @@
         {
         "index": 12,
         "label": "Calcul Tenue méca barres rotor AS (cage)/ bobinage rotor SYNCH (ansys)/ frettage tete bobine jisalt",
-        "category": "Mécanique ANSYS",
+        "category": "MECA_ANSYS",
         "hours": {
             "ASYNCH": 4,
             "SYNCH": 16
@@ -159,7 +191,7 @@
         {
         "index": 13,
         "label": "Calcul ventilateurs internes (méca, fréq)",
-        "category": "Mécanique ANSYS",
+        "category": "MECA_ANSYS",
         "hours": {
             "ASYNCH": 10,
             "SYNCH": 10
@@ -172,7 +204,7 @@
         {
         "index": 14,
         "label": "Calcul ventilateurs externes (méca, fréq)",
-        "category": "Mécanique ANSYS",
+        "category": "MECA_ANSYS",
         "hours": {
             "ASYNCH": 10,
             "SYNCH": 10
@@ -185,7 +217,7 @@
         {
         "index": 15,
         "label": "Calcul serrage joue",
-        "category": "Conception mécanique",
+        "category": "CONCEPT_MECA",
         "hours": {
             "ASYNCH": 2,
             "SYNCH": 2
@@ -198,7 +230,7 @@
         {
         "index": 16,
         "label": "Calcul Tiges de serrage/barreaux",
-        "category": "Conception mécanique",
+        "category": "CONCEPT_MECA",
         "hours": {
             "ASYNCH": 4,
             "SYNCH": 4
@@ -211,7 +243,7 @@
         {
         "index": 17,
         "label": "Calcul Fixation lanterne",
-        "category": "Mécanique ANSYS",
+        "category": "MECA_ANSYS",
         "hours": {
             "ASYNCH": 4,
             "SYNCH": 4
@@ -224,7 +256,7 @@
         {
         "index": 18,
         "label": "Contraintes intercalaires externes (doigt de serrage)",
-        "category": "Conception mécanique",
+        "category": "CONCEPT_MECA",
         "hours": {
             "ASYNCH": 4,
             "SYNCH": 4
@@ -237,7 +269,7 @@
         {
         "index": 19,
         "label": "Définition bobinage Coupe d'encoche (plbob)",
-        "category": "Bobinage",
+        "category": "BOB",
         "hours": {
             "ASYNCH": 4,
             "SYNCH": 4
@@ -250,7 +282,7 @@
         {
         "index": 20,
         "label": "Calculs carcasse (méca +freq propres+raideur Ansys)",
-        "category": "Mécanique ANSYS",
+        "category": "MECA_ANSYS",
         "hours": {
             "ASYNCH": 24,
             "SYNCH": 24
@@ -263,7 +295,7 @@
         {
         "index": 21,
         "label": "Calcul au séisme",
-        "category": "Mécanique ANSYS",
+        "category": "MECA_ANSYS",
         "hours": {
             "ASYNCH": 100,
             "SYNCH": 100
@@ -276,7 +308,7 @@
         {
         "index": 22,
         "label": "Calcul Pivoterie - calcul roulements/paliers lisses",
-        "category": "Conception mécanique",
+        "category": "CONCEPT_MECA",
         "hours": {
             "ASYNCH": 10,
             "SYNCH": 20
@@ -289,7 +321,7 @@
         {
         "index": 23,
         "label": "Calcul Aéraulique - Calcul aéraulique machine",
-        "category": "Aéraulique et Thermique",
+        "category": "AERO_THERMIQUE",
         "hours": {
             "ASYNCH": 15,
             "SYNCH": 15
@@ -302,7 +334,7 @@
         {
         "index": 24,
         "label": "Calcul Aéraulique - Aéro-réfrigérant",
-        "category": "Aéraulique et Thermique",
+        "category": "AERO_THERMIQUE",
         "hours": {
             "ASYNCH": 4,
             "SYNCH": 4
@@ -315,7 +347,7 @@
         {
         "index": 25,
         "label": "Calcul Autres - Lignage",
-        "category": "Conception mécanique",
+        "category": "CONCEPT_MECA",
         "hours": {
             "ASYNCH": 4,
             "SYNCH": 4
@@ -328,7 +360,7 @@
         {
         "index": 26,
         "label": "Calcul Autres - Réactions ancrage",
-        "category": "Conception mécanique",
+        "category": "CONCEPT_MECA",
         "hours": {
             "ASYNCH": 4,
             "SYNCH": 4
@@ -341,7 +373,7 @@
         {
         "index": 27,
         "label": "Calcul Autres - Dimensionnement ancrages et vis de fixation",
-        "category": "Conception mécanique",
+        "category": "CONCEPT_MECA",
         "hours": {
             "ASYNCH": 4,
             "SYNCH": 4
@@ -354,7 +386,7 @@
         {
         "index": 28,
         "label": "Calcul Autres - Tuyauteries (vitesse, pression)",
-        "category": "Conception mécanique",
+        "category": "CONCEPT_MECA",
         "hours": {
             "ASYNCH": 8,
             "SYNCH": 8
@@ -367,7 +399,7 @@
         {
         "index": 29,
         "label": "Calcul Autres - Liaisons boulonnées diverses",
-        "category": "Conception mécanique",
+        "category": "CONCEPT_MECA",
         "hours": {
             "ASYNCH": 8,
             "SYNCH": 8
@@ -380,7 +412,7 @@
         {
         "index": 30,
         "label": "Calcul magnetique (JMAG) pour THD, scientifique spécial…",
-        "category": "Electromécanique",
+        "category": "ELECMAG",
         "hours": {
             "ASYNCH": 24,
             "SYNCH": 24
@@ -393,7 +425,7 @@
         {
         "index": 31,
         "label": "Calcul diode (roue RT)",
-        "category": "Electromécanique",
+        "category": "ELECMAG",
         "hours": {
             "ASYNCH": 0,
             "SYNCH": 4
@@ -406,7 +438,7 @@
         {
         "index": 32,
         "label": "Calcul AE",
-        "category": "Electromécanique",
+        "category": "ELECMAG",
         "hours": {
             "ASYNCH": 0,
             "SYNCH": 4
@@ -419,7 +451,7 @@
         {
         "index": 33,
         "label": "Calcul HNB",
-        "category": "Electromécanique",
+        "category": "ELECMAG",
         "hours": {
             "ASYNCH": 0,
             "SYNCH": 12
@@ -432,7 +464,7 @@
         {
         "index": 34,
         "label": "Calcul/définition module gate/pulse sin/resist balast/resistance démarrage",
-        "category": "Electromécanique",
+        "category": "ELECMAG",
         "hours": {
             "ASYNCH": 0,
             "SYNCH": 8
@@ -445,7 +477,7 @@
         {
         "index": 35,
         "label": "Calcul PMG",
-        "category": "Electromécanique",
+        "category": "ELECMAG",
         "hours": {
             "ASYNCH": 0,
             "SYNCH": 8
@@ -458,7 +490,7 @@
         {
         "index": 36,
         "label": "Calcul tolerie",
-        "category": "Electromécanique",
+        "category": "ELECMAG",
         "hours": {
             "ASYNCH": 4,
             "SYNCH": 4
@@ -471,7 +503,7 @@
         {
         "index": 37,
         "label": "Définition schéma bobinage",
-        "category": "Bobinage",
+        "category": "BOB",
         "hours": {
             "ASYNCH": 4,
             "SYNCH": 4

@@ -13,22 +13,21 @@ class OptionsTabController(BaseTaskTabController):
     def _build_tables(self) -> List[TaskTableWidget]:
         # Grouper les options par catégorie
         grouped: Dict[str, List[Option]] = {}
+        
         for opt in self.model.project.options:
-            grouped.setdefault(opt.category, []).append(opt)
+            if opt.category not in grouped:
+                grouped[opt.category] = []
+            grouped[opt.category].append(opt)
 
         table = TaskTableWidget(label="Options", task_type="Option", is_optional=True)
+        table.context = self.model.project.context()
         self._connect_table(table)
 
-        for category, options in grouped.items():
-            table.add_category(category)
+        for cat_id, options in grouped.items():
+            cat_label = self.model.project.app_data.category_list.get(cat_id, cat_id)
+            table.add_category(cat_label)
             for opt in options:
-                table.add_task(
-                    category,
-                    ref=opt.index,
-                    label=opt.label,
-                    default_hours=opt.hours,
-                    manual_hours=opt.manual_hours,
-                )
+                table.add_task(cat_label, opt)
 
         table.show_table()
         table.adjust_height_to_content()

@@ -34,19 +34,13 @@ class CalculsTabController(BaseTaskTabController):
                       grouped: Dict[str, List[Calcul]]) -> TaskTableWidget:
         """Crée et remplit une table de calculs groupés par catégorie."""
         table = TaskTableWidget(label=label, task_type=task_type, is_optional=is_optional)
+        table.context = self.model.project.context()
         self._connect_table(table)
-        context = self.model.project.context()
 
         for category, calculs in grouped.items():
             table.add_category(category)
             for calc in calculs:
-                table.add_task(
-                    category,
-                    ref=calc.index,
-                    label=calc.label,
-                    default_hours=calc.default_hours(context),
-                    manual_hours=calc.manual_hours,
-                )
+                table.add_task(category, calc)
 
         table.show_table()
         table.adjust_height_to_content()

@@ -1,9 +1,11 @@
 {
     "people": [
       "Walid BOUGHANMI",
-      "Antoine DONFUT"
+      "Thérèse VANDEWYNCKEL",
+      "Antoine DONFUT",
+      "Nicolas SCATOLI",
+      "Medhi BELHAJ"
     ],
-
 
     "product_types": {
         "SYNCH": "Synchrone",
@@ -12,22 +14,22 @@
 
     "products": {
         "SYNCH": {
-            "ALT_2P": "alternateur 2p",
-            "ALT_4P_L": "alternateur 4p lisses",
-            "ALT_4P_S": "alternateur 4 et 4p+ saillants",
-            "MOTEUR_V_FIXE": "moteur synchrone DOL vitesse fixe",
-            "MOTEUR_V_VAR": "moteur synchrone vit variable"
+            "ALT_2P": "Alternateur 2p",
+            "ALT_4P_L": "Alternateur 4p lisses",
+            "ALT_4P_S": "Alternateur polarité >= 4 saillants",
+            "MOTEUR_V_FIXE": "Moteur synchrone DOL vitesse fixe",
+            "MOTEUR_V_VAR": "Moteur synchrone vit variable"
         },
         "ASYNCH": {
-            "ASYNCH_CAGE": "asynchrone à cage",
-            "ASYNCH_BAGUES": "asynchrone à bagues"
+            "ASYNCH_CAGE": "Asynchrone à cage",
+            "ASYNCH_BAGUES": "Asynchrone à bagues"
         }
     },
 
     "types_affaire": {
-        "NEUF": "Neuf",
-        "IDENTIQUE_JE": "Identique machine JE",
-        "REMPLACEMENT": "Remplacement lieu et place"
+        "NEUF": "Machine neuve",
+        "IDENTIQUE_JE": "Identique à une machine Jeumont-Electric",
+        "REMPLACEMENT": "Remplacement en lieu et place"
     },
 
     "DAS": {

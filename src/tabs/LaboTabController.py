@@ -17,16 +17,11 @@ class LaboTabController(BaseTaskTabController):
         self._connect_table(table)
 
         labo_tasks = self.model.project.labo
+        table.context = self.model.project.context()
         if labo_tasks:
             table.add_category("Tâches de laboratoire")
             for task in labo_tasks:
-                table.add_task(
-                    "Tâches de laboratoire",
-                    ref=task.index,
-                    label=task.label,
-                    default_hours=task.hours,
-                    manual_hours=task.manual_hours,
-                )
+                table.add_task("Tâches de laboratoire", task)
             table.show_table()
             table.adjust_height_to_content()
 

@@ -20,7 +20,7 @@ class Controller:
     def _create_tabs(self):
         """Crée tous les onglets et leurs contrôleurs."""
         tab_configs = [
-            (TabGeneral(),  TabGeneralController,     "Général"),
+            (TabGeneral(),  TabGeneralController,      "Général"),
             (TabTasks(),    GeneralTaskTabController,  "Tâches"),
             (TabTasks(),    CalculsTabController,      "Calculs"),
             (TabTasks(),    OptionsTabController,      "Options"),

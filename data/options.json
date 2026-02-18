@@ -1,6 +1,33 @@
 {
+  "categories": {
+    "BAGUES": "Jeu de bagues Asynch",
+    "ATEX": "Certification ou ATEX",
+    "ENV": "Environnement",
+    "INSTRUM": "Instrumentation et accessoires",
+    "INSTRUM_ATEX": "Instrumentation et accessoires ATEX",
+    "ESSAIS": "Essais",
+    "NORME": "Exigences normatives",
+    "CONSTR_PARTIC": "Construction particulière",
+    "EXIG_TECH": "Exigences techniques"
+  },
+
+  "category_coeff": {
+    "IDENTIQUE_JE": {
+      "ATEX": 1.3,
+      "INSTRUM": 1.3,
+      "INSTRUM_ATEX": 1.3,
+      "NORME": 1.3
+    },
+    "REMPLACEMENT": {
+      "ATEX": 1.3,
+      "INSTRUM": 1.3,
+      "INSTRUM_ATEX": 1.3,
+      "NORME": 1.3
+    }
+  },
+  
   "options": {
-    "jeu de bagues Asynch": [
+    "BAGUES": [
       {
         "index": 1,
         "label": "Fourniture de la résistance de démarrage",
@@ -47,7 +74,7 @@
         "hours": 10
       }
     ],
-    "Certification ou ATEX": [
+    "ATEX": [
       {
         "index": 10,
         "label": "ATEX Expb (Z1)",
@@ -94,7 +121,7 @@
         "hours": 0
       }
     ],
-    "environnement": [
+    "ENV": [
       {
         "index": 19,
         "label": "TEMP amb < -20°C",
@@ -151,7 +178,7 @@
         "hours": 20
       }
     ],
-    "exigences normatives": [
+    "NORME": [
       {
         "index": 30,
         "label": "fourniture de la centrale de balayage/pressurisation",
@@ -248,7 +275,7 @@
         "hours": 0
       }
     ],
-    "construction particulière": [
+    "CONSTR_PARTIC": [
       {
         "index": 49,
         "label": "Indice de protection de la machine : autre",
@@ -410,7 +437,7 @@
         "hours": 0
       }
     ],
-    "exigences techniques": [
+    "EXIG_TECH": [
       {
         "index": 81,
         "label": "Classe d'équilibrage (G selon ISO1940 ed 2003) <>2.5",
@@ -452,7 +479,7 @@
         "hours": 50
       }
     ],
-    "instrumentation et accessoires": [
+    "INSTRUM": [
       {
         "index": 89,
         "label": "TAG (étiquette) client imposé",
@@ -639,7 +666,7 @@
         "hours": 24
       }
     ],
-    "instrumentation et accessoires atex": [
+    "INSTRUM_ATEX": [
       {
         "index": 126,
         "label": "Certification boite phase atex Exe/Exn",
@@ -681,7 +708,7 @@
         "hours": 0
       }
     ],
-    "essais": [
+    "ESSAIS": [
       {
         "index": 134,
         "label": "Mesure de bruit à vide",

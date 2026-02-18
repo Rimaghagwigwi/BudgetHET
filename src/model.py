@@ -22,6 +22,10 @@ class Project:
         self.created_by = ""
         self.validated_by = ""
         self.description = ""
+
+        self.lpdc_coeff: float = 1.0
+        self.calcul_coeff_type_affaire: Dict[str, float] = {} # Dict[activité: coeff] appliqué aux calculs selon le type d'affaire
+        self.option_coeff_category: Dict[str, float] = {} # Dict[category: coeff] appliqué aux options selon le type d'affaire
         
         self.divers_percent: float = 0.05
         self.manual_rex_coeff: float = 1.0
@@ -43,12 +47,29 @@ class Project:
             "machine_type": self.machine_type,
             "affaire": self.affaire,
             "secteur": self.secteur,
+
+            "LPDC_coeff": self.lpdc_coeff,
+            "calcul_coeff_type_affaire": self.calcul_coeff_type_affaire,
+            "option_coeff_category": self.option_coeff_category
         }
 
     def apply_defaults(self):
         """Applique les valeurs par défaut après avoir choisi le type de machine, le secteur et le type d'affaire."""
         
         ctx = self.context()
+
+        # Récupérer les coefficients dépendant du contexte depuis app_data
+        self.lpdc_coeff = self.app_data.lpdc_coefficients[self.secteur]
+        self.calcul_coeff_type_affaire = self.app_data.calcul_coeff_type_affaire[self.affaire]
+        self.option_coeff_category = self.app_data.option_category_coeff.get(self.affaire, {})
+        
+        self.divers_percent = 0.05
+        self.manual_rex_coeff = 1.0
+
+        self.first_machine_total = None
+        self.n_machines_total = None
+        self.total_with_divers = None
+        self.total_with_rex = None
         
         self.tasks = self.app_data.tasks.copy()
         self.lpdc_docs = [doc for doc in self.app_data.lpdc_docs if doc.is_active(ctx) or doc.option_possible]

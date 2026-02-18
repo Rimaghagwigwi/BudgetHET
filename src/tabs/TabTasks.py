@@ -1,9 +1,10 @@
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Tuple
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QBrush, QFont
 from PyQt6.QtWidgets import (QTableWidget, QTableWidgetItem, QHeaderView, QLabel, 
                              QVBoxLayout, QAbstractItemView, QCheckBox, QLineEdit, 
                              QHBoxLayout, QWidget, QScrollArea, QFrame)
+from src.utils.Task import AbstractTask
 
 
 class TaskTableWidget(QTableWidget):
@@ -20,7 +21,8 @@ class TaskTableWidget(QTableWidget):
         self.is_optional = is_optional
         self.col_offset = 1 if is_optional else 0  # Décalage pour la colonne checkbox
 
-        self.categories: Dict[str, Dict] = {}  # category_name -> {task_list, total_hours}
+        self.context: Dict[str, Any] = {}
+        self.categories: Dict[str, Dict] = {}  # category_name -> {task_list: List[AbstractTask]}
 
         self._setup_table()
         self.adjust_height_to_content()
@@ -51,21 +53,12 @@ class TaskTableWidget(QTableWidget):
     def add_category(self, category_name: str):
         self.categories[category_name] = {
             "task_list": [],
-            "total_hours": 0.0
         }
 
-    def add_task(self, category_name: str, ref: int = None, label: str = "", 
-                 default_hours: float = 0.0, manual_hours: float = None):
-        """Ajoute une tâche à une catégorie."""
+    def add_task(self, category_name: str, task: AbstractTask):
+        """Ajoute une tâche (objet AbstractTask) à une catégorie."""
         if category_name not in self.categories:
             self.add_category(category_name)
-        
-        task = {
-            "ref": ref,
-            "label": label,
-            "default_hours": default_hours,
-            "manual_hours": manual_hours
-        }
         self.categories[category_name]["task_list"].append(task)
 
     def _add_category_header_row(self, cat_name: str, total_hours: float):
@@ -99,7 +92,7 @@ class TaskTableWidget(QTableWidget):
         total_hours_item.setFont(font)
         self.setItem(row, self.columnCount() - 1, total_hours_item)
 
-    def _add_task_row(self, task: Dict, row: int) -> float:
+    def _add_task_row(self, task: AbstractTask, row: int) -> float:
         """Ajoute une ligne de tâche et retourne les heures effectives."""
         self.insertRow(row)
 
@@ -113,21 +106,24 @@ class TaskTableWidget(QTableWidget):
             chk_layout.setContentsMargins(0, 0, 0, 0)
             chk_layout.addWidget(checkbox)
             self.setCellWidget(row, 0, chk_widget)
+            if hasattr(task, 'is_selected'):
+                checkbox.setChecked(task.is_selected)
             checkbox.checkStateChanged.connect(
-                lambda _state, ref=task["ref"], cb=checkbox: self.checkbox_toggled.emit(cb.isChecked(), ref)
+                lambda _state, ref=task.index, cb=checkbox: self.checkbox_toggled.emit(cb.isChecked(), ref)
             )
 
         # Ref
-        ref_item = QTableWidgetItem(str(task["ref"]))
+        ref_item = QTableWidgetItem(str(task.index))
         ref_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setItem(row, self.col_offset + 0, ref_item)
 
         # Label
-        label_item = QTableWidgetItem(task["label"])
+        label_item = QTableWidgetItem(task.label)
         self.setItem(row, self.col_offset + 1, label_item)
 
         # Heures par défaut (lecture seule)
-        hours_item = QTableWidgetItem(f"{task['default_hours']:.2f}")
+        default_h = task.default_hours(self.context)
+        hours_item = QTableWidgetItem(f"{default_h:.2f}")
         hours_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
         hours_item.setFlags(Qt.ItemFlag.ItemIsEnabled)
         self.setItem(row, self.col_offset + 2, hours_item)
@@ -135,16 +131,17 @@ class TaskTableWidget(QTableWidget):
         # Correction manuelle
         line_edit = QLineEdit()
         line_edit.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        if task["manual_hours"] is not None:
-            line_edit.setText(f"{task['manual_hours']:.2f}")
+        if task.manual_hours is not None:
+            line_edit.setText(f"{task.manual_hours:.2f}")
         line_edit.editingFinished.connect(
-            lambda le=line_edit, ref=task["ref"]: self.manual_value_modified.emit(le.text(), ref)
+            lambda le=line_edit, ref=task.index: self.manual_value_modified.emit(le.text(), ref)
         )
         self.setCellWidget(row, self.col_offset + 3, line_edit)
 
         # Calculer les heures effectives pour le total
-        if not self.is_optional or (checkbox and checkbox.isChecked()):
-            return task["manual_hours"] if task["manual_hours"] is not None else task["default_hours"]
+        is_checked = not self.is_optional or (checkbox and checkbox.isChecked())
+        if is_checked:
+            return task.manual_hours if task.manual_hours is not None else default_h
         return 0.0
 
     def show_table(self):
@@ -180,8 +177,8 @@ class TaskTableWidget(QTableWidget):
         self.show_table()
         self.adjust_height_to_content()
 
-    def update_totals(self):
-        """Met à jour uniquement les totaux des catégories sans recréer les widgets."""
+    def update_table(self):
+        """Met à jour les heures par défaut et les totaux des catégories sans recréer les widgets."""
         current_row = 0
         for cat_name, cat_data in self.categories.items():
             # current_row est la ligne d'en-tête de la catégorie
@@ -191,17 +188,23 @@ class TaskTableWidget(QTableWidget):
             for task_idx, task in enumerate(cat_data["task_list"]):
                 task_row = current_row + 1 + task_idx
                 
+                # Mettre à jour les heures par défaut affichées (recalculées depuis l'objet)
+                default_h = task.default_hours(self.context)
+                hours_item = self.item(task_row, self.col_offset + 2)
+                if hours_item:
+                    hours_item.setText(f"{default_h:.2f}")
+                
                 # Récupérer la valeur manuelle depuis le LineEdit
                 line_edit = self.cellWidget(task_row, self.col_offset + 3)
                 if isinstance(line_edit, QLineEdit):
                     text = line_edit.text().strip()
                     if text:
                         try:
-                            task["manual_hours"] = float(text)
+                            task.manual_hours = float(text)
                         except ValueError:
-                            task["manual_hours"] = None
+                            task.manual_hours = None
                     else:
-                        task["manual_hours"] = None
+                        task.manual_hours = None
                 
                 # Vérifier si la tâche est cochée (pour les options)
                 is_checked = True
@@ -213,7 +216,7 @@ class TaskTableWidget(QTableWidget):
                 
                 # Calculer les heures effectives
                 if is_checked:
-                    hours = task["manual_hours"] if task["manual_hours"] is not None else task["default_hours"]
+                    hours = task.manual_hours if task.manual_hours is not None else default_h
                     total_hours += hours
             
             # Mettre à jour la cellule du total
@@ -234,7 +237,7 @@ class TabTasks(QWidget):
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
 
-        self.scroll = QScrollArea()
+        self.scroll: QScrollArea = QScrollArea()
         self.scroll.setWidgetResizable(True)
         self.scroll.setFrameShape(QFrame.Shape.NoFrame)
 
@@ -252,6 +255,27 @@ class TabTasks(QWidget):
             item = self.layout_container.takeAt(0)
             if item.widget():
                 item.widget().deleteLater()
+
+    def add_global_coefficient(self, label: str, default: float):
+        """Ajoute un champ de réglage de coefficient en haut de l'onglet."""
+        print(f"Adding global coefficient: {label} with default value {default}")
+        coefficient_layout = QHBoxLayout()
+        coefficient_layout.setContentsMargins(0, 0, 0, 0)
+        coefficient_layout.setSpacing(10)
+
+        label_widget = QLabel(label)
+        label_widget.setStyleSheet("font-weight: bold; font-size: 14px; color: #2c3e50;")
+        coefficient_layout.addWidget(label_widget)
+
+        line_edit = QLineEdit(f"{default:.1f}")
+        line_edit.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        coefficient_layout.addWidget(line_edit)
+
+        coefficient_container = QWidget()
+        coefficient_container.setLayout(coefficient_layout)
+        self.layout_container.insertWidget(0, coefficient_container)
+        return line_edit  # Retourne le QLineEdit pour permettre la connexion du signal
+
 
     def display_tables(self, tables: List[TaskTableWidget]):
         """Affiche une liste de tables dans le conteneur."""
