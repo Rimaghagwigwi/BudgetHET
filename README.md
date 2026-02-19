@@ -1,74 +1,66 @@
-# Budget_HET
+# Budget_HET � Chiffrage HET
 
-Application de chiffrage et de calcul d'heures pour projets industriels, développée en Python avec PyQt6.
+Application desktop de chiffrage d'heures d'�tudes pour projets industriels (Jeumont Electric), d�velopp�e en Python avec PyQt6. Remplace le fichier Excel BUDGET_HET.
 
+> **Note** : Les r�sultats peuvent l�g�rement diff�rer de l'Excel en raison du passage aux DAS. Les secteurs Oil&Gas et Industrie sont regroup�s dans les Machines sp�ciales.
 
-## Commentaires généraux
+## Fonctionnalit�s
 
-*   **Objectifs** : 
-    *   Remplacer le fichier Excel BUDGET_HET pour le chiffrage des heures d'études d'un projet.
-    *   Passer à une architechture plus orientée vers l'utilisateur et éviter les mauvaises manipulations.
-    *   S'adapter aux évolutions de Jeumont Electric (passage aux DAS)
-    *   Garder un maximum de modularité.
+- **G�n�ral** : Saisie des informations projet (Client, CRM, DAS, type de produit, quantit�, r�vision�).
+- **T�ches** : Heures d'ing�nierie de base par type de machine, ajust�es par coefficients secteur/affaire.
+- **Calculs** : Heures de calcul avec coefficients sp�cifiques au type d'affaire.
+- **LPDC** : Documents contractuels obligatoires et optionnels selon le DAS, avec ajustement manuel des heures.
+- **Options** : Catalogue d'options group�es (M�canique, �lectrique, Essais�), activables et �ditables.
+- **Labo** : Heures d'essais laboratoire.
+- **R�sum�** : Total des heures en temps r�el, avec divers (5 % par d�faut) et coefficient REX manuel.
 
-*   **Notes** : Les résultats peuvent légèrement différés par rapport à l'excel, à cause du pasage aux DAS. Les secteurs Oil&Gas et industrie sont réunis dans les Machines spéciales.
+## Architecture
 
-## Fonctionnalités
+Architecture **MVC** :
 
-*   **Gestion de Projet** : Saisie des informations générales (Client, CRM, DAS, Type de produit, etc.).
-*   **Calcul Automatique** : Chargement automatique des tâches et heures de base selon le type de produit sélectionné.
-*   **Documents Contractuels (LPDC)** :
-    *   Gestion des documents obligatoires selon le DAS.
-    *   Sélection de documents optionnels.
-    *   Ajustement manuel des heures par document.
-*   **Options** :
-    *   Catalogue d'options groupées par catégories (Mécanique, Électrique, Essais, etc.).
-    *   Activation/Désactivation et modification des heures associées.
-*   **Synthèse** :
-    *   Calcul en temps réel du total des heures.
-    *   Répartition des heures par métier/rôle (Ingénierie, Documentation, Options, etc.).
-
-## Structure du Projet
-
-Le projet suit une architecture **MVC (Modèle-Vue-Contrôleur)** :
-
-*   `main.py` : Point d'entrée de l'application.
-*   `src/` : Code source.
-    *   `model.py` : Logique métier et données (Calculs, Dataclasses Task/Option/Document).
-    *   `view.py` : Interface graphique principale (MainWindow).
-    *   `controller.py` : Chef d'orchestre reliant le Modèle et la Vue.
-    *   `tabs/` : Composants d'interface pour chaque onglet (Général, LPDC, Options, Synthèse).
-*   `data/` : Fichiers de configuration JSON.
-    *   `base_data.json` : Listes déroulantes (Clients, DAS, Types d'affaires...).
-    *   `tasks_matrix.json` : Matrice complète des tâches, heures de base et coefficients (Affaire/DAS).
-    *   `LPDC.json` : Base de données des documents contractuels et règles d'application.
-    *   `options.json` : Catalogue des options disponibles.
+```
+main.py                      # Point d'entr�e
+config.xml                   # Configuration (chemins, th�me UI, dimensions fen�tre)
+src/
+  model.py                   # Classe Model (Project + calculs agr�g�s)
+  view.py                    # MainWindow (PyQt6)
+  controller.py              # Contr�leur principal, instancie les onglets
+  tabs/                      # Un contr�leur par onglet (G�n�ral, T�ches, Calculs, Options, LPDC, Labo, R�sum�)
+  utils/
+    TabTasks.py              # Widget et view commun pour les onglets tâches
+    BaseTaskTabController.py # Classe abstraite de controler pour les onglets tâches
+    ApplicationData.py       # Chargement et parsing de tous les fichiers de donn�es
+    Task.py                  # Dataclasses : GeneralTask, LPDCDocument, Option, Calcul, Labo
+data/
+  base_data.json             # Listes (Clients, DAS, types d affaires, coefficients�)
+  general_task_data_new.json # T�ches de base avec heures et coefficients par machine/affaire
+  LPDC.json                  # Documents contractuels et r�gles d activation
+  options.json               # Catalogue des options
+  calculs.json               # T�ches de calcul
+  labo.json                  # T�ches laboratoire
+```
 
 ## Installation
 
-1.  Assurez-vous d'avoir **Python 3.10+** installé.
-2.  Installez les dépendances :
-    ```bash
-    pip install PyQt6
-    ```
-    *(Ou via requirements.txt si disponible)*
+**Pr�requis** : Python 3.10+
 
-## Utilisation
+```bash
+pip install PyQt6
+```
 
-Pour lancer l'application :
+## Lancement
 
 ```bash
 python main.py
 ```
 
-1.  Remplissez l'onglet **Général** et cliquez sur "Appliquer" pour charger les données par défaut.
-2.  Naviguez dans les onglets **LPDC** et **Options** pour affiner le chiffrage.
-3.  Consultez l'onglet **Tâches** pour voir le détail des heures d'ingénierie.
-4.  L'onglet **Synthèse** affiche le résultat final.
+1. Remplir l'onglet **G�n�ral** et valider pour charger les donn�es par d�faut.
+2. Ajuster les onglets **T�ches**, **Calculs**, **LPDC**, **Options** et **Labo**.
+3. Consulter l'onglet **R�sum�** pour le total final.
 
 ## Configuration
 
-Les fichiers dans le dossier `data/` peuvent être modifiés pour ajuster les règles métier sans toucher au code :
+Tout est param�trable sans toucher au code :
 
-*   Pour ajouter une option : éditez `data/options.json`.
-*   Pour changer les heures standard ou les coefficients : éditez `data/tasks_matrix.json`.
+- `config.xml` : chemins des fichiers, th�me Qt (`Fusion`), dimensions de la fen�tre.
+- `data/*.json` : r�gles m�tier, heures standard, coefficients, catalogue d'options et de documents.
