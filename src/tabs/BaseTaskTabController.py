@@ -49,13 +49,6 @@ class BaseTaskTabController:
             if task.index == ref:
                 return task
         return None
-    
-    def _on_global_coefficient_change(self, new_coeff: float, identifier: str):
-        """Gère la modification d'un coefficient global (ex: LPDC)."""
-        if identifier == "lpdc":
-            self.model.project.lpdc_coeff = new_coeff
-            self._update_all_tables()
-            self.model.data_updated.emit()
 
     def _on_manual_change(self, text: str, ref: int):
         """Gère la modification manuelle d'une valeur d'heures."""

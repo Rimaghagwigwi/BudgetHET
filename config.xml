@@ -20,5 +20,12 @@
             <width>1080</width>
             <height>720</height>
         </window>
+
+        <colors>
+            <color key="background">#ecf0f1</color>
+            <color key="text">#2c3e50</color>
+            <color key="header">#34495e</color>
+            <color key="highlight">#2980b9</color>
+        </colors>
     </ui>
 </config>

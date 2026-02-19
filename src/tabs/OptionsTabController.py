@@ -24,7 +24,7 @@ class OptionsTabController(BaseTaskTabController):
         self._connect_table(table)
 
         for cat_id, options in grouped.items():
-            cat_label = self.model.project.app_data.category_list.get(cat_id, cat_id)
+            cat_label = self.model.project.app_data.option_category_list.get(cat_id, cat_id)
             table.add_category(cat_label)
             for opt in options:
                 table.add_task(cat_label, opt)

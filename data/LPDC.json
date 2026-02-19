@@ -7,6 +7,11 @@
     "MARINE_CIVILE": 1.0,
     "MIL": 0
   },
+
+  "coeff_affaire": {
+    "IDENTIQUE_JE": 0.2,
+    "REMPLACEMENT": 1.2
+  },
   
   "documents": [
     {

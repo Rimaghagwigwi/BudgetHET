@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QFormLayout, QLineEdit, QDoubleSpinBox, QSpinBox,
     QComboBox, QPushButton, QDateEdit, QTextEdit, QLabel
 )
-from PyQt6.QtCore import pyqtSignal, QDate
+from PyQt6.QtCore import pyqtSignal, QDate, QTimer
 from src.model import Model
 from src.widgets import NoWheelSpinBox
 from src.utils.ApplicationData import ApplicationData # Import custom widget
@@ -13,6 +13,7 @@ class TabGeneral(QWidget):
 
     def __init__(self):
         super().__init__()
+        self.setObjectName("tabGeneral")
         layout = QVBoxLayout(self)
         
         form = QFormLayout()
@@ -85,29 +86,6 @@ class TabGeneral(QWidget):
         layout.addLayout(form)
         layout.addStretch()
         layout.addWidget(self.btn_apply)
-
-        self.setStyleSheet("""
-            QWidget {
-                font-family: Arial, sans-serif;
-                font-size: 14px;
-            }
-                           
-            QLabel {
-                font-weight: bold;
-            }
-            QLineEdit, QComboBox, QSpinBox, QDateEdit, QTextEdit {
-                padding: 5px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-            }
-            QPushButton {
-                background-color: #007BFF;
-                color: white;
-                padding: 8px 16px;
-                border: none;
-                border-radius: 4px;
-            }
-        """)
     
     def set_combo_items(self, combo: QComboBox, items):
         """
@@ -192,6 +170,8 @@ class TabGeneralController:
 
         # Notifier les autres onglets que les données ont changé
         self.model.project_changed.emit()
+        self.view.btn_apply.setText("Paramètres appliqués !")
+        QTimer.singleShot(2000, lambda: self.view.btn_apply.setText("Appliquer Paramètres par Défaut"))
 
     def update_project_from_ui(self):
         prj = self.model.project

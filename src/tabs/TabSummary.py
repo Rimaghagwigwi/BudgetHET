@@ -19,17 +19,6 @@ class CollapsibleSection(QTreeWidget):
         self.setAlternatingRowColors(True)
         self.setIndentation(15)
         self.setColumnWidth(0, 500)
-        # Style amélioré pour lisibilité
-        self.setStyleSheet("""
-            QTreeWidget {
-                font-size: 11pt;
-                background-color: white;
-            }
-            QTreeWidget::item {
-                padding: 2px;
-                min-height: 20px;
-            }
-        """)
 
     def _get_expanded_paths(self) -> set:
         """Sauvegarde les chemins des n\u0153uds d\u00e9pli\u00e9s."""
@@ -148,13 +137,11 @@ class TabSummary(QWidget):
         self.bottom_frame = self._create_totals_section()
         self.main_layout.addWidget(self.bottom_frame)
 
-    def _create_styled_label(self, text: str = "0.00 h", size: int = 11, bold: bool = True, color: str = "") -> QLabel:
+    def _create_styled_label(self, text: str = "0.00 h", object_name: str = "") -> QLabel:
         """Crée un label avec style aligné à droite."""
         label = QLabel(text)
-        label.setAlignment(Qt.AlignmentFlag.AlignRight)
-        label.setFont(QFont("Arial", size, QFont.Weight.Bold if bold else QFont.Weight.Normal))
-        if color:
-            label.setStyleSheet(f"color: {color};")
+        if object_name:
+            label.setObjectName(object_name)
         return label
     
     def _create_percentage_input(self, placeholder: str) -> Tuple[QHBoxLayout, QLineEdit]:
@@ -163,65 +150,76 @@ class TabSummary(QWidget):
         # Limiteur pour n'accepter que les nombres
         edit_percent.setValidator(float_validator)
         edit_percent.setPlaceholderText(placeholder)
-        edit_percent.setStyleSheet("color: #2c3e50; font-size: 11pt;")
         edit_percent.setAlignment(Qt.AlignmentFlag.AlignRight)
         container.addWidget(edit_percent)
         container.addWidget(QLabel("%"))
         return container, edit_percent
     
+    def _add_row_separator(self, layout: QGridLayout, row: int):
+        """Ajoute un séparateur horizontal fin entre deux lignes."""
+        sep = QFrame()
+        sep.setObjectName("rowSeparator")
+        sep.setFrameShape(QFrame.Shape.HLine)
+        layout.addWidget(sep, row, 0, 1, 2)
+
     def _create_totals_section(self) -> QFrame:
         """Crée la section des totaux en bas de l'onglet."""
         frame = QFrame()
-        frame.setStyleSheet("background-color: #f9f9f9; border-top: 2px solid #bdc3c7;")
+        frame.setObjectName("totalsFrame")
         layout = QGridLayout(frame)
-        layout.setContentsMargins(20, 20, 20, 20)
-        layout.setSpacing(10)
+        layout.setContentsMargins(10, 10, 10, 10)
+        layout.setSpacing(6)
 
         row = 0
         
         # Total 1ère machine
-        label_first_machine = self._create_styled_label(text = "Total 1ère machine:", size=12, color="#2c3e50")
-        self.val_first_machine = self._create_styled_label(size=12, color="#2c3e50")
-        layout.addWidget(label_first_machine, row, 0)
-        layout.addWidget(self.val_first_machine, row, 1)
+        label_first_machine = self._create_styled_label(text="Total 1ère machine:")
+        self.val_first_machine = self._create_styled_label(object_name="important")
+        layout.addWidget(label_first_machine, row, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(self.val_first_machine, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
         row += 1
+        self._add_row_separator(layout, row); row += 1
         
         # Total n machines
-        self.label_n_machines = self._create_styled_label(size=12, color="#2c3e50")
-        self.val_n_machines = self._create_styled_label(size=12, color="#2c3e50")
-        layout.addWidget(self.label_n_machines, row, 0)
-        layout.addWidget(self.val_n_machines, row, 1)
+        self.label_n_machines = self._create_styled_label()
+        self.val_n_machines = self._create_styled_label(object_name="important")
+        layout.addWidget(self.label_n_machines, row, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(self.val_n_machines, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
         row += 1
+        self._add_row_separator(layout, row); row += 1
         
         # Divers (%)
-        divers_label = self._create_styled_label(text="Divers:", size=12, color="#2c3e50")
+        divers_label = self._create_styled_label(text="Divers:")
         divers_container, self.edit_divers = self._create_percentage_input("0.0")
         self.edit_divers.editingFinished.connect(self._on_divers_text_changed)
-        layout.addWidget(divers_label, row, 0, Qt.AlignmentFlag.AlignTop)
-        layout.addLayout(divers_container, row, 1, Qt.AlignmentFlag.AlignTop)
+        layout.addWidget(divers_label, row, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
+        layout.addLayout(divers_container, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
         row += 1
+        self._add_row_separator(layout, row); row += 1
         
         # Total
-        total_label = self._create_styled_label(text="Total:", size=12, color="#2c3e50")
-        self.val_total = self._create_styled_label(size=12, color="#2c3e50")
-        layout.addWidget(total_label, row, 0)
-        layout.addWidget(self.val_total, row, 1)
+        total_label = self._create_styled_label(text="Total:")
+        self.val_total = self._create_styled_label(object_name="important")
+        layout.addWidget(total_label, row, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(self.val_total, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
         row += 1
+        self._add_row_separator(layout, row); row += 1
         
         # REX - Coefficient
-        rex_coeff_label = self._create_styled_label(text="Coefficient REX:", size=12, color="#2c3e50")
+        rex_coeff_label = self._create_styled_label(text="Coefficient REX:")
         rex_percent_container, self.edit_rex_percent = self._create_percentage_input("100")
         self.edit_rex_percent.editingFinished.connect(self._on_rex_percent_text_changed)
-        layout.addWidget(rex_coeff_label, row, 0, Qt.AlignmentFlag.AlignTop)
-        layout.addLayout(rex_percent_container, row, 1, Qt.AlignmentFlag.AlignTop)
+        layout.addWidget(rex_coeff_label, row, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
+        layout.addLayout(rex_percent_container, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
         row += 1
+        self._add_row_separator(layout, row); row += 1
         
         # Total avec REX
-        total_with_rex_label = self._create_styled_label(text="Total final:", size=14, color="#e74c3c")
-        self.total_with_rex_val = self._create_styled_label(size=14, color="#e74c3c")
-        layout.addWidget(total_with_rex_label, row, 0)
-        layout.addWidget(self.total_with_rex_val, row, 1)
-        
+        total_with_rex_label = self._create_styled_label(text="Total final:", object_name="veryImportant")
+        self.total_with_rex_val = self._create_styled_label(object_name="veryImportant")
+        layout.addWidget(total_with_rex_label, row, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(self.total_with_rex_val, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
+
         return frame
     
     def _on_divers_text_changed(self):

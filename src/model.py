@@ -23,7 +23,8 @@ class Project:
         self.validated_by = ""
         self.description = ""
 
-        self.lpdc_coeff: float = 1.0
+        self.lpdc_secteur_coeff: float = 1.0
+        self.lpdc_affaire_coeff: float = 1.0
         self.calcul_coeff_type_affaire: Dict[str, float] = {} # Dict[activité: coeff] appliqué aux calculs selon le type d'affaire
         self.option_coeff_category: Dict[str, float] = {} # Dict[category: coeff] appliqué aux options selon le type d'affaire
         
@@ -48,7 +49,8 @@ class Project:
             "affaire": self.affaire,
             "secteur": self.secteur,
 
-            "LPDC_coeff": self.lpdc_coeff,
+            "LPDC_secteur_coeff": self.lpdc_secteur_coeff,
+            "LPDC_affaire_coeff": self.lpdc_affaire_coeff,
             "calcul_coeff_type_affaire": self.calcul_coeff_type_affaire,
             "option_coeff_category": self.option_coeff_category
         }
@@ -59,8 +61,9 @@ class Project:
         ctx = self.context()
 
         # Récupérer les coefficients dépendant du contexte depuis app_data
-        self.lpdc_coeff = self.app_data.lpdc_coefficients[self.secteur]
-        self.calcul_coeff_type_affaire = self.app_data.calcul_coeff_type_affaire[self.affaire]
+        self.lpdc_secteur_coeff = self.app_data.lpdc_coeff_secteur.get(self.secteur, 1.0)
+        self.lpdc_affaire_coeff = self.app_data.lpdc_coeff_affaire.get(self.affaire, 1.0)
+        self.calcul_coeff_type_affaire = self.app_data.calcul_coeff_type_affaire.get(self.affaire, {})
         self.option_coeff_category = self.app_data.option_category_coeff.get(self.affaire, {})
         
         self.divers_percent = 0.05

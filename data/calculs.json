@@ -8,13 +8,6 @@
     },
 
     "coeff_type_affaire": {
-        "NEUF": {
-            "ELECMAG": 1,
-            "BOB": 1,
-            "CONCEPT_MECA": 1,
-            "MECA_ANSYS": 1,
-            "AERO_THERMIQUE": 1
-        },
         "IDENTIQUE_JE": {
             "ELECMAG": 0.5,
             "BOB": 0.5,
@@ -23,8 +16,6 @@
             "AERO_THERMIQUE": 0.2
         },
         "REMPLACEMENT": {
-            "ELECMAG": 1,
-            "BOB": 1,
             "CONCEPT_MECA": 1.2,
             "MECA_ANSYS": 1.2,
             "AERO_THERMIQUE": 1.2

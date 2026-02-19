@@ -13,7 +13,8 @@ class ApplicationData:
             with open(path, 'r', encoding='utf-8') as f:
                 self.raw_data[key] = json.load(f)
 
-        self.lpdc_coefficients: Dict[str, float] = {}
+        self.lpdc_coeff_secteur: Dict[str, float] = {} # Dict[secteur: coeff]
+        self.lpdc_coeff_affaire: Dict[str, float] = {} # Dict[affaire: coeff]
         self.calcul_secteur_coeff: Dict[str, Dict[str, float]] = {} # Dict[type_affaire: Dict[activité: coeff]]
         self.option_category_coeff: Dict[str, Dict[str, float]] = {} # Dict[type_affaire: Dict[category: coeff]]
         
@@ -92,7 +93,8 @@ class ApplicationData:
                     self.tasks[category][sub_category].append(general_task)
                     index += 1
         # 3. LPDC
-        self.lpdc_coefficients = self.raw_data["LPDC"]["coeff_secteur"]
+        self.lpdc_coeff_secteur = self.raw_data["LPDC"]["coeff_secteur"]
+        self.lpdc_coeff_affaire = self.raw_data["LPDC"]["coeff_affaire"]
 
         docs_source: List[dict] = self.raw_data["LPDC"].get("documents", [])
         
@@ -122,7 +124,7 @@ class ApplicationData:
             self.calculs.append(calculation)
         
         # 5. Options
-        self.category_list: Dict[str, str] = self.raw_data["options"]["categories"]
+        self.option_category_list: Dict[str, str] = self.raw_data["options"]["categories"]
         self.option_category_coeff: Dict[str, Dict[str, float]] = self.raw_data["options"]["category_coeff"]
         options_list: Dict[str, List[dict]] = self.raw_data["options"].get("options", {}) # Dict[category: List[Option]]
         for cat_id, opts_list in options_list.items():

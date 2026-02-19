@@ -52,5 +52,20 @@ class LPDCTabController(BaseTaskTabController):
         self.tables = self._build_tables()
         self.view.display_tables(self.tables)
 
-        line_edit = self.view.add_global_coefficient("Coefficient secteur d'activité", self.model.project.lpdc_coeff)
-        line_edit.editingFinished.connect(lambda: self._on_global_coefficient_change(float(line_edit.text()), "lpdc"))
+        secteur_coeff_edit = self.view.add_global_coefficient("Coefficient secteur d'activité", self.model.project.lpdc_secteur_coeff)
+        secteur_coeff_edit.editingFinished.connect(lambda: self._on_lpdc_secteur_coefficient_change(float(secteur_coeff_edit.text())))
+
+        affaire_coeff_edit = self.view.add_global_coefficient("Coefficient affaire", self.model.project.lpdc_affaire_coeff)
+        affaire_coeff_edit.editingFinished.connect(lambda: self._on_lpdc_affaire_coefficient_change(float(affaire_coeff_edit.text())))
+    
+    def _on_lpdc_secteur_coefficient_change(self, new_coeff: float):
+        """Gère la modification d'un coefficient global (ex: LPDC)."""
+        self.model.project.lpdc_secteur_coeff = new_coeff
+        self._update_all_tables()
+        self.model.data_updated.emit()
+
+    def _on_lpdc_affaire_coefficient_change(self, new_coeff: float):
+        """Gère la modification d'un coefficient global (ex: LPDC)."""
+        self.model.project.lpdc_affaire_coeff = new_coeff
+        self._update_all_tables()
+        self.model.data_updated.emit()

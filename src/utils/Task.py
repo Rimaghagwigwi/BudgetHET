@@ -78,17 +78,18 @@ class LPDCDocument(AbstractTask):
 
     @override
     def default_hours(self, context: Dict[str, Any]) -> float:
-        coeff_lpdc = context["LPDC_coeff"]
-        return self.hours * coeff_lpdc
+        return self.hours
 
     @override
     def effective_hours(self, context: Dict[str, Any]) -> float:
+        coeff_affaire = context["LPDC_affaire_coeff"]
+        coeff_secteur = context["LPDC_secteur_coeff"]
         if not self.is_active(context):
             return 0.0
         if self.manual_hours is not None:
             return self.manual_hours
         else:
-            return self.default_hours(context)
+            return self.default_hours(context) * coeff_affaire * coeff_secteur
 
 class Option(AbstractTask):
     def __init__(self, label: str,
@@ -105,13 +106,14 @@ class Option(AbstractTask):
 
     @override
     def default_hours(self, context: Dict[str, Any]) -> float:
-        coeff_option = context["option_coeff_category"].get(self.category, 1.0)
-        return self.hours * coeff_option
+        return self.hours
 
     @override
     def effective_hours(self, context: Dict[str, Any]) -> float:
+        coeff_option = context["option_coeff_category"].get(self.category, 1.0)
+        final_hours = self.default_hours(context) * coeff_option
         if self.is_selected:
-            return self.manual_hours if self.manual_hours is not None else self.default_hours(context)
+            return self.manual_hours if self.manual_hours is not None else final_hours
         else:
             return 0.0
         
@@ -143,17 +145,17 @@ class Calcul(AbstractTask):
     @override
     def default_hours(self, context: Dict[str, Any]) -> float:
         machine_type = context.get("machine_type", "")
-        affaire_activity_coeff = context["calcul_coeff_type_affaire"]
-        return self.hours.get(machine_type, 0.0) * context["calcul_coeff_type_affaire"][self.category]
+        return self.hours.get(machine_type, 0.0)
 
     @override
     def effective_hours(self, context: Dict[str, Any]) -> float:
+        affaire_activity_coeff = context["calcul_coeff_type_affaire"].get(self.category, 1.0)
         if not self.is_active(context):
             return 0.0
         elif self.manual_hours is not None:
             return self.manual_hours
         else:
-            return self.default_hours(context)
+            return self.default_hours(context) * affaire_activity_coeff
         
 class Labo(AbstractTask):
     def __init__(self, index: int, label: str, hours: float):
