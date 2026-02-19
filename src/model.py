@@ -88,11 +88,25 @@ class Project:
         return [task for subcats in self.tasks.values() for tasks in subcats.values() for task in tasks]
 
     def generate_summary_tree(self) -> Dict[str, Any]:
+        grouped_calculs = {}
+        for calc in self.calculs:
+            cat = self.app_data.calcul_categories.get(calc.category, calc.category)
+            if cat not in grouped_calculs:
+                grouped_calculs[cat] = []
+            grouped_calculs[cat].append(calc)
+
+        grouped_options = {}
+        for opt in self.options:
+            cat = self.app_data.option_categories.get(opt.category, opt.category)
+            if cat not in grouped_options:
+                grouped_options[cat] = []
+            grouped_options[cat].append(opt)
+
         return {
             "Tâches Générales": self.tasks,
             "Pièces et documents contractuels": self.lpdc_docs,
-            "Options": self.options,
-            "Calculs": self.calculs,
+            "Options": grouped_options,
+            "Calculs": grouped_calculs,
             "Laboratoire": self.labo,
         }
     

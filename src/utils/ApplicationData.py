@@ -15,7 +15,11 @@ class ApplicationData:
 
         self.lpdc_coeff_secteur: Dict[str, float] = {} # Dict[secteur: coeff]
         self.lpdc_coeff_affaire: Dict[str, float] = {} # Dict[affaire: coeff]
+
+        self.calcul_categories: Dict[str, str] = {} # Dict[code: label]
         self.calcul_secteur_coeff: Dict[str, Dict[str, float]] = {} # Dict[type_affaire: Dict[activité: coeff]]
+
+        self.option_categories: Dict[str, str] = {} # Dict[code: label]
         self.option_category_coeff: Dict[str, Dict[str, float]] = {} # Dict[type_affaire: Dict[category: coeff]]
         
         self.tasks: Dict[str, Dict[str, List[GeneralTask]]] = {} # Dict[category: Dict[sub-category: List[GeneralTask]]]
@@ -110,6 +114,7 @@ class ApplicationData:
             self.lpdc_docs.append(document)
         
         # 4. Calculs
+        self.calcul_categories: Dict[str, str] = self.raw_data["calculs"]["categories"] # Dict[code: label]
         self.calcul_coeff_type_affaire = self.raw_data["calculs"]["coeff_type_affaire"]
 
         calc_list: List[dict] = self.raw_data['calculs'].get("calculs", [])
@@ -124,7 +129,7 @@ class ApplicationData:
             self.calculs.append(calculation)
         
         # 5. Options
-        self.option_category_list: Dict[str, str] = self.raw_data["options"]["categories"]
+        self.option_categories: Dict[str, str] = self.raw_data["options"]["categories"] # Dict[code: label]
         self.option_category_coeff: Dict[str, Dict[str, float]] = self.raw_data["options"]["category_coeff"]
         options_list: Dict[str, List[dict]] = self.raw_data["options"].get("options", {}) # Dict[category: List[Option]]
         for cat_id, opts_list in options_list.items():

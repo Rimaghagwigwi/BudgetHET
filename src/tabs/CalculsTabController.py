@@ -38,9 +38,10 @@ class CalculsTabController(BaseTaskTabController):
         self._connect_table(table)
 
         for category, calculs in grouped.items():
-            table.add_category(category)
+            cat_label = self.model.project.app_data.calcul_categories.get(category, category)
+            table.add_category(cat_label)
             for calc in calculs:
-                table.add_task(category, calc)
+                table.add_task(cat_label, calc)
 
         table.show_table()
         table.adjust_height_to_content()
