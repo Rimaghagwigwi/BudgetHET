@@ -1,6 +1,6 @@
 from typing import Dict, List
-from utils.BaseTaskTabController import BaseTaskTabController
-from utils.TabTasks import TaskTableWidget
+from src.utils.BaseTaskTabController import BaseTaskTabController
+from src.utils.TabTasks import TaskTableWidget
 from src.utils.Task import AbstractTask, Calcul
 
 

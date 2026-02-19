@@ -1,8 +1,8 @@
 from src.model import Model
 from src.view import MainWindow
 from src.tabs.TabGeneral import TabGeneral, TabGeneralController
-from utils.TabTasks import TabTasks
-from tabs.GeneralTaskTabController import GeneralTaskTabController
+from src.utils.TabTasks import TabTasks
+from src.tabs.GeneralTaskTabController import GeneralTaskTabController
 from src.tabs.CalculsTabController import CalculsTabController
 from src.tabs.OptionsTabController import OptionsTabController
 from src.tabs.LPDCTabController import LPDCTabController
