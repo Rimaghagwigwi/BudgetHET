@@ -27,6 +27,8 @@ src/
   controller.py              # Controleur principal, instancie les onglets
   tabs/                      # Un controleur par onglet (General, Taches, Calculs, Options, LPDC, Labo, Resume)
   utils/
+    TabTasks.py              # Table Widget et view commun pour les onglets tâches
+    BaseTaskTabController.py # Classe abstraite de controller pour les onglets tâches
     ApplicationData.py       # Chargement et parsing de tous les fichiers de donnees
     Task.py                  # Dataclasses : GeneralTask, LPDCDocument, Option, Calcul, Labo
 data/
