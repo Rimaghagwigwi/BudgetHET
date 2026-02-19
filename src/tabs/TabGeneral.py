@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import pyqtSignal, QDate, QTimer
 from src.model import Model
-from src.widgets import NoWheelSpinBox
+from utils.widgets import NoWheelSpinBox
 from src.utils.ApplicationData import ApplicationData # Import custom widget
 
 class TabGeneral(QWidget):

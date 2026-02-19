@@ -2,8 +2,6 @@
 
 Application desktop de chiffrage d'heures d'etudes pour projets industriels (Jeumont Electric), developpee en Python avec PyQt6. Remplace le fichier Excel BUDGET_HET.
 
-> **Note** : Les resultats peuvent legerement differer de l'Excel en raison du passage aux DAS. Les secteurs Oil&Gas et Industrie sont regroupes dans les Machines speciales.
-
 ## Fonctionnalites
 
 - **General** : Saisie des informations projet (Client, CRM, DAS, type de produit, quantite, revision...).

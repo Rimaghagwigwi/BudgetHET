@@ -1,6 +1,6 @@
 from typing import List, Optional
 from src.model import Model
-from src.tabs.TabTasks import TabTasks, TaskTableWidget
+from utils.TabTasks import TabTasks, TaskTableWidget
 from src.utils.Task import AbstractTask
 
 
