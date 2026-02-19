@@ -1,48 +1,46 @@
-# Budget_HET � Chiffrage HET
+﻿# Budget_HET - Chiffrage HET
 
-Application desktop de chiffrage d'heures d'�tudes pour projets industriels (Jeumont Electric), d�velopp�e en Python avec PyQt6. Remplace le fichier Excel BUDGET_HET.
+Application desktop de chiffrage d'heures d'etudes pour projets industriels (Jeumont Electric), developpee en Python avec PyQt6. Remplace le fichier Excel BUDGET_HET.
 
-> **Note** : Les r�sultats peuvent l�g�rement diff�rer de l'Excel en raison du passage aux DAS. Les secteurs Oil&Gas et Industrie sont regroup�s dans les Machines sp�ciales.
+> **Note** : Les resultats peuvent legerement differer de l'Excel en raison du passage aux DAS. Les secteurs Oil&Gas et Industrie sont regroupes dans les Machines speciales.
 
-## Fonctionnalit�s
+## Fonctionnalites
 
-- **G�n�ral** : Saisie des informations projet (Client, CRM, DAS, type de produit, quantit�, r�vision�).
-- **T�ches** : Heures d'ing�nierie de base par type de machine, ajust�es par coefficients secteur/affaire.
-- **Calculs** : Heures de calcul avec coefficients sp�cifiques au type d'affaire.
+- **General** : Saisie des informations projet (Client, CRM, DAS, type de produit, quantite, revision...).
+- **Taches** : Heures d'ingenierie de base par type de machine, ajustees par coefficients secteur/affaire.
+- **Calculs** : Heures de calcul avec coefficients specifiques au type d'affaire.
 - **LPDC** : Documents contractuels obligatoires et optionnels selon le DAS, avec ajustement manuel des heures.
-- **Options** : Catalogue d'options group�es (M�canique, �lectrique, Essais�), activables et �ditables.
+- **Options** : Catalogue d'options groupees (Mecanique, Electrique, Essais...), activables et editables.
 - **Labo** : Heures d'essais laboratoire.
-- **R�sum�** : Total des heures en temps r�el, avec divers (5 % par d�faut) et coefficient REX manuel.
+- **Resume** : Total des heures en temps reel, avec divers (5 % par defaut) et coefficient REX manuel.
 
 ## Architecture
 
 Architecture **MVC** :
 
 ```
-main.py                      # Point d'entr�e
-config.xml                   # Configuration (chemins, th�me UI, dimensions fen�tre)
+main.py                      # Point d'entree
+config.xml                   # Configuration (chemins, theme UI, dimensions fenetre)
 src/
-  model.py                   # Classe Model (Project + calculs agr�g�s)
+  model.py                   # Classe Model (Project + calculs agreges)
   view.py                    # MainWindow (PyQt6)
-  controller.py              # Contr�leur principal, instancie les onglets
-  tabs/                      # Un contr�leur par onglet (G�n�ral, T�ches, Calculs, Options, LPDC, Labo, R�sum�)
+  controller.py              # Controleur principal, instancie les onglets
+  tabs/                      # Un controleur par onglet (General, Taches, Calculs, Options, LPDC, Labo, Resume)
   utils/
-    TabTasks.py              # Widget et view commun pour les onglets tâches
-    BaseTaskTabController.py # Classe abstraite de controler pour les onglets tâches
-    ApplicationData.py       # Chargement et parsing de tous les fichiers de donn�es
+    ApplicationData.py       # Chargement et parsing de tous les fichiers de donnees
     Task.py                  # Dataclasses : GeneralTask, LPDCDocument, Option, Calcul, Labo
 data/
-  base_data.json             # Listes (Clients, DAS, types d affaires, coefficients�)
-  general_task_data_new.json # T�ches de base avec heures et coefficients par machine/affaire
-  LPDC.json                  # Documents contractuels et r�gles d activation
+  base_data.json             # Listes (Clients, DAS, types d'affaires, coefficients...)
+  general_task_data_new.json # Taches de base avec heures et coefficients par machine/affaire
+  LPDC.json                  # Documents contractuels et regles d'activation
   options.json               # Catalogue des options
-  calculs.json               # T�ches de calcul
-  labo.json                  # T�ches laboratoire
+  calculs.json               # Taches de calcul
+  labo.json                  # Taches laboratoire
 ```
 
 ## Installation
 
-**Pr�requis** : Python 3.10+
+**Prerequis** : Python 3.10+
 
 ```bash
 pip install PyQt6
@@ -54,13 +52,13 @@ pip install PyQt6
 python main.py
 ```
 
-1. Remplir l'onglet **G�n�ral** et valider pour charger les donn�es par d�faut.
-2. Ajuster les onglets **T�ches**, **Calculs**, **LPDC**, **Options** et **Labo**.
-3. Consulter l'onglet **R�sum�** pour le total final.
+1. Remplir l'onglet **General** et valider pour charger les donnees par defaut.
+2. Ajuster les onglets **Taches**, **Calculs**, **LPDC**, **Options** et **Labo**.
+3. Consulter l'onglet **Resume** pour le total final.
 
 ## Configuration
 
-Tout est param�trable sans toucher au code :
+Tout est parametrable sans toucher au code :
 
-- `config.xml` : chemins des fichiers, th�me Qt (`Fusion`), dimensions de la fen�tre.
-- `data/*.json` : r�gles m�tier, heures standard, coefficients, catalogue d'options et de documents.
+- `config.xml` : chemins des fichiers, theme Qt (`Fusion`), dimensions de la fenetre.
+- `data/*.json` : regles metier, heures standard, coefficients, catalogue d'options et de documents.
