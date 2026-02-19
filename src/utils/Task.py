@@ -105,12 +105,7 @@ class Option(AbstractTask):
 
     @override
     def default_hours(self, context: Dict[str, Any]) -> float:
-        try:
-            coeff_option = context["option_coeff_category"][self.category]
-            print(f"Applying option coefficient for category '{self.category}': {coeff_option}")
-        except KeyError:
-            coeff_option = 1.0
-            print(f"No specific coefficient found for category '{self.category}', using default: {coeff_option}")
+        coeff_option = context["option_coeff_category"].get(self.category, 1.0)
         return self.hours * coeff_option
 
     @override

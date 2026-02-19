@@ -124,7 +124,7 @@ class ApplicationData:
         # 5. Options
         self.category_list: Dict[str, str] = self.raw_data["options"]["categories"]
         self.option_category_coeff: Dict[str, Dict[str, float]] = self.raw_data["options"]["category_coeff"]
-        options_list: Dict[str, List[dict]] = self.raw_data["options"].get("options", {})
+        options_list: Dict[str, List[dict]] = self.raw_data["options"].get("options", {}) # Dict[category: List[Option]]
         for cat_id, opts_list in options_list.items():
             for option in opts_list:
                 option = Option(

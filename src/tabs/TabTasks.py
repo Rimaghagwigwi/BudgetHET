@@ -258,7 +258,6 @@ class TabTasks(QWidget):
 
     def add_global_coefficient(self, label: str, default: float):
         """Ajoute un champ de réglage de coefficient en haut de l'onglet."""
-        print(f"Adding global coefficient: {label} with default value {default}")
         coefficient_layout = QHBoxLayout()
         coefficient_layout.setContentsMargins(0, 0, 0, 0)
         coefficient_layout.setSpacing(10)
