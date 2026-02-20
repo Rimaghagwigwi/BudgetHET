@@ -11,20 +11,7 @@ class LPDCTabController(BaseTaskTabController):
         return self.model.project.lpdc_docs
 
     def _build_tables(self) -> List[TaskTableWidget]:
-        project = self.model.project
-        machine_type = project.machine_type
-        secteur = project.secteur
-
-        mandatory = []
-        optional = []
-
-        for doc in project.lpdc_docs:
-            if machine_type not in doc.applicable_pour:
-                continue
-            if secteur in doc.secteur_obligatoire:
-                mandatory.append(doc)
-            elif doc.option_possible:
-                optional.append(doc)
+        mandatory, optional = self.model.project.grouped_lpdc()
 
         return [
             self._create_table(mandatory, "Documents LPDC obligatoires", is_optional=False),

@@ -86,13 +86,15 @@ class ApplicationData:
                     base_hours_machine = task_data.get("base", {})
                     coeff_type_affaire = task_data.get("coeff_type_affaire", {})
                     coeff_secteur = task_data.get("coeff_secteur", {})
+                    is_multiplicative = task_data.get("is_multiplicative", False)
                     
                     general_task = GeneralTask(
                         index=index,
                         label=label,
                         base_hours_machine=base_hours_machine,
                         coeff_type_affaire=coeff_type_affaire,
-                        coeff_secteur=coeff_secteur
+                        coeff_secteur=coeff_secteur,
+                        mutiplicative=is_multiplicative
                     )
                     self.tasks[category][sub_category].append(general_task)
                     index += 1

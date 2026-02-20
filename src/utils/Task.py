@@ -21,12 +21,14 @@ class GeneralTask(AbstractTask):
     def __init__(self, index: int, label: str,
                  base_hours_machine: Dict[str, float],
                  coeff_type_affaire: Dict[str, float],
-                 coeff_secteur: Dict[str, float]):
+                 coeff_secteur: Dict[str, float],
+                 mutiplicative: bool = False):
         super().__init__(label)
         self.index = index
         self.base_hours_machine = base_hours_machine
         self.coeff_type_affaire = coeff_type_affaire
         self.coeff_secteur = coeff_secteur
+        self.mutiplicative = mutiplicative
 
     @override
     def default_hours(self, context: Dict[str, Any]) -> float:

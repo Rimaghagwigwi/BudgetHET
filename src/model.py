@@ -31,9 +31,9 @@ class Project:
         self.divers_percent: float = 0.05
         self.manual_rex_coeff: float = 1.0
 
+        self.first_machine_subtotal: Optional[float] = None
         self.first_machine_total: Optional[float] = None
         self.n_machines_total: Optional[float] = None
-        self.total_with_divers: Optional[float] = None
         self.total_with_rex: Optional[float] = None
         
         self.tasks: Dict[str, Dict[str, List[GeneralTask]]] = {}
@@ -69,9 +69,9 @@ class Project:
         self.divers_percent = 0.05
         self.manual_rex_coeff = 1.0
 
+        self.first_machine_subtotal = None
         self.first_machine_total = None
         self.n_machines_total = None
-        self.total_with_divers = None
         self.total_with_rex = None
         
         self.tasks = self.app_data.tasks.copy()
@@ -86,6 +86,20 @@ class Project:
     def get_all_tasks(self) -> List[GeneralTask]:
         """Retourne la liste plate de toutes les tâches générales."""
         return [task for subcats in self.tasks.values() for tasks in subcats.values() for task in tasks]
+    
+    def grouped_lpdc(self) -> Dict[str, List[LPDCDocument]]:
+        """Retourne les documents LPDC regroupés en 'Base' et 'Particulières'."""
+        mandatory = []
+        optional = []
+
+        for doc in self.lpdc_docs:
+            if self.machine_type not in doc.applicable_pour:
+                continue
+            if self.secteur in doc.secteur_obligatoire:
+                mandatory.append(doc)
+            elif doc.option_possible:
+                optional.append(doc)
+        return mandatory, optional
 
     def generate_summary_tree(self) -> Dict[str, Any]:
         grouped_calculs = {}
@@ -102,9 +116,12 @@ class Project:
                 grouped_options[cat] = []
             grouped_options[cat].append(opt)
 
+        grouped_lpdc_dict = {}
+        grouped_lpdc_dict["Base"], grouped_lpdc_dict["Particulières"] = self.grouped_lpdc()
+
         return {
             "Tâches Générales": self.tasks,
-            "Pièces et documents contractuels": self.lpdc_docs,
+            "Pièces et documents contractuels": grouped_lpdc_dict,
             "Options": grouped_options,
             "Calculs": grouped_calculs,
             "Laboratoire": self.labo,
@@ -119,37 +136,42 @@ class Project:
             return sum(self.compute_tree_hours(v) for v in node.values())
         return 0.0
 
-    def compute_total_firstmachine(self) -> float:
+    def compute_first_machine_subtotal(self) -> float:
         """Calcule le sous-total de base (toutes les tâches)."""
-        self.first_machine_total = sum(
+        self.first_machine_subtotal = sum(
             self.compute_tree_hours(data)
             for data in [self.tasks, self.lpdc_docs, self.options, self.calculs, self.labo]
         )
+        return self.first_machine_subtotal
+    
+    def compute_first_machine_total(self) -> float:
+        """Calcule le total avec divers."""
+        self.first_machine_total = self.first_machine_subtotal * (1 + self.divers_percent)
         return self.first_machine_total
     
     def _compute_multi_machine_coeff(self, quantity: int) -> float:
         """Calcule le coefficient pour machines multiples."""
-        if quantity < 2:
+        if quantity == 2:
             return 1.0
-        elif quantity < 4:
-            return 1 + (quantity - 1) * 0.75
-        elif quantity < 24:
-            return 1 + (quantity - 1) * 0.35
+        elif quantity <= 5:
+            return (quantity - 1) * 0.75
+        elif quantity <= 25:
+            return (quantity - 1) * 0.35
         else:
-            return 1 + (quantity - 1) * 0.15
+            return (quantity - 1) * 0.15
         
     def compute_n_machines_total(self) -> float:
         """Calcule le total pour n machines."""
-        self.n_machines_total = self.first_machine_total * self._compute_multi_machine_coeff(self.quantity)
+        multiplicative_tasks_hours = sum([t.effective_hours(self.context()) for t in self.get_all_tasks() if t.mutiplicative])
+        coeff = self._compute_multi_machine_coeff(self.quantity)
+        print(f"Quantity: {self.quantity} | Coeff: {coeff} | Multiplicative Tasks Hours: {multiplicative_tasks_hours}")
+        additional_hours = multiplicative_tasks_hours * coeff
+
+        self.n_machines_total = self.first_machine_total + additional_hours 
         return self.n_machines_total
     
-    def compute_total_with_divers(self) -> float:
-        """Calcule le total avec divers."""
-        self.total_with_divers = self.n_machines_total * (1 + self.divers_percent)
-        return self.total_with_divers
-    
-    def calculate_total_hours(self) -> float:
-        self.total_with_rex = self.total_with_divers * self.manual_rex_coeff
+    def calculate_total_with_rex(self) -> float:
+        self.total_with_rex = self.n_machines_total * self.manual_rex_coeff
         return self.total_with_rex
 
 

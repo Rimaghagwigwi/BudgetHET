@@ -83,7 +83,8 @@
                         "NUC_QUALIFIE": 3,
                         "NUC_NON_QUALIFIE": 2,
                         "MIL": 0
-                    }
+                    },
+                    "is_multiplicative": true
                 },
                 "SUIVI FABRICATION machine": {
                     "base": {
@@ -102,7 +103,8 @@
                         "NUC_QUALIFIE": 3,
                         "NUC_NON_QUALIFIE": 2,
                         "MIL": 0
-                    }
+                    },
+                    "is_multiplicative": true
                 },
                 "SUIVI FABRICATION armoires": {
                     "base": {
@@ -121,7 +123,8 @@
                         "NUC_QUALIFIE": 3,
                         "NUC_NON_QUALIFIE": 2,
                         "MIL": 0
-                    }
+                    },
+                    "is_multiplicative": true
                 },
                 "SUIVI ESSAIS machine": {
                     "base": {
@@ -132,7 +135,8 @@
                         "MOTEUR_V_VAR": 10,
                         "ASYNCH_CAGE": 10,
                         "ASYNCH_BAGUES": 10
-                    } 
+                    },
+                    "is_multiplicative": true
                 },
                 "SUIVI ESSAIS armoires": {
                     "base": {
@@ -143,7 +147,8 @@
                         "MOTEUR_V_VAR": 10,
                         "ASYNCH_CAGE": 0,
                         "ASYNCH_BAGUES": 0
-                    } 
+                    },
+                    "is_multiplicative": true
                 },
                 "SUIVI CLIENT/ REUNION": {
                     "base": {
@@ -162,7 +167,8 @@
                         "NUC_QUALIFIE": 3,
                         "NUC_NON_QUALIFIE": 2,
                         "MIL": 0
-                    }
+                    },
+                    "is_multiplicative": true
                 }
             }
         },

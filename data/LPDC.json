@@ -118,6 +118,7 @@
         "SYNCH"
       ],
       "secteur_obligatoire": [
+        "OIL_GAS",
         "NUC_QUALIFIE",
         "NUC_NON_QUALIFIE",
         "MIL"
@@ -133,6 +134,7 @@
         "SYNCH"
       ],
       "secteur_obligatoire": [
+        "OIL_GAS",
         "NUC_QUALIFIE",
         "NUC_NON_QUALIFIE",
         "MIL"
@@ -148,13 +150,12 @@
         "SYNCH"
       ],
       "secteur_obligatoire": [
+        "INDUS",
+        "OIL_GAS",
+        "MARINE_CIVILE",
         "NUC_NON_QUALIFIE",
         "NUC_QUALIFIE",
-        "MIL",
-        "OIL_GAS",
-        "INDUS",
-        "MARINE_CIVILE"
-
+        "MIL"
       ],
       "option_possible": false
     },
@@ -167,11 +168,11 @@
         "SYNCH"
       ],
       "secteur_obligatoire": [
-        "NUC_QUALIFIE",
         "MIL",
+        "NUC_QUALIFIE",
         "NUC_NON_QUALIFIE"
       ],
-      "option_possible": false
+      "option_possible": true
     },
     {
       "index": 12,
@@ -182,13 +183,12 @@
         "SYNCH"
       ],
       "secteur_obligatoire": [
+        "INDUS",
+        "OIL_GAS",
+        "MARINE_CIVILE",
         "NUC_NON_QUALIFIE",
         "NUC_QUALIFIE",
-        "MIL",
-        "OIL_GAS",
-        "INDUS",
-        "MARINE_CIVILE"
-
+        "MIL"
       ],
       "option_possible": false
     },
@@ -207,7 +207,6 @@
         "OIL_GAS",
         "INDUS",
         "MARINE_CIVILE"
-
       ],
       "option_possible": false
     },
@@ -219,13 +218,12 @@
         "SYNCH"
       ],
       "secteur_obligatoire": [
+        "INDUS",
+        "OIL_GAS",
+        "MARINE_CIVILE",
         "NUC_NON_QUALIFIE",
         "NUC_QUALIFIE",
-        "MIL",
-        "OIL_GAS",
-        "INDUS",
-        "MARINE_CIVILE"
-
+        "MIL"
       ],
       "option_possible": false
     },
@@ -237,13 +235,12 @@
         "SYNCH"
       ],
       "secteur_obligatoire": [
+        "INDUS",
+        "OIL_GAS",
+        "MARINE_CIVILE",
         "NUC_NON_QUALIFIE",
         "NUC_QUALIFIE",
-        "MIL",
-        "OIL_GAS",
-        "INDUS",
-        "MARINE_CIVILE"
-
+        "MIL"
       ],
       "option_possible": false
     },
@@ -326,6 +323,9 @@
         "SYNCH"
       ],
       "secteur_obligatoire": [
+        "INDUS",
+        "OIL_GAS",
+        "MARINE_CIVILE",
         "NUC_NON_QUALIFIE",
         "NUC_QUALIFIE",
         "MIL"
@@ -356,8 +356,8 @@
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE",
-        "MIL",
-        "NUC_NON_QUALIFIE"
+        "NUC_NON_QUALIFIE",
+        "MIL"
       ],
       "option_possible": true
     },
@@ -476,8 +476,8 @@
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE",
-        "MIL",
-        "NUC_NON_QUALIFIE"
+        "NUC_NON_QUALIFIE",
+        "MIL"
       ],
       "option_possible": true
     },
@@ -489,11 +489,7 @@
         "ASYNCH",
         "SYNCH"
       ],
-      "secteur_obligatoire": [
-        "NUC_NON_QUALIFIE",
-        "NUC_QUALIFIE",
-        "MIL"
-      ],
+      "secteur_obligatoire": [],
       "option_possible": true
     },
     {
@@ -506,8 +502,8 @@
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE",
-        "MIL",
-        "NUC_NON_QUALIFIE"
+        "NUC_NON_QUALIFIE",
+        "MIL"
       ],
       "option_possible": true
     },
@@ -521,8 +517,8 @@
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE",
-        "MIL",
-        "NUC_NON_QUALIFIE"
+        "NUC_NON_QUALIFIE",
+        "MIL"
       ],
       "option_possible": true
     },
@@ -671,7 +667,9 @@
         "ASYNCH",
         "SYNCH"
       ],
-      "secteur_obligatoire": [],
+      "secteur_obligatoire": [
+        "NUC_QUALIFIE"
+      ],
       "option_possible": true
     },
     {
@@ -682,7 +680,9 @@
         "ASYNCH",
         "SYNCH"
       ],
-      "secteur_obligatoire": [],
+      "secteur_obligatoire": [
+        "NUC_QUALIFIE"
+      ],
       "option_possible": true
     },
     {
@@ -693,7 +693,9 @@
         "ASYNCH",
         "SYNCH"
       ],
-      "secteur_obligatoire": [],
+      "secteur_obligatoire": [
+        "NUC_QUALIFIE"
+      ],
       "option_possible": true
     },
     {
@@ -705,15 +707,14 @@
         "SYNCH"
       ],
       "secteur_obligatoire": [
+        "INDUS",
+        "OIL_GAS",
+        "MARINE_CIVILE",
         "NUC_NON_QUALIFIE",
         "NUC_QUALIFIE",
-        "MIL",
-        "OIL_GAS",
-        "INDUS",
-        "MARINE_CIVILE"
-
+        "MIL"
       ],
-      "option_possible": false
+      "option_possible": true
     },
     {
       "index": 52,
@@ -750,10 +751,10 @@
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE",
-        "MIL",
-        "NUC_NON_QUALIFIE"
+        "NUC_NON_QUALIFIE",
+        "MIL"
       ],
-      "option_possible": false
+      "option_possible": true
     },
     {
       "index": 55,
@@ -778,15 +779,14 @@
         "SYNCH"
       ],
       "secteur_obligatoire": [
+        "INDUS",
+        "OIL_GAS",
+        "MARINE_CIVILE",
         "NUC_NON_QUALIFIE",
         "NUC_QUALIFIE",
-        "MIL",
-        "OIL_GAS",
-        "INDUS",
-        "MARINE_CIVILE"
-
+        "MIL"
       ],
-      "option_possible": false
+      "option_possible": true
     },
     {
       "index": 57,
@@ -797,15 +797,14 @@
         "SYNCH"
       ],
       "secteur_obligatoire": [
+        "INDUS",
+        "OIL_GAS",
+        "MARINE_CIVILE",
         "NUC_NON_QUALIFIE",
         "NUC_QUALIFIE",
-        "MIL",
-        "OIL_GAS",
-        "INDUS",
-        "MARINE_CIVILE"
-
+        "MIL"
       ],
-      "option_possible": false
+      "option_possible": true
     },
     {
       "index": 58,
@@ -816,15 +815,14 @@
         "SYNCH"
       ],
       "secteur_obligatoire": [
+        "INDUS",
+        "OIL_GAS",
+        "MARINE_CIVILE",
         "NUC_NON_QUALIFIE",
         "NUC_QUALIFIE",
-        "MIL",
-        "OIL_GAS",
-        "INDUS",
-        "MARINE_CIVILE"
-
+        "MIL"
       ],
-      "option_possible": false
+      "option_possible": true
     },
     {
       "index": 59,
@@ -834,15 +832,14 @@
         "SYNCH"
       ],
       "secteur_obligatoire": [
+        "INDUS",
+        "OIL_GAS",
+        "MARINE_CIVILE",
         "NUC_NON_QUALIFIE",
         "NUC_QUALIFIE",
-        "MIL",
-        "OIL_GAS",
-        "INDUS",
-        "MARINE_CIVILE"
-
+        "MIL"
       ],
-      "option_possible": false
+      "option_possible": true
     },
     {
       "index": 60,
@@ -852,15 +849,14 @@
         "SYNCH"
       ],
       "secteur_obligatoire": [
+        "INDUS",
+        "OIL_GAS",
+        "MARINE_CIVILE",
         "NUC_NON_QUALIFIE",
         "NUC_QUALIFIE",
-        "MIL",
-        "OIL_GAS",
-        "INDUS",
-        "MARINE_CIVILE"
-
+        "MIL"
       ],
-      "option_possible": false
+      "option_possible": true
     },
     {
       "index": 61,
@@ -872,10 +868,10 @@
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE",
-        "MIL",
-        "NUC_NON_QUALIFIE"
+        "NUC_NON_QUALIFIE",
+        "MIL"
       ],
-      "option_possible": false
+      "option_possible": true
     },
     {
       "index": 62,
@@ -887,10 +883,10 @@
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE",
-        "MIL",
-        "NUC_NON_QUALIFIE"
+        "NUC_NON_QUALIFIE",
+        "MIL"
       ],
-      "option_possible": false
+      "option_possible": true
     },
     {
       "index": 63,
@@ -901,8 +897,7 @@
         "SYNCH"
       ],
       "secteur_obligatoire": [
-        "MIL",
-        "NUC_NON_QUALIFIE"
+        "NUC_QUALIFIE"
       ],
       "option_possible": true
     },
@@ -916,15 +911,15 @@
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE",
-        "MIL",
-        "NUC_NON_QUALIFIE"
+        "NUC_NON_QUALIFIE",
+        "MIL"
       ],
-      "option_possible": false
+      "option_possible": true
     },
     {
       "index": 65,
-      "label": "Autre document imposé (NB : hours à fournir)",
-      "hours": 1.0,
+      "label": "Autre document imposé",
+      "hours": 0.0,
       "applicable_pour": [
         "ASYNCH",
         "SYNCH"
@@ -941,15 +936,14 @@
         "SYNCH"
       ],
       "secteur_obligatoire": [
+        "INDUS",
+        "OIL_GAS",
+        "MARINE_CIVILE",
         "NUC_NON_QUALIFIE",
         "NUC_QUALIFIE",
-        "MIL",
-        "OIL_GAS",
-        "INDUS",
-        "MARINE_CIVILE"
-
+        "MIL"
       ],
-      "option_possible": false
+      "option_possible": true
     },
     {
       "index": 67,
@@ -960,19 +954,18 @@
         "SYNCH"
       ],
       "secteur_obligatoire": [
+        "INDUS",
+        "OIL_GAS",
+        "MARINE_CIVILE",
         "NUC_NON_QUALIFIE",
         "NUC_QUALIFIE",
-        "MIL",
-        "OIL_GAS",
-        "INDUS",
-        "MARINE_CIVILE"
-
+        "MIL"
       ],
-      "option_possible": false
+      "option_possible": true
     },
     {
       "index": 68,
-      "label": "rapport d'intervention",
+      "label": "Rapport d'intervention",
       "hours": 0.0,
       "applicable_pour": [
         "ASYNCH",
@@ -983,7 +976,7 @@
     },
     {
       "index": 69,
-      "label": "document list (LPDC)",
+      "label": "Liste des pièces et documents contractuels",
       "hours": 0.0,
       "applicable_pour": [
         "ASYNCH",
@@ -1121,7 +1114,6 @@
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE",
-        "MIL",
         "NUC_NON_QUALIFIE"
       ],
       "option_possible": true
@@ -1168,7 +1160,7 @@
         "SYNCH"
       ],
       "secteur_obligatoire": [
-        "MIL"
+        "NUC_QUALIFIE"
       ],
       "option_possible": true
     },
@@ -1324,7 +1316,7 @@
     },
     {
       "index": 98,
-      "label": "Etude de Fiabilité  AMDEC APN",
+      "label": "Etude de Fiabilité AMDEC APN",
       "hours": 10.0,
       "applicable_pour": [
         "SYNCH"

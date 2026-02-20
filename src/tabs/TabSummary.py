@@ -18,10 +18,13 @@ class CollapsibleSection(QTreeWidget):
         self.setHeaderLabels(["Description", "Heures"])
         self.setAlternatingRowColors(True)
         self.setIndentation(15)
-        self.setColumnWidth(0, 500)
+        self.resizeColumnToContents(0)
+        #→self.setColumnWidth(0, int(width * 0.7))
+        #self.setColumnWidth(1, int(width * 0.3))
+
 
     def _get_expanded_paths(self) -> set:
-        """Sauvegarde les chemins des n\u0153uds d\u00e9pli\u00e9s."""
+        """Sauvegarde les chemins des noeuds dépliés."""
         expanded = set()
         for i in range(self.topLevelItemCount()):
             self._collect_expanded(self.topLevelItem(i), "", expanded)
@@ -35,7 +38,7 @@ class CollapsibleSection(QTreeWidget):
             self._collect_expanded(item.child(i), current, expanded)
 
     def _restore_expanded(self, paths: set):
-        """Restaure l'\u00e9tat d\u00e9pli\u00e9 des n\u0153uds."""
+        """Restaure l'état déplié des noeuds."""
         for i in range(self.topLevelItemCount()):
             self._apply_expand(self.topLevelItem(i), "", paths)
 
@@ -47,20 +50,21 @@ class CollapsibleSection(QTreeWidget):
             self._apply_expand(item.child(i), current, paths)
 
     def build_tree(self, items: Dict[str, Any], context: Dict[str, Any]):
-        """Construit l'arbre \u00e0 partir d'un dictionnaire de donn\u00e9es."""
+        """Construit l'arbre à partir d'un dictionnaire de données."""
         expanded = self._get_expanded_paths()
 
         self.clear()
         for label, value in items.items():
             self._add_node(label, value, None, context)
 
+        self.setColumnWidth(0, self.width()-100)
         if expanded:
             self._restore_expanded(expanded)
         else:
             self.collapseAll()
 
     def _add_node(self, label: str, value: Any, parent: QTreeWidgetItem | None, context: Dict[str, Any]):
-        """Ajoute récursivement un nœud à l'arbre."""
+        """Ajoute récursivement un noeud à l'arbre."""
         item = QTreeWidgetItem([label, ""])
         
         if parent is None:
@@ -95,7 +99,7 @@ class CollapsibleSection(QTreeWidget):
         return total_hours
 
     def _add_task_node(self, task: AbstractTask, parent: QTreeWidgetItem, context: Dict[str, Any]) -> float:
-        """Ajoute un nœud de tâche et retourne ses heures effectives."""
+        """Ajoute un noeud de tâche et retourne ses heures effectives."""
         hours = task.effective_hours(context)
         
         # Cacher les tâches à 0h
@@ -151,6 +155,7 @@ class TabSummary(QWidget):
         edit_percent.setValidator(float_validator)
         edit_percent.setPlaceholderText(placeholder)
         edit_percent.setAlignment(Qt.AlignmentFlag.AlignRight)
+        edit_percent.setFixedWidth(60)
         container.addWidget(edit_percent)
         container.addWidget(QLabel("%"))
         return container, edit_percent
@@ -172,24 +177,16 @@ class TabSummary(QWidget):
 
         row = 0
         
-        # Total 1ère machine
-        label_first_machine = self._create_styled_label(text="Total 1ère machine:")
-        self.val_first_machine = self._create_styled_label(object_name="important")
+        # Subtotal 1ère machine (sans divers)
+        label_first_machine = self._create_styled_label(text="Sous-total 1ère machine:")
+        self.val_first_machine_subtotal = self._create_styled_label(object_name="important")
         layout.addWidget(label_first_machine, row, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
-        layout.addWidget(self.val_first_machine, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
-        row += 1
-        self._add_row_separator(layout, row); row += 1
-        
-        # Total n machines
-        self.label_n_machines = self._create_styled_label()
-        self.val_n_machines = self._create_styled_label(object_name="important")
-        layout.addWidget(self.label_n_machines, row, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
-        layout.addWidget(self.val_n_machines, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
+        layout.addWidget(self.val_first_machine_subtotal, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
         row += 1
         self._add_row_separator(layout, row); row += 1
         
         # Divers (%)
-        divers_label = self._create_styled_label(text="Divers:")
+        divers_label = self._create_styled_label(text="Divers risques techniques:")
         divers_container, self.edit_divers = self._create_percentage_input("0.0")
         self.edit_divers.editingFinished.connect(self._on_divers_text_changed)
         layout.addWidget(divers_label, row, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
@@ -197,11 +194,19 @@ class TabSummary(QWidget):
         row += 1
         self._add_row_separator(layout, row); row += 1
         
-        # Total
-        total_label = self._create_styled_label(text="Total:")
-        self.val_total = self._create_styled_label(object_name="important")
+        # Total 1ère machine (avec divers)
+        total_label = self._create_styled_label(text="Total 1ère machine :")
+        self.val_first_machine_total = self._create_styled_label(object_name="important")
         layout.addWidget(total_label, row, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
-        layout.addWidget(self.val_total, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
+        layout.addWidget(self.val_first_machine_total, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
+        row += 1
+        self._add_row_separator(layout, row); row += 1
+        
+        # Total n machines
+        self.label_n_machines = self._create_styled_label()
+        self.val_n_machines_total = self._create_styled_label(object_name="important")
+        layout.addWidget(self.label_n_machines, row, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(self.val_n_machines_total, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
         row += 1
         self._add_row_separator(layout, row); row += 1
         
@@ -240,12 +245,12 @@ class TabSummary(QWidget):
         except ValueError:
             pass
 
-    def update_totals(self, first_machine: float, quantity: int, n_machines: float, total: float, total_with_rex: float):
+    def update_totals(self, first_machine_subtotal: float, first_machine_total: float, quantity: int, n_machines_total: float, total_with_rex: float):
         """Met à jour l'affichage des totaux."""
-        self.val_first_machine.setText(f"{first_machine:.2f} h")
+        self.val_first_machine_subtotal.setText(f"{first_machine_subtotal:.2f} h")
+        self.val_first_machine_total.setText(f"{first_machine_total:.2f} h")
         self.label_n_machines.setText(f"Total {quantity} machines:")
-        self.val_n_machines.setText(f"{n_machines:.2f} h")
-        self.val_total.setText(f"{total:.2f} h")
+        self.val_n_machines_total.setText(f"{n_machines_total:.2f} h")
         self.total_with_rex_val.setText(f"{total_with_rex:.2f} h")
 
 class TabSummaryController:
@@ -294,23 +299,17 @@ class TabSummaryController:
         """Recalcule et affiche tous les totaux."""
         project: Project = self.model.project
 
-        first_machine = project.compute_total_firstmachine()
-        
-        # Calculer le total pour n machines
-        n_machines = project.compute_n_machines_total()
-        
-        # Calculer le total avec divers
-        total_with_divers = project.compute_total_with_divers()
-        
-        # Calculer le total avec REX
-        total_with_rex = project.calculate_total_hours()
+        first_machine_subtotal = project.compute_first_machine_subtotal()
+        first_machine_total = project.compute_first_machine_total()
+        n_machines_total = project.compute_n_machines_total()
+        total_with_rex = project.calculate_total_with_rex()
         
         # Mettre à jour l'affichage
         self.view.update_totals(
-            first_machine=first_machine,
+            first_machine_subtotal=first_machine_subtotal,
+            first_machine_total=first_machine_total,
             quantity=project.quantity,
-            n_machines=n_machines,
-            total=total_with_divers,
+            n_machines_total=n_machines_total,
             total_with_rex=total_with_rex
         )
 
