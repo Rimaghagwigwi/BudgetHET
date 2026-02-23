@@ -1,6 +1,6 @@
 ﻿from typing import Any, Dict, Tuple
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QLabel, QFrame, QTreeWidget, QTreeWidgetItem,
-                             QHBoxLayout, QGridLayout, QLineEdit)
+                             QHBoxLayout, QGridLayout, QLineEdit, QPushButton, QMenu)
 from PyQt6.QtCore import Qt, pyqtSignal, QRegularExpression
 from PyQt6.QtGui import QFont, QRegularExpressionValidator
 from src.model import Model, Project
@@ -125,6 +125,7 @@ class TabSummary(QWidget):
     
     divers_changed = pyqtSignal(float)
     rex_coeff_changed = pyqtSignal(float)
+    export_json_clicked = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -176,7 +177,17 @@ class TabSummary(QWidget):
         layout.setSpacing(6)
 
         row = 0
-        
+
+        # Bouton Exporter avec menu déroulant
+        self.btn_export = QPushButton("Exporter le projet ▾")
+        export_menu = QMenu(self.btn_export)
+        self.action_export_json = export_menu.addAction("Exporter en JSON")
+        self.action_export_json.triggered.connect(self.export_json_clicked.emit)
+        self.btn_export.setMenu(export_menu)
+        layout.addWidget(self.btn_export, row, 0, 1, 2)
+        row += 1
+        self._add_row_separator(layout, row); row += 1
+
         # Subtotal 1ère machine (sans divers)
         label_first_machine = self._create_styled_label(text="Sous-total 1ère machine:")
         self.val_first_machine_subtotal = self._create_styled_label(object_name="important")

@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
     <!-- Chemins des fichiers de données -->
-    <paths>
+    <datapaths>
         <path key="base_data">data/base_data.json</path>
         <path key="options">data/options.json</path>
         <path key="tasks">data/general_task_data_new.json</path>
         <path key="LPDC">data/LPDC.json</path>
         <path key="calculs">data/calculs.json</path>
         <path key="labo">data/labo.json</path>
-    </paths>
+    </datapaths>
+
+    <!-- Dossier import/export-->
+    <asset-dir>assets/</asset-dir>
 
     <!-- Configuration de l'interface utilisateur -->
     <ui>

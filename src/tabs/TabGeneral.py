@@ -1,12 +1,11 @@
 from typing import List
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QFormLayout, QLineEdit, QDoubleSpinBox, QSpinBox,
-    QComboBox, QPushButton, QDateEdit, QTextEdit, QLabel
+    QComboBox, QPushButton, QDateEdit, QTextEdit
 )
 from PyQt6.QtCore import pyqtSignal, QDate, QTimer
 from src.model import Model
 from src.utils.widgets import NoWheelSpinBox
-from src.utils.ApplicationData import ApplicationData # Import custom widget
 
 class TabGeneral(QWidget):
     apply_clicked = pyqtSignal() # Signal personnalisé
@@ -15,7 +14,11 @@ class TabGeneral(QWidget):
         super().__init__()
         self.setObjectName("tabGeneral")
         layout = QVBoxLayout(self)
-        
+
+        # Bouton importer un projet
+        self.btn_import = QPushButton("Importer un projet")
+        layout.addWidget(self.btn_import)
+
         form = QFormLayout()
         
         # 1. N° CRM
@@ -190,6 +193,61 @@ class TabGeneralController:
         prj.created_by = self.view.get_value(self.view.combo_realise_par)
         prj.validated_by = self.view.get_value(self.view.combo_valide_par)
         prj.description = self.view.get_value(self.view.text_description)
+
+    def _set_combo_by_data(self, combo: QComboBox, data):
+        """Sélectionne dans un QComboBox l'item dont itemData() == data."""
+        for i in range(combo.count()):
+            if combo.itemData(i) == data:
+                combo.setCurrentIndex(i)
+                return
+        if data:
+            combo.setCurrentText(str(data))
+
+    def load_project_to_ui(self):
+        """Remplit tous les widgets de l'onglet Général depuis self.model.project."""
+        prj = self.model.project
+
+        # Bloquer les signaux pour éviter des mises à jour en cascade
+        widgets = [
+            self.view.input_crm, self.view.input_client, self.view.combo_type_affaire,
+            self.view.combo_das, self.view.combo_secteur, self.view.combo_category,
+            self.view.combo_product, self.view.input_designation, self.view.spin_qty,
+            self.view.combo_revision, self.view.date_edit, self.view.combo_realise_par,
+            self.view.combo_valide_par, self.view.text_description,
+        ]
+        for w in widgets:
+            w.blockSignals(True)
+
+        self.view.input_crm.setText(prj.crm_number)
+        self.view.input_client.setText(prj.client)
+        self._set_combo_by_data(self.view.combo_type_affaire, prj.affaire)
+
+        # DAS + mise à jour de la liste secteurs
+        self._set_combo_by_data(self.view.combo_das, prj.das)
+        secteurs = self.model.app_data.secteurs.get(prj.das, {})
+        self.view.set_combo_items(self.view.combo_secteur, secteurs)
+        self._set_combo_by_data(self.view.combo_secteur, prj.secteur)
+
+        # Catégorie produit + mise à jour de la liste produits
+        self._set_combo_by_data(self.view.combo_category, prj.machine_type)
+        products = self.model.app_data.categories_produit.get(prj.machine_type, {})
+        self.view.set_combo_items(self.view.combo_product, products)
+        self._set_combo_by_data(self.view.combo_product, prj.product)
+
+        self.view.input_designation.setText(prj.designation)
+        self.view.spin_qty.setValue(prj.quantity)
+        self.view.combo_revision.setCurrentText(prj.revision)
+        if prj.date:
+            self.view.date_edit.setDate(QDate.fromString(prj.date, "yyyy-MM-dd"))
+        self._set_combo_by_data(self.view.combo_realise_par, prj.created_by)
+        self._set_combo_by_data(self.view.combo_valide_par, prj.validated_by)
+        self.view.text_description.setPlainText(prj.description)
+
+        for w in widgets:
+            w.blockSignals(False)
+
+        # Synchroniser le model avec l'état final de l'UI
+        self.update_project_from_ui()
 
     def create_signals(self):
         # Création des signaux qui utilisent les méthodes ci-dessus

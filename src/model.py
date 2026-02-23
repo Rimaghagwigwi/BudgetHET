@@ -1,3 +1,5 @@
+import copy
+import json
 from typing import Dict, List, Optional, Any
 from src.utils.ApplicationData import ApplicationData
 from src.utils.Task import AbstractTask, GeneralTask, LPDCDocument, Labo, Option, Calcul
@@ -74,11 +76,11 @@ class Project:
         self.n_machines_total = None
         self.total_with_rex = None
         
-        self.tasks = self.app_data.tasks.copy()
-        self.lpdc_docs = [doc for doc in self.app_data.lpdc_docs if doc.is_active(ctx) or doc.option_possible]
-        self.options = self.app_data.options.copy()
-        self.calculs = [calc for calc in self.app_data.calculs if calc.is_available_as_option(ctx) or calc.is_mandatory(ctx)]
-        self.labo = self.app_data.labo.copy()
+        self.tasks = copy.deepcopy(self.app_data.tasks)
+        self.lpdc_docs = copy.deepcopy([doc for doc in self.app_data.lpdc_docs if doc.is_active(ctx) or doc.option_possible])
+        self.options = copy.deepcopy(self.app_data.options)
+        self.calculs = copy.deepcopy([calc for calc in self.app_data.calculs if calc.is_available_as_option(ctx) or calc.is_mandatory(ctx)])
+        self.labo = copy.deepcopy(self.app_data.labo)
     
     def get_task_default_hours(self, task: GeneralTask) -> float:
         return task.default_hours(self.context())
@@ -183,3 +185,121 @@ class Model(QObject):
         super().__init__()
         self.app_data = app_data
         self.project = Project(app_data)
+
+    # ------------------------------------------------------------------
+    # Sauvegarde / Chargement
+    # ------------------------------------------------------------------
+
+    def save_project(self) -> dict:
+        """Sérialise le projet : valeurs scalaires + delta des modifications."""
+        prj = self.project
+        return {
+            "version": 1,
+            "project": {
+                "crm_number":   prj.crm_number,
+                "client":       prj.client,
+                "affaire":      prj.affaire,
+                "das":          prj.das,
+                "secteur":      prj.secteur,
+                "machine_type": prj.machine_type,
+                "product":      prj.product,
+                "designation":  prj.designation,
+                "quantity":     prj.quantity,
+                "revision":     prj.revision,
+                "date":         prj.date,
+                "created_by":   prj.created_by,
+                "validated_by": prj.validated_by,
+                "description":  prj.description,
+                "divers_percent":    prj.divers_percent,
+                "manual_rex_coeff":  prj.manual_rex_coeff,
+            },
+            "modifications": {
+                "lpdc_docs": [
+                    {"index": d.index, "is_selected": d.is_selected, "manual_hours": d.manual_hours}
+                    for d in prj.lpdc_docs
+                    if d.is_selected or d.manual_hours is not None
+                ],
+                "options": [
+                    {"index": o.index, "is_selected": o.is_selected, "manual_hours": o.manual_hours}
+                    for o in prj.options
+                    if o.is_selected or o.manual_hours is not None
+                ],
+                "calculs": [
+                    {"index": c.index, "is_selected": c.is_selected, "manual_hours": c.manual_hours}
+                    for c in prj.calculs
+                    if c.is_selected or c.manual_hours is not None
+                ],
+                "tasks": [
+                    {"index": t.index, "manual_hours": t.manual_hours}
+                    for t in prj.get_all_tasks()
+                    if t.manual_hours is not None
+                ],
+                "labo": [
+                    {"index": l.index, "manual_hours": l.manual_hours}
+                    for l in prj.labo
+                    if l.manual_hours is not None
+                ],
+            },
+        }
+
+    def load_project(self, data: dict):
+        """Charge un projet : applique les valeurs puis les modifications."""
+        prj = self.project
+        pd = data.get("project", {})
+
+        # Valeurs scalaires
+        prj.crm_number   = pd.get("crm_number", "")
+        prj.client       = pd.get("client", "")
+        prj.affaire      = pd.get("affaire", "")
+        prj.das          = pd.get("das", "")
+        prj.secteur      = pd.get("secteur", "")
+        prj.machine_type = pd.get("machine_type", "")
+        prj.product      = pd.get("product", "")
+        prj.designation  = pd.get("designation", "")
+        prj.quantity     = pd.get("quantity", 1)
+        prj.revision     = pd.get("revision", "A")
+        prj.date         = pd.get("date", "")
+        prj.created_by   = pd.get("created_by", "")
+        prj.validated_by = pd.get("validated_by", "")
+        prj.description  = pd.get("description", "")
+
+        # Reconstruire les listes à partir des données sources
+        prj.apply_defaults()
+
+        # Restaurer divers/rex APRÈS apply_defaults (qui les réinitialise)
+        prj.divers_percent   = pd.get("divers_percent", 0.05)
+        prj.manual_rex_coeff = pd.get("manual_rex_coeff", 1.0)
+
+        # Appliquer les modifications
+        mods = data.get("modifications", {})
+
+        lpdc_idx = {m["index"]: m for m in mods.get("lpdc_docs", [])}
+        for doc in prj.lpdc_docs:
+            if doc.index in lpdc_idx:
+                m = lpdc_idx[doc.index]
+                doc.is_selected  = m.get("is_selected", doc.is_selected)
+                doc.manual_hours = m.get("manual_hours")
+
+        opt_idx = {m["index"]: m for m in mods.get("options", [])}
+        for opt in prj.options:
+            if opt.index in opt_idx:
+                m = opt_idx[opt.index]
+                opt.is_selected  = m.get("is_selected", opt.is_selected)
+                opt.manual_hours = m.get("manual_hours")
+
+        calc_idx = {m["index"]: m for m in mods.get("calculs", [])}
+        for calc in prj.calculs:
+            if calc.index in calc_idx:
+                m = calc_idx[calc.index]
+                calc.is_selected  = m.get("is_selected", calc.is_selected)
+                calc.manual_hours = m.get("manual_hours")
+
+        task_idx = {m["index"]: m for m in mods.get("tasks", [])}
+        for task in prj.get_all_tasks():
+            if task.index in task_idx:
+                task.manual_hours = task_idx[task.index].get("manual_hours")
+
+        labo_idx = {m["index"]: m for m in mods.get("labo", [])}
+        for labo in prj.labo:
+            if labo.index in labo_idx:
+                labo.manual_hours = labo_idx[labo.index].get("manual_hours")

@@ -34,7 +34,7 @@ class ApplicationData:
         
         # Paths
         self.paths = {}
-        for path_elem in root.findall("./paths/path"):
+        for path_elem in root.findall("./datapaths/path"):
             key = path_elem.get("key")
             path = path_elem.text
             if key and path:
@@ -49,6 +49,9 @@ class ApplicationData:
         except ValueError:
             self.window_width = 1080
             self.window_height = 720
+
+        # Dossier projets
+        self.asset_dir = root.findtext("./asset-dir", "assets/")
 
         # Stylesheet
         stylesheet_path = root.findtext("./ui/stylesheet", "")

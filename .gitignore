@@ -32,5 +32,7 @@ build/
 Thumbs.db
 desktop.ini
 
-# Logs
+# Other
 *.log
+test.py
+asets/
