@@ -126,6 +126,8 @@ class TabSummary(QWidget):
     divers_changed = pyqtSignal(float)
     rex_coeff_changed = pyqtSignal(float)
     export_json_clicked = pyqtSignal()
+    export_ortems_clicked = pyqtSignal()
+    export_excel_clicked = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -181,8 +183,16 @@ class TabSummary(QWidget):
         # Bouton Exporter avec menu déroulant
         self.btn_export = QPushButton("Exporter le projet ▾")
         export_menu = QMenu(self.btn_export)
-        self.action_export_json = export_menu.addAction("Exporter en JSON")
+
+        self.action_export_json = export_menu.addAction("Sauvegarde - JSON")
         self.action_export_json.triggered.connect(self.export_json_clicked.emit)
+
+        self.action_export_ORTEMS = export_menu.addAction("ORTEMS - Excel (à venir)")
+        self.action_export_ORTEMS.triggered.connect(self.export_ortems_clicked.emit) # NOT IMPLEMENTED YET
+
+        self.action_export_excel = export_menu.addAction("Raport - Excel (à venir)")
+        self.action_export_excel.triggered.connect(self.export_excel_clicked.emit) # NOT IMPLEMENTED YET
+
         self.btn_export.setMenu(export_menu)
         layout.addWidget(self.btn_export, row, 0, 1, 2)
         row += 1
