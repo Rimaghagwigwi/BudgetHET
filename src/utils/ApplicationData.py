@@ -50,6 +50,16 @@ class ApplicationData:
             self.window_width = 1080
             self.window_height = 720
 
+        # Stylesheet
+        stylesheet_path = root.findtext("./ui/stylesheet", "")
+        self.stylesheet = ""
+        if stylesheet_path:
+            try:
+                with open(stylesheet_path, 'r', encoding='utf-8') as f:
+                    self.stylesheet = f.read()
+            except (FileNotFoundError, IOError):
+                pass
+
     def sort_raw_data(self):
         """Trie les données brutes des json en listes d'objets. La logique de conversion est differente pour chaque type de données."""
         # 1. Données générales

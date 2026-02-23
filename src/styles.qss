@@ -1,0 +1,106 @@
+/* ============================================================
+   styles.qss — Chiffrage HET
+   QSS valide pour PyQt6. Pas de var(), pas de :root.
+   A utiliser avec QApplication.setStyle("Fusion").
+   ============================================================ */
+
+/* ── Base ────────────────────────────────────────────────── */
+QWidget {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    background-color: #f2f2f2;
+    color: #202020;
+}
+
+QMainWindow {
+    background-color: #f2f2f2;
+}
+
+/* ── Labels ──────────────────────────────────────────────── */
+QLabel, QTableWidget, QTreeWidget {
+    color: #202020;
+}
+
+#tabGeneral QLabel {
+    font-weight: bold;
+}
+
+QLabel#important {
+    color: #0063AF;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+QLabel#veryImportant {
+    color: #E94F36;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+/* ── Inputs ──────────────────────────────────────────────── */
+QLineEdit, QComboBox, QSpinBox, QDoubleSpinBox, QDateEdit, QTextEdit {
+    padding: 5px;
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: #202020;
+}
+
+/* ── Buttons ─────────────────────────────────────────────── */
+QPushButton {
+    background-color: #0063AF;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+}
+
+QPushButton:hover {
+    background-color: #0072c6;
+}
+
+QPushButton:pressed {
+    background-color: #004f8a;
+}
+
+QPushButton:disabled {
+    background-color: #b0c4d8;
+    color: #e0e0e0;
+}
+
+/* ── Table headers ───────────────────────────────────────── */
+QHeaderView::section {
+    background-color: #0063AF;
+    color: white;
+    padding: 6px 8px;
+    border: none;
+    border-right: 1px solid #1a74be;
+    font-weight: bold;
+}
+
+/* ── Tables ──────────────────────────────────────────────── */
+QTableWidget {
+    border: 1px solid #dcdcdc;
+    background-color: #ffffff;
+    gridline-color: #e8e8e8;
+}
+
+/* ── Tree ────────────────────────────────────────────────── */
+QTreeWidget {
+    alternate-background-color: #d8e0eb;
+}
+
+QTreeWidget::item {
+    padding: 2px;
+    min-height: 20px;
+}
+
+/* ── Frames ──────────────────────────────────────────────── */
+QFrame#totalsFrame {
+    border-top: 2px solid #dcdcdc;
+}
+
+QFrame#rowSeparator {
+    background-color: #dcdcdc;
+    max-height: 1px;
+}

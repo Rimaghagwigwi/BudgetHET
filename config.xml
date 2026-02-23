@@ -14,6 +14,8 @@
     <ui>
         <!-- Thème de l'application (ex: Fusion, Windows, WindowsVista) -->
         <theme>Fusion</theme>
+        <!-- Feuille de styles QSS -->
+        <stylesheet>src/styles.qss</stylesheet>
         
         <window>
             <title>Chiffrage HET</title>

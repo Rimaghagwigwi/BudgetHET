@@ -1,9 +1,9 @@
 from typing import Any, Dict, List, Tuple
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import Qt, QSize, pyqtSignal
 from PyQt6.QtGui import QColor, QBrush, QFont
-from PyQt6.QtWidgets import (QTableWidget, QTableWidgetItem, QHeaderView, QLabel, 
-                             QVBoxLayout, QAbstractItemView, QCheckBox, QLineEdit, 
-                             QHBoxLayout, QWidget, QScrollArea, QFrame)
+from PyQt6.QtWidgets import (QTableWidget, QTableWidgetItem, QHeaderView, QLabel,
+                             QVBoxLayout, QAbstractItemView, QCheckBox, QLineEdit,
+                             QHBoxLayout, QSizePolicy, QWidget, QScrollArea, QFrame)
 from src.utils.Task import AbstractTask
 
 
@@ -50,6 +50,7 @@ class TaskTableWidget(QTableWidget):
         self.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
 
     def add_category(self, category_name: str):
         self.categories[category_name] = []
@@ -162,13 +163,22 @@ class TaskTableWidget(QTableWidget):
             total_item = self.item(header_row, self.columnCount() - 1)
             total_item.setText(f"{total_hours:.2f}".rstrip("0").rstrip("."))
 
-    def adjust_height_to_content(self):
-        """Ajuste la hauteur du tableau pour afficher tout le contenu sans scrollbar."""
-        total_height = self.horizontalHeader().height() + 2
+    def _content_height(self) -> int:
+        """Calcule la hauteur totale nécessaire pour afficher tout le contenu."""
+        h = self.horizontalHeader().height() + 2
         for row in range(self.rowCount()):
-            total_height += self.rowHeight(row)
-        self.setMinimumHeight(total_height)
-        self.setMaximumHeight(total_height)
+            h += self.rowHeight(row)
+        return h
+
+    def sizeHint(self) -> QSize:
+        return QSize(super().sizeHint().width(), self._content_height())
+
+    def minimumSizeHint(self) -> QSize:
+        return self.sizeHint()
+
+    def adjust_height_to_content(self):
+        """Notifie le layout que la taille a changé."""
+        self.updateGeometry()
 
     def refresh(self):
         """Recrée l'affichage du tableau avec les données actuelles."""
