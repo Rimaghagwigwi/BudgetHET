@@ -67,6 +67,7 @@ class ApplicationData:
 
         # Dossier projets
         self.asset_dir = root.findtext("./asset-dir", "assets/")
+        self.ortems_template_path = root.findtext("./ortems-template-path", "assets/ortems_template.xlsx")
 
         # Stylesheet
         stylesheet_path = root.findtext("./ui/stylesheet", "")

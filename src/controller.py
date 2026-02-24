@@ -96,8 +96,20 @@ class Controller:
             print(f"Erreur lors de l'export du projet : {e}")
 
     def _on_export_ortems(self):
-        repartition = self.model.project.make_ortems_repartition()
-        print("\nRépartition ortems :")
-        print(f"Total : {sum(repartition.values())} heures")
-        for job_code, hours in repartition.items():
-            print(f"  {job_code}: {hours} heures")
+        default_dir = self.model.app_data.asset_dir
+        crm = self.model.project.crm_number or "projet"
+        rev = self.model.project.revision or "rev"
+        default_path = os.path.join(default_dir, f"{crm}_{rev}.xlsx")
+        path, _ = QFileDialog.getSaveFileName(
+            self.window,
+            "Exporter ORTEMS",
+            default_path,
+            "Fichiers Excel (*.xlsx)",
+        )
+        if not path:
+            return
+        try:
+            self.model.project.export_ortems_excel(path)
+            print(f"Export ORTEMS : {path}")
+        except Exception as e:
+            print(f"Erreur export ORTEMS : {e}")

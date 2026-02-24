@@ -1,10 +1,10 @@
 import copy
-import json
+import pandas as pd
 from typing import Dict, List, Optional, Any
 from src.utils.ApplicationData import ApplicationData
 from src.utils.Task import AbstractTask, GeneralTask, LPDCDocument, Labo, Option, Calcul
 from PyQt6.QtCore import QObject, pyqtSignal
-
+import openpyxl
 
 class Project:
     def __init__(self, app_data: ApplicationData):
@@ -220,6 +220,32 @@ class Project:
             repartition[job_code] *= (1 + self.divers_percent)
 
         return repartition
+    
+    def export_ortems_excel(self, path: str):
+        """Exporte la répartition ortems dans un fichier Excel basé sur le template."""
+        repartition = self.make_ortems_repartition()
+
+        template_path = self.app_data.ortems_template_path
+        wb = openpyxl.load_workbook(template_path)
+
+        # --- Feuille 'prepa ORTEMS' : clés en ligne 1 (B:AX), valeurs en ligne 2 ---
+        print("Répartition ORTEMS à exporter :")
+        ws_ortems = wb["prepa ORTEMS"]
+        col = 3
+        job_labels = self.app_data.jobs
+        for job, hours in repartition.items():
+            print(f"    {job} : {hours}")
+            ws_ortems.cell(row=1, column=col).value = job_labels.get(job, job)
+            ws_ortems.cell(row=2, column=col).value = hours
+            col += 1
+
+        # --- Feuille 'Calculs' : B3 = 1.2, C3 = 1.5 ---
+        ws_calculs = wb["Calculs"]
+        ws_calculs["B3"] = 1.2
+        ws_calculs["C3"] = 1.5
+
+        wb.save(path)
+
 
 class Model(QObject):
     project_changed = pyqtSignal()  # Émis lors de l'application des paramètres par défaut

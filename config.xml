@@ -12,6 +12,7 @@
 
     <!-- Dossier import/export-->
     <asset-dir>assets/</asset-dir>
+    <ortems-template-path>template/ortems_template.xlsx</ortems-template-path>
 
     <!-- Configuration de l'interface utilisateur -->
     <ui>
