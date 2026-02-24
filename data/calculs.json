@@ -22,6 +22,27 @@
         }
     },
 
+    "ortems_repartition": {
+        "ELECMAG": {
+            "ING_ELECTROTECH_DEF": 1.0
+        },
+        "BOB": {
+            "PROJ_BOB_DEF": 0.95,
+            "ING_ELECTROTECH_DEF": 0.05
+        },
+        "CONCEPT_MECA": {
+            "PROJ_MACHINE_DEF": 0.7,
+            "ING_MEC_SOL_DEF": 0.3
+        },
+        "MECA_ANSYS": {
+            "ING_MEC_SOL_DEF": 1.0
+        },
+        "AERO_THERMIQUE": {
+            "ING_MEC_SOL_DEF": 0.05,
+            "ING_MEC_FLU_DEF": 0.95
+        }
+    },
+
     "calculs": [
         {
         "index": 1,

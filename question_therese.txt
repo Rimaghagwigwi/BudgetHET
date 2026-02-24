@@ -1,2 +1,0 @@
-- Explication des choix LPDC
-- Que faire du facteur 0.2 pour LPDC en cas de IDENTIQUE_JE

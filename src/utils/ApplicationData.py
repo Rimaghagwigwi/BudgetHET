@@ -13,20 +13,35 @@ class ApplicationData:
             with open(path, 'r', encoding='utf-8') as f:
                 self.raw_data[key] = json.load(f)
 
+        self.people: List[str] = []
+        self.product_types: Dict[str, str] = {} # Dict[code: label] - {"SYNCH": "Synchrone", ...}
+        self.product: Dict[str, Dict[str, str]] = {} # Dict[Catégorie: Dict[code: label]] - {"SYNCH": {"ALT_2P": "Alternateur 2p", ...}, ...}
+        self.types_affaires: Dict[str, str] = {} # Dict[code: label] - {"REMPLACEMENT": "Remplacement lieu et place", ...}
+        self.das: Dict[str, str] = {} # Dict[code: label] - {"MS": "Machines spéciales", ...}
+        self.secteurs: Dict[str, Dict[str, str]] = {} # Dict[DAS: Dict[code: label]] - {"MS": {"INDUS": "Industrie", ...}, ...}
+        self.jobs: Dict[str, str] = {} # Dict[code: label] - {"ADM_COA": "Admin CAO", ...}
+
+        self.tasks: Dict[str, Dict[str, List[GeneralTask]]] = {} # Dict[category: Dict[sub-category: List[GeneralTask]]]
+
+        self.lpdc_docs: List[LPDCDocument] = []
+        self.lpdc_categories: Dict[str, str] = {} # Dict[code: label] - {"BASE": "PDC de base", ...}
         self.lpdc_coeff_secteur: Dict[str, float] = {} # Dict[secteur: coeff]
         self.lpdc_coeff_affaire: Dict[str, float] = {} # Dict[affaire: coeff]
+        self.lpdc_ortems: Dict[str, Dict[str, float]] = {} # Dict[category: Dict[code: coeff]]
 
+        self.calculs: List[Calcul] = []
         self.calcul_categories: Dict[str, str] = {} # Dict[code: label]
         self.calcul_secteur_coeff: Dict[str, Dict[str, float]] = {} # Dict[type_affaire: Dict[activité: coeff]]
+        self.calcul_ortems: Dict[str, Dict[str, float]] = {} # Dict[category: Dict[code: coeff]]
 
+        self.options: List[Option] = []
         self.option_categories: Dict[str, str] = {} # Dict[code: label]
         self.option_category_coeff: Dict[str, Dict[str, float]] = {} # Dict[type_affaire: Dict[category: coeff]]
+        self.option_ortems: Dict[str, Dict[str, float]] = {} # Dict[category: Dict[code: coeff]]
         
-        self.tasks: Dict[str, Dict[str, List[GeneralTask]]] = {} # Dict[category: Dict[sub-category: List[GeneralTask]]]
-        self.lpdc_docs: List[LPDCDocument] = []
-        self.calculs: List[Calcul] = []
-        self.options: List[Option] = []
         self.labo: List[Labo] = []
+        self.labo_categories: Dict[str, str] = {} # Dict[code: label]
+        self.labo_ortems: Dict[str, Dict[str, float]] = {} # Dict[category: Dict[code: coeff]]
 
     def load_config(self, config_path):
         tree = ET.parse(config_path)
@@ -68,23 +83,21 @@ class ApplicationData:
         # 1. Données générales
         base_data = self.raw_data.get("base_data", {})
 
-        # Types d'affaires disponibles: Dict[code: label] - ex: {"NEUF": "Neuf", ...}
+        self.people: List[str] = base_data.get("people", [])
+        self.product_types: Dict[str, str] = base_data.get("product_types", {})
+        self.product: Dict[str, Dict[str, str]] = base_data.get("products", {})
         self.types_affaires: Dict[str, str] = base_data.get("types_affaire", {})
-        
-        # DAS disponibles: Dict[code: label] - ex: {"MS": "Machines spéciales", ...}
         self.das: Dict[str, str] = base_data.get("DAS", {})
-        
-        # Secteurs disponibles: Dict[DAS: Dict[code: label]]
         self.secteurs: Dict[str, Dict[str, str]] = base_data.get("sectors", {})
 
-        # Types de produits: Dict[code: label] - ex: {"SYNCH": "Synchrone", ...}
-        self.types_produit: Dict[str, str] = base_data.get("product_types", {})
-
-        # Catégories de produits disponibles: Dict[Catégorie: Dict[code: label]]
-        self.categories_produit: Dict[str, Dict[str, str]] = base_data.get("products", {})
-
-        # Personnes disponibles pour réalisation et validation
-        self.personnes: List[str] = base_data.get("people", [])
+        self.jobs.clear()
+        base_jobs: Dict[str, str] = base_data.get("jobs", {})
+        suffixes: Dict[str, str] = base_data.get("job_suffixes", {})
+        for suffix_code, suffix_label in suffixes.items():
+            for job_code, job_label in base_jobs.items():
+                full_code = f"{job_code}_{suffix_code}"
+                full_label = f"{job_label} {suffix_label}"
+                self.jobs[full_code] = full_label
 
         # 2. Tâches générales
         tasks_data = self.raw_data['tasks'].get("tasks", {})
@@ -100,6 +113,7 @@ class ApplicationData:
                     coeff_type_affaire = task_data.get("coeff_type_affaire", {})
                     coeff_secteur = task_data.get("coeff_secteur", {})
                     is_multiplicative = task_data.get("is_multiplicative", False)
+                    ortems_repartition = task_data.get("ortems_repartition", {})
                     
                     general_task = GeneralTask(
                         index=index,
@@ -107,13 +121,16 @@ class ApplicationData:
                         base_hours_machine=base_hours_machine,
                         coeff_type_affaire=coeff_type_affaire,
                         coeff_secteur=coeff_secteur,
-                        mutiplicative=is_multiplicative
+                        mutiplicative=is_multiplicative,
+                        ortems_repartition=ortems_repartition
                     )
                     self.tasks[category][sub_category].append(general_task)
                     index += 1
         # 3. LPDC
         self.lpdc_coeff_secteur = self.raw_data["LPDC"]["coeff_secteur"]
         self.lpdc_coeff_affaire = self.raw_data["LPDC"]["coeff_affaire"]
+        self.lpdc_categories = self.raw_data["LPDC"]["categories"]
+        self.lpdc_ortems = self.raw_data["LPDC"].get("ortems_repartition", {}) # Dict[category: Dict[code: coeff]]
 
         docs_source: List[dict] = self.raw_data["LPDC"].get("documents", [])
         
@@ -131,6 +148,7 @@ class ApplicationData:
         # 4. Calculs
         self.calcul_categories: Dict[str, str] = self.raw_data["calculs"]["categories"] # Dict[code: label]
         self.calcul_coeff_type_affaire = self.raw_data["calculs"]["coeff_type_affaire"]
+        self.calcul_ortems = self.raw_data["calculs"].get("ortems_repartition", {}) # Dict[category: Dict[code: coeff]]
 
         calc_list: List[dict] = self.raw_data['calculs'].get("calculs", [])
         for calc in calc_list:
@@ -146,6 +164,8 @@ class ApplicationData:
         # 5. Options
         self.option_categories: Dict[str, str] = self.raw_data["options"]["categories"] # Dict[code: label]
         self.option_category_coeff: Dict[str, Dict[str, float]] = self.raw_data["options"]["category_coeff"]
+        self.option_ortems = self.raw_data["options"].get("ortems_repartition", {}) # Dict[category: Dict[code: coeff]]
+
         options_list: Dict[str, List[dict]] = self.raw_data["options"].get("options", {}) # Dict[category: List[Option]]
         for cat_id, opts_list in options_list.items():
             for option in opts_list:
@@ -158,11 +178,15 @@ class ApplicationData:
                 self.options.append(option)
 
         # 6. Labo
-        labo_list: List[dict] = self.raw_data['labo'].get("labo", [])
+        self.labo_categories: Dict[str, str] = self.raw_data["labo"]["categories"] # Dict[code: label]
+        self.labo_ortems = self.raw_data["labo"].get("ortems_repartition", {}) # Dict[category: Dict[code: coeff]]
+
+        labo_list: List[dict] = self.raw_data['labo']["labo"]
         for item in labo_list:
             labo_task = Labo(
                 index=item.get("index", 0),
                 label=item.get("label", ""),
-                hours=item.get("hours", 0.0)
+                hours=item.get("hours", 0.0),
+                category=item.get("category", "")
             )
             self.labo.append(labo_task)

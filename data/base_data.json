@@ -51,6 +51,37 @@
         "MIL": {
             "MIL": "Marine militaire"
         }
+    },
+
+    "jobs": {
+        "ADM_COA": "Administrateur CAO",
+        "ASS_ADMIN": "Assistant Administratif",
+        "DIR_TECH": "Directeur Technique",
+        "ING_ELECTROTECH": "Ingénieur électrotechnique",
+        "ING_MEC_FLU": "Ingénieur mécanique - fluides",
+        "ING_MEC_SOL": "Ingénieur mécanique - solide",
+        "ING_METH": "Ingénieur méthodes",
+        "LAB_METALO": "Laboratoire métallurgie",
+        "LAB_ISOL": "Laboratoire isolation",
+        "PROJ_ARMOIRE": "Projecteur armoire électrique",
+        "PROJ_BOB": "Projecteur bobinage",
+        "PROJ_INSTRUM": "Projecteur instrumentation",
+        "PROJ_MACHINE": "Projecteur machine tournante",
+        "REF_QUAL_ET": "Référent qualité études",
+        "REF_FDMS": "Référent FDMS",
+        "REF_SLI": "Référent SLI",
+        "RESP_POLE_TECH": "Responsable de pôle technique",
+        "RESP_EQ_TECH": "Responsable équipe technique",
+        "RESP_ET_PROJ": "Responsable d'études projet",
+        "SYS_CONT_COM_AUTO": "Système de contrôle commande - automatisme",
+        "SYS_CONT_COM_ELECTRIQUE": "Système de contrôle commande - conception électrique",
+        "SYS_CONT_COM_LOGICIEL": "Système de contrôle commande - logiciel",
+        "SYS_CONT_COM_ELECTRONIQUE": "Système de contrôle commande - électronique",
+        "SYS_CONT_COM_EP": "Système de contrôle commande - électronique de puissance"
+    },
+    "job_suffixes": {
+        "DEF": "Définition",
+        "PROD": "Production"
     }
 }
   

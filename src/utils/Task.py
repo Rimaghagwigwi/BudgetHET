@@ -22,13 +22,15 @@ class GeneralTask(AbstractTask):
                  base_hours_machine: Dict[str, float],
                  coeff_type_affaire: Dict[str, float],
                  coeff_secteur: Dict[str, float],
-                 mutiplicative: bool = False):
+                 mutiplicative: bool = False,
+                 ortems_repartition: Dict[str, float] = None):
         super().__init__(label)
         self.index = index
         self.base_hours_machine = base_hours_machine
         self.coeff_type_affaire = coeff_type_affaire
         self.coeff_secteur = coeff_secteur
         self.mutiplicative = mutiplicative
+        self.ortems_repartition = ortems_repartition if ortems_repartition is not None else {}
 
     @override
     def default_hours(self, context: Dict[str, Any]) -> float:
@@ -160,10 +162,11 @@ class Calcul(AbstractTask):
             return self.default_hours(context) * affaire_activity_coeff
         
 class Labo(AbstractTask):
-    def __init__(self, index: int, label: str, hours: float):
+    def __init__(self, index: int, label: str, hours: float, category: str):
         super().__init__(label)
         self.index = index
         self.hours = hours
+        self.category = category
 
     @override
     def default_hours(self, context: Dict[str, Any]) -> float:

@@ -89,44 +89,50 @@ class Project:
         """Retourne la liste plate de toutes les tâches générales."""
         return [task for subcats in self.tasks.values() for tasks in subcats.values() for task in tasks]
     
+    def grouped_claculs(self) -> Dict[str, List[Calcul]]:
+        grouped_calculs = {}
+        for calc in self.calculs:
+            if calc.category not in grouped_calculs:
+                grouped_calculs[calc.category] = []
+            grouped_calculs[calc.category].append(calc)
+        return grouped_calculs
+    
+    def grouped_options(self) -> Dict[str, List[Option]]:
+        grouped_options = {}
+        for opt in self.options:
+            if opt.category not in grouped_options:
+                grouped_options[opt.category] = []
+            grouped_options[opt.category].append(opt)
+        return grouped_options
+    
     def grouped_lpdc(self) -> Dict[str, List[LPDCDocument]]:
         """Retourne les documents LPDC regroupés en 'Base' et 'Particulières'."""
-        mandatory = []
-        optional = []
+        grouped_lpdc = {"BASE": [], "PART": []} # ! Utiliser les codes catégories ("BASE", "PART")
 
         for doc in self.lpdc_docs:
             if self.machine_type not in doc.applicable_pour:
                 continue
             if self.secteur in doc.secteur_obligatoire:
-                mandatory.append(doc)
+                grouped_lpdc["BASE"].append(doc)
             elif doc.option_possible:
-                optional.append(doc)
-        return mandatory, optional
+                grouped_lpdc["PART"].append(doc)
+        return grouped_lpdc
+    
+    def grouped_labo(self) -> Dict[str, List[Labo]]:
+        grouped_labo = {}
+        for labo in self.labo:
+            if labo.category not in grouped_labo:
+                grouped_labo[labo.category] = []
+            grouped_labo[labo.category].append(labo)
+        return grouped_labo
 
     def generate_summary_tree(self) -> Dict[str, Any]:
-        grouped_calculs = {}
-        for calc in self.calculs:
-            cat = self.app_data.calcul_categories.get(calc.category, calc.category)
-            if cat not in grouped_calculs:
-                grouped_calculs[cat] = []
-            grouped_calculs[cat].append(calc)
-
-        grouped_options = {}
-        for opt in self.options:
-            cat = self.app_data.option_categories.get(opt.category, opt.category)
-            if cat not in grouped_options:
-                grouped_options[cat] = []
-            grouped_options[cat].append(opt)
-
-        grouped_lpdc_dict = {}
-        grouped_lpdc_dict["Base"], grouped_lpdc_dict["Particulières"] = self.grouped_lpdc()
-
         return {
             "Tâches Générales": self.tasks,
-            "Pièces et documents contractuels": grouped_lpdc_dict,
-            "Options": grouped_options,
-            "Calculs": grouped_calculs,
-            "Laboratoire": self.labo,
+            "Calculs": self.grouped_claculs(),
+            "Options": self.grouped_options(),
+            "Pièces et documents contractuels": self.grouped_lpdc(),
+            "Laboratoire": self.grouped_labo(),
         }
     
     def compute_tree_hours(self, node) -> float:
@@ -175,7 +181,45 @@ class Project:
     def calculate_total_with_rex(self) -> float:
         self.total_with_rex = self.n_machines_total * self.manual_rex_coeff
         return self.total_with_rex
+    
+    def _apply_group_repartition(
+        self,
+        repartition: Dict[str, float],
+        grouped: Dict[str, List],
+        ortems_map: Dict[str, Dict[str, float]],
+    ) -> None:
+        """Accumule les heures d'un groupe catégorisé dans repartition."""
+        for category, items in grouped.items():
+            rep = ortems_map.get(category, {})
+            cat_sum = sum(item.effective_hours(self.context()) for item in items)
+            for job_code, coeff in rep.items():
+                repartition[job_code] += cat_sum * coeff
 
+    def make_ortems_repartition(self) -> Dict[str, float]:
+        """Crée la répartition ortems finale en combinant les différentes sources."""
+        repartition = dict.fromkeys(self.app_data.jobs.keys(), 0.0)
+
+        # Tâches générales (répartition définie par tâche)
+        for task in self.get_all_tasks():
+            hours = task.effective_hours(self.context())
+            if hours > 0 and task.ortems_repartition:
+                for job_code, coeff in task.ortems_repartition.items():
+                    repartition[job_code] += hours * coeff
+
+        # Sources catégorisées
+        for grouped, ortems_map in [
+            (self.grouped_claculs(), self.app_data.calcul_ortems),
+            (self.grouped_options(), self.app_data.option_ortems),
+            (self.grouped_lpdc(),    self.app_data.lpdc_ortems),
+            (self.grouped_labo(),    self.app_data.labo_ortems),
+        ]:
+            self._apply_group_repartition(repartition, grouped, ortems_map)
+
+        # Application du divers
+        for job_code in repartition:
+            repartition[job_code] *= (1 + self.divers_percent)
+
+        return repartition
 
 class Model(QObject):
     project_changed = pyqtSignal()  # Émis lors de l'application des paramètres par défaut

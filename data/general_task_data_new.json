@@ -9,7 +9,6 @@
                         "ALT_4P_S": 4,
                         "MOTEUR_V_FIXE": 4,
                         "MOTEUR_V_VAR": 4,
-                        
                         "ASYNCH_CAGE": 4,
                         "ASYNCH_BAGUES": 4
                     },
@@ -17,11 +16,12 @@
                         "INDUS": 1,
                         "OIL_GAS": 2,
                         "MARINE_CIVILE": 1,
-
                         "NUC_QUALIFIE": 3,
                         "NUC_NON_QUALIFIE": 3,
-
                         "MIL": 1
+                    },
+                    "ortems_repartition": {
+                        "RESP_ET_PROJ_DEF": 1
                     }
                 },
                 "lancement structure gen IFS (caméléon)": {
@@ -33,6 +33,9 @@
                         "MOTEUR_V_VAR": 8,
                         "ASYNCH_CAGE": 8,
                         "ASYNCH_BAGUES": 8
+                    },
+                    "ortems_repartition": {
+                        "ING_ELECTROTECH_DEF": 1
                     }
                 },
                 "tracé d'ensemble (3D)": {
@@ -47,6 +50,9 @@
                     },
                     "coeff_type_affaire": {
                         "IDENTIQUE_JE": 0
+                    },
+                    "ortems_repartition": {
+                        "PROJ_MACHINE_DEF": 1
                     }
                 },
                 "revue de conception (ensemble)": {
@@ -62,6 +68,12 @@
                     "coeff_type_affaire": {
                         "IDENTIQUE_JE": 0,
                         "REMPLACEMENT": 1.2
+                    },
+                    "ortems_repartition": {
+                        "PROJ_MACHINE_DEF": 0.25,
+                        "ING_MEC_SOL_DEF": 0.25,
+                        "ING_ELECTROTECH_DEF": 0.25,
+                        "RESP_ET_PROJ_DEF": 0.25
                     }
                 }
             },
@@ -84,7 +96,12 @@
                         "NUC_NON_QUALIFIE": 2,
                         "MIL": 0
                     },
-                    "is_multiplicative": true
+                    "is_multiplicative": true,
+                    "ortems_repartition": {
+                        "PROJ_MACHINE_PROD" : 0.65,
+                        "RESP_ET_PROJ_PROD" : 0.3,
+                        "ING_MEC_SOL_PROD": 0.05
+                    }
                 },
                 "SUIVI FABRICATION machine": {
                     "base": {
@@ -104,7 +121,12 @@
                         "NUC_NON_QUALIFIE": 2,
                         "MIL": 0
                     },
-                    "is_multiplicative": true
+                    "is_multiplicative": true,
+                    "ortems_repartition": {
+                        "PROJ_MACHINE_PROD" : 0.65,
+                        "RESP_ET_PROJ_PROD" : 0.3,
+                        "ING_MEC_SOL_PROD": 0.05
+                    }
                 },
                 "SUIVI FABRICATION armoires": {
                     "base": {
@@ -124,7 +146,13 @@
                         "NUC_NON_QUALIFIE": 2,
                         "MIL": 0
                     },
-                    "is_multiplicative": true
+                    "is_multiplicative": true,
+                    "ortems_repartition": {
+                        "RESP_ET_PROJ_PROD" : 0.3,
+                        "SYS_CONT_COM_ELECTRONIQUE_PROD": 0.2,
+                        "SYS_CONT_COM_EP_PROD": 0.3,
+                        "SYS_CONT_COM_ELECTRIQUE_PROD": 0.2
+                    }
                 },
                 "SUIVI ESSAIS machine": {
                     "base": {
@@ -136,7 +164,12 @@
                         "ASYNCH_CAGE": 10,
                         "ASYNCH_BAGUES": 10
                     },
-                    "is_multiplicative": true
+                    "is_multiplicative": true,
+                    "ortems_repartition": {
+                        "RESP_ET_PROJ_PROD" : 0.3,
+                        "ING_MEC_SOL_PROD": 0.35,
+                        "ING_ELECTROTECH_PROD": 0.35
+                    }
                 },
                 "SUIVI ESSAIS armoires": {
                     "base": {
@@ -148,7 +181,14 @@
                         "ASYNCH_CAGE": 0,
                         "ASYNCH_BAGUES": 0
                     },
-                    "is_multiplicative": true
+                    "is_multiplicative": true,
+                    "ortems_repartition": {
+                        "RESP_ET_PROJ_PROD" : 0.2,
+                        "SYS_CONT_COM_LOGICIEL_PROD": 0.2,
+                        "SYS_CONT_COM_AUTO_PROD": 0.2,
+                        "SYS_CONT_COM_ELECTRONIQUE_PROD": 0.2,
+                        "SYS_CONT_COM_EP_PROD": 0.2
+                    }
                 },
                 "SUIVI CLIENT/ REUNION": {
                     "base": {
@@ -168,7 +208,13 @@
                         "NUC_NON_QUALIFIE": 2,
                         "MIL": 0
                     },
-                    "is_multiplicative": true
+                    "is_multiplicative": true,
+                    "ortems_repartition": {
+                        "PROJ_MACHINE_DEF": 0.1,
+                        "RESP_ET_PROJ_DEF": 0.6,
+                        "SYS_CONT_COM_ELECTRIQUE_DEF": 0.1,
+                        "REF_QUAL_ET_DEF": 0.2
+                    }
                 }
             }
         },
@@ -188,7 +234,11 @@
                         "NEUF": 1,
                         "IDENTIQUE_JE": 0.2,
                         "REMPLACEMENT": 1.2
-                    } 
+                    },
+                    "ortems_repartition": {
+                        "PROJ_BOB_DEF": 0.95,
+                        "RESP_ET_PROJ_DEF": 0.05
+                    }
                 },
                 "tôlerie (lanterne tôlée)": {
                     "base": {
@@ -204,7 +254,12 @@
                         "NEUF": 1,
                         "IDENTIQUE_JE": 0.2,
                         "REMPLACEMENT": 1.2
-                    } 
+                    },
+                    "ortems_repartition": {
+                        "PROJ_MACHINE_DEF": 0.50,
+                        "RESP_ET_PROJ_DEF": 0.05,
+                        "ING_ELECTROTECH_DEF": 0.45
+                    }
                 },
                 "carcasse": {
                     "base": {
@@ -220,7 +275,12 @@
                         "NEUF": 1,
                         "IDENTIQUE_JE": 0.2,
                         "REMPLACEMENT": 1.5
-                    } 
+                    },
+                    "ortems_repartition": {
+                        "PROJ_MACHINE_DEF": 0.90,
+                        "RESP_ET_PROJ_DEF": 0.05,
+                        "LAB_METALO_DEF": 0.05
+                    }
                 }
             },
             "Rotor": {
@@ -238,7 +298,12 @@
                         "NEUF": 1,
                         "IDENTIQUE_JE": 0.2,
                         "REMPLACEMENT": 1.2
-                    } 
+                    },
+                    "ortems_repartition": {
+                        "PROJ_MACHINE_DEF": 0.82,
+                        "PROJ_BOB_DEF": 0.13,
+                        "RESP_ET_PROJ_DEF": 0.05
+                    }
                 },
                 "tolerie": {
                     "base": {
@@ -254,7 +319,11 @@
                         "NEUF": 1,
                         "IDENTIQUE_JE": 0.2,
                         "REMPLACEMENT": 1.2
-                    } 
+                    },
+                    "ortems_repartition": {
+                        "PROJ_MACHINE_DEF": 0.95,
+                        "RESP_ET_PROJ_DEF": 0.05
+                    }
                 },
                 "arbre / ventilateur": {
                     "base": {
@@ -270,7 +339,11 @@
                         "NEUF": 1,
                         "IDENTIQUE_JE": 0.2,
                         "REMPLACEMENT": 1.2
-                    } 
+                    },
+                    "ortems_repartition": {
+                        "PROJ_MACHINE_DEF": 0.95,
+                        "RESP_ET_PROJ_DEF": 0.05
+                    }
                 },
                 "AE/HNB/bagues (excitation statique/bagues et balais JEMAB)": {
                     "base": {
@@ -286,7 +359,11 @@
                         "NEUF": 1,
                         "IDENTIQUE_JE": 0.2,
                         "REMPLACEMENT": 1.2
-                    } 
+                    },
+                    "ortems_repartition": {
+                        "PROJ_BOB_DEF": 0.95,
+                        "RESP_ET_PROJ_DEF": 0.05
+                    }
                 },
                 "PMG": {
                     "base": {
@@ -302,7 +379,12 @@
                         "NEUF": 1,
                         "IDENTIQUE_JE": 0.2,
                         "REMPLACEMENT": 1.2
-                    } 
+                    },
+                    "ortems_repartition": {
+                        "PROJ_MACHINE_DEF": 0.47,
+                        "PROJ_BOB_DEF": 0.48,
+                        "RESP_ET_PROJ_DEF": 0.05
+                    }
                 },
                 "roue RT (diodes/module gate/pulsin/résitance démarrage/balast)": {
                     "base": {
@@ -318,7 +400,12 @@
                         "NEUF": 1,
                         "IDENTIQUE_JE": 0.26,
                         "REMPLACEMENT": 1.56
-                    } 
+                    },
+                    "ortems_repartition": {
+                        "PROJ_MACHINE_DEF": 0.47,
+                        "PROJ_BOB_DEF": 0.48,
+                        "RESP_ET_PROJ_DEF": 0.05
+                    }
                 }
             },
             "Habillages": {
@@ -336,7 +423,11 @@
                         "NEUF": 1,
                         "IDENTIQUE_JE": 0.2,
                         "REMPLACEMENT": 1.2
-                    } 
+                    },
+                    "ortems_repartition": {
+                        "PROJ_MACHINE_DEF": 0.70,
+                        "ING_MEC_SOL_DEF": 0.30
+                    }
                 },
                 "système de refroidissement": {
                     "base": {
@@ -352,7 +443,11 @@
                         "NEUF": 1,
                         "IDENTIQUE_JE": 0.2,
                         "REMPLACEMENT": 1.2
-                    } 
+                    },
+                    "ortems_repartition": {
+                        "PROJ_MACHINE_DEF": 0.70,
+                        "ING_MEC_SOL_DEF": 0.30
+                    }
                 },
                 "Boites à bornes de puissance base": {
                     "base": {
@@ -368,7 +463,11 @@
                         "NEUF": 1,
                         "IDENTIQUE_JE": 0.2,
                         "REMPLACEMENT": 1.2
-                    } 
+                    },
+                    "ortems_repartition": {
+                        "PROJ_MACHINE_DEF": 0.95,
+                        "RESP_ET_PROJ_DEF": 0.05
+                    }
                 },
                 "boites filerie base": {
                     "base": {
@@ -392,6 +491,10 @@
                         "NUC_QUALIFIE": 1.6,
                         "NUC_NON_QUALIFIE": 1.6,
                         "MIL": 1.1
+                    },
+                    "ortems_repartition": {
+                        "PROJ_INSTRUM_DEF": 0.95,
+                        "RESP_ET_PROJ_DEF": 0.05
                     }
                 },
                 "outillages de base": {
@@ -408,7 +511,11 @@
                         "NEUF": 1,
                         "IDENTIQUE_JE": 0.2,
                         "REMPLACEMENT": 1.2
-                    } 
+                    },
+                    "ortems_repartition": {
+                        "PROJ_MACHINE_DEF": 0.95,
+                        "RESP_ET_PROJ_DEF": 0.05
+                    }
                 }
             },
             "armoires": {
@@ -426,7 +533,13 @@
                         "NEUF": 1,
                         "IDENTIQUE_JE": 1.3,
                         "REMPLACEMENT": 1.3
-                    } 
+                    },
+                    "ortems_repartition": {
+                        "RESP_ET_PROJ_DEF": 0.05,
+                        "SYS_CONT_COM_ELECTRONIQUE_DEF": 0.20,
+                        "SYS_CONT_COM_EP_DEF": 0.20,
+                        "PROJ_ARMOIRE_DEF": 0.55
+                    }
                 },
                 "armoire phase neutre APN": {
                     "base": {
@@ -450,6 +563,11 @@
                         "NUC_QUALIFIE": 1.35,
                         "NUC_NON_QUALIFIE": 1.35,
                         "MIL": 1.1
+                    },
+                    "ortems_repartition": {
+                        "PROJ_MACHINE_DEF": 0.70,
+                        "PROJ_INSTRUM_DEF": 0.25,
+                        "RESP_ET_PROJ_DEF": 0.05
                     }
                 },
                 "armoire résistance de mise à la terre": {
@@ -466,7 +584,12 @@
                         "NEUF": 1,
                         "IDENTIQUE_JE": 0.2,
                         "REMPLACEMENT": 1.2
-                    } 
+                    },
+                    "ortems_repartition": {
+                        "PROJ_MACHINE_DEF": 0.70,
+                        "PROJ_INSTRUM_DEF": 0.25,
+                        "RESP_ET_PROJ_DEF": 0.05
+                    }
                 },
                 "drive BT": {
                     "base": {
@@ -482,7 +605,15 @@
                         "NEUF": 1,
                         "IDENTIQUE_JE": 0.2,
                         "REMPLACEMENT": 1.2
-                    } 
+                    },
+                    "ortems_repartition": {
+                        "RESP_ET_PROJ_DEF": 0.05,
+                        "SYS_CONT_COM_AUTO_DEF": 0.10,
+                        "SYS_CONT_COM_ELECTRONIQUE_DEF": 0.10,
+                        "SYS_CONT_COM_EP_DEF": 0.50,
+                        "SYS_CONT_COM_ELECTRIQUE_DEF": 0.15,
+                        "PROJ_ARMOIRE_DEF": 0.10
+                    }
                 },
                 "développement logiciels (soft pour drive ou gestion régulaton)": {
                     "base": {
@@ -498,7 +629,14 @@
                         "NEUF": 1,
                         "IDENTIQUE_JE": 0.2,
                         "REMPLACEMENT": 1.2
-                    } 
+                    },
+                    "ortems_repartition": {
+                        "SYS_CONT_COM_LOGICIEL_DEF": 0.60,
+                        "SYS_CONT_COM_AUTO_DEF": 0.10,
+                        "SYS_CONT_COM_ELECTRONIQUE_DEF": 0.15,
+                        "SYS_CONT_COM_EP_DEF": 0.10,
+                        "SYS_CONT_COM_ELECTRIQUE_DEF": 0.05
+                    }
                 }
             }
         }

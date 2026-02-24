@@ -12,6 +12,32 @@
     "IDENTIQUE_JE": 0.2,
     "REMPLACEMENT": 1.2
   },
+
+  "categories": {
+    "BASE": "PDC de base",
+    "PART": "PDC particuliers"
+  },
+
+  "ortems_repartition": {
+    "BASE": {
+      "PROJ_MACHINE_DEF": 0.3,
+      "PROJ_INSTRUM_DEF": 0.1,
+      "ING_MEC_SOL_DEF": 0.1,
+      "ING_ELECTROTECH_DEF": 0.1,
+      "RESP_ET_PROJ_DEF": 0.15,
+      "SYS_CONT_COM_LOGICIEL_DEF": 0.1,
+      "SYS_CONT_COM_AUTO_DEF": 0.05,
+      "SYS_CONT_COM_ELECTRONIQUE_DEF": 0.05,
+      "SYS_CONT_COM_ELECTRIQUE_DEF": 0.05
+    },
+    "PART": {
+      "PROJ_MACHINE_DEF": 0.3,
+      "PROJ_INSTRUM_DEF": 0.1,
+      "RESP_ET_PROJ_DEF": 0.2,
+      "ING_MEC_SOL_DEF": 0.2,
+      "ING_ELECTROTECH_DEF": 0.2
+    }
+  },
   
   "documents": [
     {

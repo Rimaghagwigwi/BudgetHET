@@ -11,11 +11,11 @@ class LPDCTabController(BaseTaskTabController):
         return self.model.project.lpdc_docs
 
     def _build_tables(self) -> List[TaskTableWidget]:
-        mandatory, optional = self.model.project.grouped_lpdc()
+        grouped = self.model.project.grouped_lpdc()
 
         return [
-            self._create_table(mandatory, "Documents LPDC obligatoires", is_optional=False),
-            self._create_table(optional, "Documents LPDC optionnels", is_optional=True),
+            self._create_table(grouped["BASE"], "Documents LPDC obligatoires", is_optional=False),
+            self._create_table(grouped["PART"], "Documents LPDC optionnels", is_optional=True),
         ]
 
     def _create_table(self, docs: List[LPDCDocument], label: str,

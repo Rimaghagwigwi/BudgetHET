@@ -8,7 +8,10 @@
     "ESSAIS": "Essais",
     "NORME": "Exigences normatives",
     "CONSTR_PARTIC": "Construction particulière",
-    "EXIG_TECH": "Exigences techniques"
+    "EXIG_TECH": "Exigences techniques",
+    "MIL": "Marine militaire",
+    "FDMS": "FDMS",
+    "SLI": "SLI"
   },
 
   "category_coeff": {
@@ -26,6 +29,58 @@
     }
   },
   
+  "ortems_repartition": {
+    "BAGUES": {
+      "PROJ_MACHINE_DEF": 1.00
+    },
+    "ATEX": {
+      "PROJ_MACHINE_DEF": 0.60,
+      "RESP_ET_PROJ_DEF": 0.40
+    },
+    "ENV": {
+      "PROJ_MACHINE_DEF": 0.95,
+      "RESP_ET_PROJ_DEF": 0.05
+    },
+    "INSTRUM": {
+      "PROJ_MACHINE_DEF": 0.40,
+      "PROJ_INSTRUM_DEF": 0.45,
+      "RESP_ET_PROJ_DEF": 0.15
+    },
+    "ESSAIS": {
+      "RESP_ET_PROJ_DEF": 0.70,
+      "ING_ELECTROTECH_DEF": 0.30
+    },
+    "NORME": {
+      "RESP_ET_PROJ_DEF": 0.70,
+      "ING_MEC_SOL_DEF": 0.10,
+      "ING_ELECTROTECH_DEF": 0.10,
+      "SYS_CONT_COM_ELECTRONIQUE_DEF": 0.10
+    },
+    "INSTRUM_ATEX": {
+      "PROJ_MACHINE_DEF": 0.40,
+      "PROJ_INSTRUM_DEF": 0.45,
+      "RESP_ET_PROJ_DEF": 0.15
+    },
+    "CONSTR_PARTIC": {
+      "PROJ_MACHINE_DEF": 0.60,
+      "RESP_ET_PROJ_DEF": 0.30,
+      "ING_MEC_SOL_DEF": 0.10
+    },
+    "EXIG_TECH": {
+      "RESP_ET_PROJ_DEF": 0.70,
+      "ING_MEC_SOL_DEF": 0.30
+    },
+    "MIL": {
+      "RESP_ET_PROJ_DEF": 1.00
+    },
+    "FDMS": {
+      "REF_FDMS_DEF": 1.00
+    },
+    "SLI": {
+      "REF_SLI_DEF": 1.00
+    }
+  },
+
   "options": {
     "BAGUES": [
       {
@@ -784,6 +839,9 @@
         "label": "Autre contrôle spécifique imposé",
         "hours": 0
       }
-    ]
+    ],
+    "MIL": [],
+    "FDMS": [],
+    "SLI": []
   }
 }

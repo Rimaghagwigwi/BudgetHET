@@ -50,6 +50,7 @@ class Controller:
     def _connect_io_signals(self):
         self.view_general.btn_import.clicked.connect(self._on_import_project)
         self.view_summary.export_json_clicked.connect(self._on_export_json)
+        self.view_summary.export_ortems_clicked.connect(self._on_export_ortems)
 
     # ------------------------------------------------------------------
     # Import
@@ -93,3 +94,10 @@ class Controller:
             print(f"Projet exporté : {path}")
         except Exception as e:
             print(f"Erreur lors de l'export du projet : {e}")
+
+    def _on_export_ortems(self):
+        repartition = self.model.project.make_ortems_repartition()
+        print("\nRépartition ortems :")
+        print(f"Total : {sum(repartition.values())} heures")
+        for job_code, hours in repartition.items():
+            print(f"  {job_code}: {hours} heures")

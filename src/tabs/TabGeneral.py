@@ -138,12 +138,12 @@ class TabGeneralController:
             self.update_secteur_list()
 
             # Catégories produit
-            self.view.set_combo_items(self.view.combo_category, self.model.app_data.types_produit)
+            self.view.set_combo_items(self.view.combo_category, self.model.app_data.product_types)
             self.update_product_list()
 
             # Personnes
-            self.view.set_combo_items(self.view.combo_realise_par, self.model.app_data.personnes)
-            self.view.set_combo_items(self.view.combo_valide_par, self.model.app_data.personnes)
+            self.view.set_combo_items(self.view.combo_realise_par, self.model.app_data.people)
+            self.view.set_combo_items(self.view.combo_valide_par, self.model.app_data.people)
 
         except Exception as e:
             print(f"Erreur lors du peuplement de l'onglet Général: {e}")
@@ -162,7 +162,7 @@ class TabGeneralController:
         """Met à jour la liste des produits en fonction du type de produit sélectionné"""
         type_code = self.view.combo_category.currentData()  # Récupère le code du type
         if type_code:
-            products = self.model.app_data.categories_produit.get(type_code, {})
+            products = self.model.app_data.product.get(type_code, {})
             self.view.set_combo_items(self.view.combo_product, products)
         else:
             self.view.combo_product.clear()
@@ -230,7 +230,7 @@ class TabGeneralController:
 
         # Catégorie produit + mise à jour de la liste produits
         self._set_combo_by_data(self.view.combo_category, prj.machine_type)
-        products = self.model.app_data.categories_produit.get(prj.machine_type, {})
+        products = self.model.app_data.product.get(prj.machine_type, {})
         self.view.set_combo_items(self.view.combo_product, products)
         self._set_combo_by_data(self.view.combo_product, prj.product)
 

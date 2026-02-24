@@ -1,13 +1,29 @@
 {
+    "categories": {
+        "LAB_METAL": "Labo métallurgie",
+        "LAB_ISOL": "Labo isolant"
+    },
+
+    "ortems_repartition": {
+        "LAB_METAL": {
+            "LAB_METALO_DEF": 1
+        },
+        "LAB_ISOL": {
+            "LAB_ISOL_DEF": 1
+        }
+    },
+
     "labo": [
         {
         "index": 1,
         "label": "Labo Métalo",
+        "category": "LAB_METAL",
         "hours": 0
         },
         {
         "index": 2,
         "label": "Labo isolant",
+        "category": "LAB_ISOL",
         "hours": 0
         }
     ]
