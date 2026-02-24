@@ -19,9 +19,6 @@ class CollapsibleSection(QTreeWidget):
         self.setAlternatingRowColors(True)
         self.setIndentation(15)
         self.resizeColumnToContents(0)
-        #→self.setColumnWidth(0, int(width * 0.7))
-        #self.setColumnWidth(1, int(width * 0.3))
-
 
     def _get_expanded_paths(self) -> set:
         """Sauvegarde les chemins des noeuds dépliés."""
@@ -125,6 +122,8 @@ class TabSummary(QWidget):
     
     divers_changed = pyqtSignal(float)
     rex_coeff_changed = pyqtSignal(float)
+    rex_hours_changed = pyqtSignal(float)
+    rex_hours_cleared = pyqtSignal()
     export_json_clicked = pyqtSignal()
     export_ortems_clicked = pyqtSignal()
     export_excel_clicked = pyqtSignal()
@@ -238,6 +237,16 @@ class TabSummary(QWidget):
         layout.addWidget(rex_coeff_label, row, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
         layout.addLayout(rex_percent_container, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
         row += 1
+
+        # REX - Heures (optionnel, remplace le coeff si renseigné)
+        rex_hours_label = self._create_styled_label(text="Heures REX (optionnel) :")
+        self.edit_rex_hours = QLineEdit()
+        self.edit_rex_hours.setValidator(float_validator)
+        self.edit_rex_hours.editingFinished.connect(self._on_rex_hours_text_changed)
+        layout.addWidget(rex_hours_label, row, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(self.edit_rex_hours, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
+        row += 1
+
         self._add_row_separator(layout, row); row += 1
         
         # Total avec REX
@@ -259,12 +268,19 @@ class TabSummary(QWidget):
     
     def _on_rex_percent_text_changed(self):
         """Gère le changement de texte dans le champ REX %."""
-        try:
-            text = self.edit_rex_percent.text()
-            value = float(text) if text else 0.0
-            self.rex_coeff_changed.emit(value / 100)
-        except ValueError:
-            pass
+        text = self.edit_rex_percent.text()
+        value = float(text) if text else 100
+        self.rex_coeff_changed.emit(value / 100)
+    
+    def _on_rex_hours_text_changed(self):
+        text = self.edit_rex_hours.text().strip()
+        if not text:
+            self.rex_hours_cleared.emit()
+        else:
+            try:
+                self.rex_hours_changed.emit(float(text))
+            except ValueError:
+                pass
 
     def update_totals(self, first_machine_subtotal: float, first_machine_total: float, quantity: int, n_machines_total: float, total_with_rex: float):
         """Met à jour l'affichage des totaux."""
@@ -273,6 +289,11 @@ class TabSummary(QWidget):
         self.label_n_machines.setText(f"Total {quantity} machines:")
         self.val_n_machines_total.setText(f"{n_machines_total:.2f} h")
         self.total_with_rex_val.setText(f"{total_with_rex:.2f} h")
+
+    def sync_rex_fields(self, coeff_pct: float, rex_hours: float):
+        """Synchronise les deux champs REX sans déclencher de signaux."""
+        self.edit_rex_percent.setText(f"{coeff_pct:.1f}")
+        self.edit_rex_hours.setText(f"{rex_hours:.2f}")
 
 class TabSummaryController:
     """Contrôleur pour l'onglet récapitulatif."""
@@ -288,7 +309,9 @@ class TabSummaryController:
         # Connecter les signaux de la vue
         self.view.divers_changed.connect(self._on_divers_changed)
         self.view.rex_coeff_changed.connect(self._on_rex_coeff_changed)
-    
+        self.view.rex_hours_changed.connect(self._on_rex_hours_changed)
+        self.view.rex_hours_cleared.connect(self._on_rex_hours_cleared)
+
     def _on_project_changed(self):
         """Appelé quand le projet change - reconstruit l'arbre."""
         project = self.model.project
@@ -297,11 +320,12 @@ class TabSummaryController:
         tree_items = project.generate_summary_tree()
         self.view.tree.build_tree(tree_items, project.context())
         
-        # Synchroniser les line edit avec le model
+        # Synchroniser le champ divers
         self.view.edit_divers.setText(f"{project.divers_percent * 100:.1f}")
-        self.view.edit_rex_percent.setText(f"{project.manual_rex_coeff * 100:.0f}")
+        # Vider le champ heures REX (manual_rex_hours = None après apply_defaults)
+        self.view.edit_rex_hours.setText("")
         
-        # Mettre à jour les totaux
+        # Mettre à jour les totaux (sync_rex_fields appellé en interne)
         self._update_totals()
     
     def _on_data_updated(self):
@@ -334,6 +358,17 @@ class TabSummaryController:
             total_with_rex=total_with_rex
         )
 
+        # Synchroniser les deux champs REX (toujours liés : coeff = heures / n_machines)
+        if n_machines_total != 0:
+            if project.manual_rex_hours is not None:
+                # Heures saisies manuellement → dériver le coeff
+                coeff_pct = project.manual_rex_hours / n_machines_total * 100
+                self.view.sync_rex_fields(coeff_pct, project.manual_rex_hours)
+            else:
+                # Coeff utilisé → dériver les heures affichées
+                rex_hours = project.manual_rex_coeff * n_machines_total
+                self.view.sync_rex_fields(project.manual_rex_coeff * 100, rex_hours)
+
     def _on_divers_changed(self, percent: float):
         """Appelé quand le pourcentage divers change."""
         self.model.project.divers_percent = percent / 100
@@ -341,7 +376,20 @@ class TabSummaryController:
         # Pas besoin d'émettre data_updated car c'est juste un changement de total
 
     def _on_rex_coeff_changed(self, coeff: float):
-        """Appelé quand le coefficient REX change."""
+        """Appelé quand le coefficient REX change — efface les heures manuelles."""
         self.model.project.manual_rex_coeff = coeff
+        self.model.project.manual_rex_hours = None  # Le coeff devient maître
         self._update_totals()
-        # Pas besoin d'émettre data_updated car c'est juste un changement de total
+
+    def _on_rex_hours_changed(self, hours: float):
+        """Appelé quand des heures REX sont saisies — dérive et stocke le coeff équivalent."""
+        self.model.project.manual_rex_hours = hours
+        n_machines = self.model.project.n_machines_total or 0
+        if n_machines != 0:
+            self.model.project.manual_rex_coeff = hours / n_machines
+        self._update_totals()
+
+    def _on_rex_hours_cleared(self):
+        """Appelé quand le champ heures REX est vidé — revient au calcul par coeff."""
+        self.model.project.manual_rex_hours = None
+        self._update_totals()

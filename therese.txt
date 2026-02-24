@@ -1,0 +1,9 @@
+Attention: Option disponibles qui ne devraient pas y être (jeu de bagues pour les ASYNCH à cage)
+Bug de label dans le treewidget
+Manque machine mil
+Faire le labo
+Demander à Walid à propos des hydrolique
+Heures REX
+Pour l'export ORTEMS: mettre la logique de calculs 
+
+Faire une note d'utilisation

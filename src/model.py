@@ -32,6 +32,7 @@ class Project:
         
         self.divers_percent: float = 0.05
         self.manual_rex_coeff: float = 1.0
+        self.manual_rex_hours: Optional[float] = None
 
         self.first_machine_subtotal: Optional[float] = None
         self.first_machine_total: Optional[float] = None
@@ -70,6 +71,7 @@ class Project:
         
         self.divers_percent = 0.05
         self.manual_rex_coeff = 1.0
+        self.manual_rex_hours = None
 
         self.first_machine_subtotal = None
         self.first_machine_total = None
@@ -179,7 +181,10 @@ class Project:
         return self.n_machines_total
     
     def calculate_total_with_rex(self) -> float:
-        self.total_with_rex = self.n_machines_total * self.manual_rex_coeff
+        if self.manual_rex_hours is not None:
+            self.total_with_rex = self.manual_rex_hours
+        else:
+            self.total_with_rex = self.n_machines_total * self.manual_rex_coeff
         return self.total_with_rex
     
     def _apply_group_repartition(
@@ -215,9 +220,11 @@ class Project:
         ]:
             self._apply_group_repartition(repartition, grouped, ortems_map)
 
-        # Application du divers
+        # Application du divers et du REX
+        print(f'REX: {self.manual_rex_coeff} | Divers percent: {self.divers_percent}')
         for job_code in repartition:
-            repartition[job_code] *= (1 + self.divers_percent)
+            repartition[job_code] *= (1 + self.divers_percent) * self.manual_rex_coeff
+
 
         return repartition
     
