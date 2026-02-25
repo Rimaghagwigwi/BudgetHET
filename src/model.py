@@ -128,13 +128,21 @@ class Project:
             grouped_labo[labo.category].append(labo)
         return grouped_labo
 
+    def _change_group_label(self, grouped: Dict[str, List], label_map: Dict[str, str]) -> Dict[str, List]:
+        """Change les labels des groupes selon un mapping fourni."""
+        new_grouped = {}
+        for old_label, items in grouped.items():
+            new_label = label_map.get(old_label, old_label)
+            new_grouped[new_label] = items
+        return new_grouped
+
     def generate_summary_tree(self) -> Dict[str, Any]:
         return {
             "Tâches Générales": self.tasks,
-            "Calculs": self.grouped_claculs(),
-            "Options": self.grouped_options(),
-            "Pièces et documents contractuels": self.grouped_lpdc(),
-            "Laboratoire": self.grouped_labo(),
+            "Calculs": self._change_group_label(self.grouped_claculs(), self.app_data.calcul_categories),
+            "Options": self._change_group_label(self.grouped_options(), self.app_data.option_categories),
+            "Plans et documents contractuels": self._change_group_label(self.grouped_lpdc(), self.app_data.lpdc_categories),
+            "Laboratoire": self._change_group_label(self.grouped_labo(), self.app_data.labo_categories),
         }
     
     def compute_tree_hours(self, node) -> float:
@@ -174,7 +182,6 @@ class Project:
         """Calcule le total pour n machines."""
         multiplicative_tasks_hours = sum([t.effective_hours(self.context()) for t in self.get_all_tasks() if t.mutiplicative])
         coeff = self._compute_multi_machine_coeff(self.quantity)
-        print(f"Quantity: {self.quantity} | Coeff: {coeff} | Multiplicative Tasks Hours: {multiplicative_tasks_hours}")
         additional_hours = multiplicative_tasks_hours * coeff
 
         self.n_machines_total = self.first_machine_total + additional_hours 
@@ -221,7 +228,6 @@ class Project:
             self._apply_group_repartition(repartition, grouped, ortems_map)
 
         # Application du divers et du REX
-        print(f'REX: {self.manual_rex_coeff} | Divers percent: {self.divers_percent}')
         for job_code in repartition:
             repartition[job_code] *= (1 + self.divers_percent) * self.manual_rex_coeff
 
@@ -241,7 +247,7 @@ class Project:
         col = 3
         job_labels = self.app_data.jobs
         for job, hours in repartition.items():
-            print(f"    {job} : {hours}")
+            print(f"    {job} : {hours:.1f} h")
             ws_ortems.cell(row=1, column=col).value = job_labels.get(job, job)
             ws_ortems.cell(row=2, column=col).value = hours
             col += 1

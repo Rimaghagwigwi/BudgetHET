@@ -3,7 +3,6 @@ Bug de label dans le treewidget
 Manque machine mil
 Faire le labo
 Demander à Walid à propos des hydrolique
-Heures REX
-Pour l'export ORTEMS: mettre la logique de calculs 
+Pour l'export ORTEMS: mettre la logique de calculs dans le python
 
 Faire une note d'utilisation
