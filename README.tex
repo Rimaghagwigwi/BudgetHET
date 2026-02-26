@@ -1,0 +1,361 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+% Configuration de la page
+\geometry{margin=2.5cm}
+
+% Configuration des liens
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+}
+
+% Configuration du code
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codeframe}{rgb}{0.8,0.8,0.8}
+\definecolor{codestring}{rgb}{0.2,0.5,0.2}
+\definecolor{codekeyword}{rgb}{0.1,0.1,0.6}
+
+\lstset{
+    backgroundcolor=\color{codebg},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    rulecolor=\color{codeframe},
+    showstringspaces=false,
+    keywordstyle=\color{codekeyword},
+    stringstyle=\color{codestring},
+    tabsize=2,
+    literate={é}{{\'e}}1 {è}{{\`e}}1 {ê}{{\^e}}1 {à}{{\`a}}1 {ù}{{\`u}}1 {û}{{\^u}}1 {ô}{{\^o}}1 {î}{{\^i}}1 {ç}{{\c{c}}}1
+}
+
+% En-tête et pied de page
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Budget\_HET - Chiffrage HET}
+\fancyhead[R]{\thepage}
+\fancyfoot[C]{Jeumont Electric}
+
+% Titre
+\title{\textbf{Budget\_HET - Chiffrage HET}\\[0.5em]\large Documentation Utilisateur}
+\author{Jeumont Electric}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+% ============================================================================
+\section{Introduction}
+
+Application desktop de chiffrage d'heures d'études pour projets industriels (Jeumont Electric), développée en Python avec PyQt6. Remplace le fichier Excel BUDGET\_HET.
+
+% ============================================================================
+\section{Installation}
+
+\subsection{Prérequis}
+Python 3.10+ (3.10 ou supérieur) est requis.
+
+\subsection{Installation des dépendances}
+\begin{lstlisting}[language=bash]
+pip install -r requirements.txt
+# ou
+pip install PyQt6
+\end{lstlisting}
+
+\subsection{Lancement}
+\begin{lstlisting}[language=bash]
+python main.py
+\end{lstlisting}
+
+% ============================================================================
+\section{Utilisation}
+
+\subsection{Flux de travail}
+
+\begin{enumerate}
+    \item \textbf{Onglet Général} $\rightarrow$ Remplir les informations projet (Client, CRM, DAS, type de produit, quantité, révision) puis \textbf{valider} pour charger les données par défaut.
+    \item \textbf{Onglet Tâches} $\rightarrow$ Ajuster les heures d'ingénierie par tâche selon le projet.
+    \item \textbf{Onglet Calculs} $\rightarrow$ Sélectionner et ajuster les heures de calcul (électromagnétique, mécanique, aéraulique).
+    \item \textbf{Onglet LPDC} $\rightarrow$ Sélectionner les documents contractuels obligatoires/optionnels selon le DAS.
+    \item \textbf{Onglet Options} $\rightarrow$ Activer les options techniques par catégorie (ATEX, instrumentation, essais...).
+    \item \textbf{Onglet Labo} $\rightarrow$ Définir les heures d'essais laboratoire (métallurgie, isolation).
+    \item \textbf{Onglet Résumé} $\rightarrow$ Consulter le total final en temps réel, avec coefficient REX et pourcentage divers.
+\end{enumerate}
+
+\subsection{Description des onglets}
+
+\begin{longtable}{@{}lll@{}}
+\toprule
+\textbf{Onglet} & \textbf{Fonction} & \textbf{Données associées} \\
+\midrule
+\endhead
+Général & Saisie des informations projet & \texttt{base\_data.json} \\
+Tâches & Heures d'ingénierie de base & \texttt{general\_task\_data\_new.json} \\
+Calculs & Heures de calcul par catégorie & \texttt{calculs.json} \\
+LPDC & Documents contractuels & \texttt{LPDC.json} \\
+Options & Catalogue d'options techniques & \texttt{options.json} \\
+Labo & Heures d'essais laboratoire & \texttt{labo.json} \\
+Résumé & Total des heures en temps réel & — \\
+\bottomrule
+\end{longtable}
+
+\subsection{Modifier les fichiers de données}
+
+Tous les fichiers de données sont situés dans le dossier \texttt{data/}. Ils sont au format JSON et peuvent être édités avec n'importe quel éditeur de texte.
+
+\subsubsection{\texttt{base\_data.json} — Données de base}
+
+Contient les listes de référence utilisées dans l'onglet Général :
+
+\begin{lstlisting}[language=json]
+{
+  "people": ["Walid BOUGHANMI", "Thérèse VANDEWYNCKEL", ...],
+  "product_types": {
+    "SYNCH": "Synchrone",
+    "ASYNCH": "Asynchrone",
+    "MIL": "Marine militaire"
+  },
+  "products": {
+    "SYNCH": { "ALT_2P": "Alternateur 2p", ... },
+    "ASYNCH": { "ASYNCH_CAGE": "Asynchrone à cage", ... },
+    "MIL": { "MEP": "MEP", "ANR/DAR": "ANR/DAR", "TAR": "TAR" }
+  },
+  "types_affaire": { "NEUF": "Machine neuve", ... },
+  "DAS": { "MS": "Machines speciales", "NUC": "Nucleaire", "MIL": "Marine militaire" },
+  "sectors": { ... },
+  "jobs": { ... },
+  "job_suffixes": { "DEF": "Definition", "PROD": "Production" }
+}
+\end{lstlisting}
+
+\textbf{Pour ajouter un nouveau client} : ajouter une entrée dans \texttt{"people"}.
+
+\textbf{Pour ajouter un nouveau type de produit} : ajouter une clé dans \texttt{"product\_types"} et les produits correspondants dans \texttt{"products"}.
+
+\subsubsection{\texttt{general\_task\_data\_new.json} — Tâches d'ingénierie}
+
+Structure hiérarchique des tâches avec heures de base par type de machine :
+
+\begin{lstlisting}[language=json]
+{
+  "tasks": {
+    "Enclenchement et Suivi": {
+      "Enclenchement": {
+        "reunion": {
+          "base": {
+            "ALT_2P": 4, "ALT_4P_L": 4, ...,
+            "MEP": 700, "ANR/DAR": 500, "TAR": 600
+          },
+          "coeff_secteur": { "INDUS": 1, "OIL_GAS": 2, ... },
+          "ortems_repartition": { "RESP_ET_PROJ_DEF": 1 }
+        }
+      }
+    }
+  }
+}
+\end{lstlisting}
+
+\textbf{Propriétés d'une tâche} :
+\begin{itemize}
+    \item \texttt{base} : Heures de base par type de produit (ALT\_2P, ASYNCH\_CAGE, MEP, etc.)
+    \item \texttt{coeff\_secteur} : Multiplicateurs par secteur (INDUS, OIL\_GAS, NUC\_QUALIFIE, etc.)
+    \item \texttt{coeff\_type\_affaire} : Multiplicateurs par type d'affaire (NEUF, IDENTIQUE\_JE, REMPLACEMENT)
+    \item \texttt{is\_multiplicative} : Si \texttt{true}, les heures sont multipliées par la quantité de machines
+    \item \texttt{ortems\_repartition} : Répartition par métier pour l'export ORTEMS
+\end{itemize}
+
+\subsubsection{\texttt{calculs.json} — Tâches de calcul}
+
+Liste des calculs avec catégories et règles de sélection :
+
+\begin{lstlisting}[language=json]
+{
+  "categories": {
+    "ELECMAG": "Electromagnetique",
+    "BOB": "Bobinage",
+    "CONCEPT_MECA": "Conception mecanique",
+    "MECA_ANSYS": "Mecanique ANSYS",
+    "AERO_THERMIQUE": "Aeraulique et Thermique"
+  },
+  "calculs": [
+    {
+      "index": 6,
+      "label": "Calcul magnetique et thermique machine",
+      "category": "ELECMAG",
+      "hours": { "ASYNCH": 8, "SYNCH": 8 },
+      "selection": {
+        "ASYNCH": "mandatory",
+        "SYNCH": "mandatory",
+        "MIL": "optional"
+      }
+    }
+  ]
+}
+\end{lstlisting}
+
+\textbf{Règles de sélection} :
+\begin{itemize}
+    \item \texttt{"mandatory"} : Le calcul est automatiquement sélectionné
+    \item \texttt{"optional"} : Le calcul est disponible mais non sélectionné par défaut
+    \item Absence de clé : Le calcul n'est pas disponible pour ce type de produit
+\end{itemize}
+
+\subsubsection{\texttt{options.json} — Catalogue d'options}
+
+Options groupées par catégorie avec heures associées :
+
+\begin{lstlisting}[language=json]
+{
+  "categories": {
+    "ATEX": "Certification ou ATEX",
+    "INSTRUM": "Instrumentation et accessoires",
+    "ESSAIS": "Essais"
+  },
+  "options": {
+    "ATEX": [
+      { "index": 12, "label": "ATEX Expb (Z1)", "hours": 50 },
+      { "index": 13, "label": "ATEX Expzc (Z2)", "hours": 50 }
+    ]
+  }
+}
+\end{lstlisting}
+
+\textbf{Pour ajouter une option} : ajouter un objet dans le tableau de la catégorie concernée avec un \texttt{index} unique.
+
+\subsubsection{\texttt{LPDC.json} — Documents contractuels}
+
+Liste des documents par DAS avec règles de sélection obligatoire/optionnelle.
+
+\subsubsection{\texttt{labo.json} — Essais laboratoire}
+
+\begin{lstlisting}[language=json]
+{
+  "categories": { "LAB_METAL": "Labo metallurgie", "LAB_ISOL": "Labo isolant" },
+  "labo": [
+    { "index": 1, "label": "Labo Metalo", "category": "LAB_METAL", "hours": 0 },
+    { "index": 2, "label": "Labo isolant", "category": "LAB_ISOL", "hours": 0 }
+  ]
+}
+\end{lstlisting}
+
+% ============================================================================
+\section{Notes et remarques}
+
+\subsection{Travaux en cours}
+
+\begin{itemize}
+    \item Finaliser l'onglet Labo
+    \item Créer et sauvegarder les autres projets militaires
+    \item Vérifier les paramètres hydrauliques (à discuter avec l'équipe)
+    \item Pour l'export ORTEMS : mettre la logique de calculs dans le Python
+\end{itemize}
+
+\subsection{Erreurs identifiées dans les fichiers Excel d'origine}
+
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{
+\textbf{⚠️ Important :} Ces erreurs existaient dans le fichier Excel BUDGET\_HET original et sont corrigées dans cette application.
+}}
+\end{center}
+
+\subsubsection{Erreur LPDC (asynchrone)}
+\begin{itemize}
+    \item \textbf{Localisation} : \texttt{'tri1 LPDC'C2:I2}
+    \item \textbf{Condition erronée} : \texttt{'tri calculs'C4="asynchrone"} et \texttt{'tri calculs'D4="asynchrone"} toujours \textbf{FAUX} (mauvaise référence de cellule)
+    \item \textbf{Impact} : Résultats LPDC incorrects pour les machines asynchrones
+\end{itemize}
+
+\subsubsection{Erreur tâches réunion (Marine militaire)}
+\begin{itemize}
+    \item \textbf{Localisation} : \texttt{'chiffrage'D19} (tâches réunion)
+    \item \textbf{Problème} : Référence \texttt{'data produit'!\$D8:\$M8} au lieu de \texttt{'data produit'!\$D2:\$M2}
+    \item \textbf{Impact} : La ligne «~réunion~» était une copie de «~Tracé d'ensemble (3D)~» au lieu des heures de réunion
+\end{itemize}
+
+% ============================================================================
+\section{Détails techniques}
+
+\subsection{Architecture MVC}
+
+\begin{lstlisting}
+main.py                      # Point d'entree
+config.xml                   # Configuration (chemins, theme UI, dimensions fenetre)
+src/
+  model.py                   # Classe Model (Project + calculs agreges)
+  view.py                    # MainWindow (PyQt6)
+  controller.py              # Controleur principal, instancie les onglets
+  tabs/                      # Un controleur par onglet
+  utils/
+    TabTasks.py              # Table Widget et view commun
+    BaseTaskTabController.py # Classe abstraite de controleur
+    ApplicationData.py       # Chargement et parsing des donnees
+    Task.py                  # Dataclasses : GeneralTask, LPDCDocument, Option, Calcul, Labo
+data/
+  base_data.json             # Listes de reference
+  general_task_data_new.json # Taches d'ingenierie
+  LPDC.json                  # Documents contractuels
+  options.json               # Catalogue des options
+  calculs.json               # Taches de calcul
+  labo.json                  # Taches laboratoire
+template/
+  ortems_template.xlsx       # Template Excel pour l'export ORTEMS
+\end{lstlisting}
+
+\subsection{Configuration (\texttt{config.xml})}
+
+\begin{lstlisting}[language=xml]
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+    <datapaths>
+        <path key="base_data">data/base_data.json</path>
+        <path key="options">data/options.json</path>
+        <path key="tasks">data/general_task_data_new.json</path>
+        <path key="LPDC">data/LPDC.json</path>
+        <path key="calculs">data/calculs.json</path>
+        <path key="labo">data/labo.json</path>
+    </datapaths>
+    <asset-dir>assets/</asset-dir>
+    <ortems-template-path>template/ortems_template.xlsx</ortems-template-path>
+    <ui>
+        <theme>Fusion</theme>
+        <stylesheet>src/styles.qss</stylesheet>
+        <window>
+            <title>Chiffrage HET</title>
+            <width>1080</width>
+            <height>720</height>
+        </window>
+    </ui>
+</config>
+\end{lstlisting}
+
+\subsection{Export ORTEMS}
+
+L'application peut exporter les heures vers un fichier Excel compatible ORTEMS via le template \texttt{template/ortems\_template.xlsx}.
+
+La répartition par métier (job) est définie dans les fichiers JSON via la propriété \texttt{ortems\_repartition}. Exemple :
+
+\begin{lstlisting}[language=json]
+"ortems_repartition": {
+  "PROJ_MACHINE_DEF": 0.7,
+  "ING_MEC_SOL_DEF": 0.3
+}
+\end{lstlisting}
+
+Les codes métiers disponibles sont définis dans \texttt{base\_data.json} (\texttt{jobs} et \texttt{job\_suffixes}).
+
+\end{document}
