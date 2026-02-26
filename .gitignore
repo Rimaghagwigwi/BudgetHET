@@ -34,5 +34,6 @@ desktop.ini
 
 # Other
 *.log
+notes.txt
 test.py
 assets/

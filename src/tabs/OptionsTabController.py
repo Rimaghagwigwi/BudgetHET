@@ -12,12 +12,7 @@ class OptionsTabController(BaseTaskTabController):
 
     def _build_tables(self) -> List[TaskTableWidget]:
         # Grouper les options par catégorie
-        grouped: Dict[str, List[Option]] = {}
-        
-        for opt in self.model.project.options:
-            if opt.category not in grouped:
-                grouped[opt.category] = []
-            grouped[opt.category].append(opt)
+        grouped: Dict[str, List[Option]] = self.model.project.grouped_options()
 
         table = TaskTableWidget(label="Options", task_type="Option", is_optional=True)
         table.context = self.model.project.context()

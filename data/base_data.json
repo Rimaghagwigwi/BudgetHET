@@ -9,7 +9,8 @@
 
     "product_types": {
         "SYNCH": "Synchrone",
-        "ASYNCH": "Asynchrone"
+        "ASYNCH": "Asynchrone",
+        "MIL": "Marine militaire"
     },
 
     "products": {
@@ -23,6 +24,11 @@
         "ASYNCH": {
             "ASYNCH_CAGE": "Asynchrone à cage",
             "ASYNCH_BAGUES": "Asynchrone à bagues"
+        },
+        "MIL": {
+            "MEP": "MEP",
+            "ANR/DAR": "ANR/DAR",
+            "TAR": "TAR"
         }
     },
 

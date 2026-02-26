@@ -137,11 +137,11 @@ class Calcul(AbstractTask):
 
     def is_mandatory(self, context: Dict[str, Any]) -> bool:
         machine_type = context.get("machine_type", "")
-        return self.selection.get(machine_type, "Non") == "Oui"
+        return self.selection.get(machine_type, "") == "mandatory"
 
     def is_available_as_option(self, context: Dict[str, Any]) -> bool:
         machine_type = context.get("machine_type", "")
-        return self.selection.get(machine_type, "Non") == "Choix"
+        return self.selection.get(machine_type, "") == "optional"
     
     def is_active(self, context: Dict[str, Any]) -> bool:
         return self.is_mandatory(context) or (self.is_available_as_option(context) and self.is_selected)

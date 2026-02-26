@@ -38,6 +38,7 @@ class ApplicationData:
         self.option_categories: Dict[str, str] = {} # Dict[code: label]
         self.option_category_coeff: Dict[str, Dict[str, float]] = {} # Dict[type_affaire: Dict[category: coeff]]
         self.option_ortems: Dict[str, Dict[str, float]] = {} # Dict[category: Dict[code: coeff]]
+        self.option_availability: Dict[str, List[str]] = {} # Dict[category: List[machine_type]]
         
         self.labo: List[Labo] = []
         self.labo_categories: Dict[str, str] = {} # Dict[code: label]

@@ -37,6 +37,12 @@ QLabel#veryImportant {
     font-size: 18px;
 }
 
+QLabel#footnote {
+    color: #888;
+    font-size: 10px;
+    font-style: italic;
+}
+
 /* ── Inputs ──────────────────────────────────────────────── */
 QLineEdit, QComboBox, QSpinBox, QDoubleSpinBox, QDateEdit, QTextEdit {
     padding: 5px;

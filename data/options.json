@@ -28,56 +28,56 @@
       "NORME": 1.3
     }
   },
-  
+
   "ortems_repartition": {
     "BAGUES": {
-      "PROJ_MACHINE_DEF": 1.00
+      "PROJ_MACHINE_DEF": 1.0
     },
     "ATEX": {
-      "PROJ_MACHINE_DEF": 0.60,
-      "RESP_ET_PROJ_DEF": 0.40
+      "PROJ_MACHINE_DEF": 0.6,
+      "RESP_ET_PROJ_DEF": 0.4
     },
     "ENV": {
       "PROJ_MACHINE_DEF": 0.95,
       "RESP_ET_PROJ_DEF": 0.05
     },
     "INSTRUM": {
-      "PROJ_MACHINE_DEF": 0.40,
+      "PROJ_MACHINE_DEF": 0.4,
       "PROJ_INSTRUM_DEF": 0.45,
       "RESP_ET_PROJ_DEF": 0.15
     },
     "ESSAIS": {
-      "RESP_ET_PROJ_DEF": 0.70,
-      "ING_ELECTROTECH_DEF": 0.30
+      "RESP_ET_PROJ_DEF": 0.7,
+      "ING_ELECTROTECH_DEF": 0.3
     },
     "NORME": {
-      "RESP_ET_PROJ_DEF": 0.70,
-      "ING_MEC_SOL_DEF": 0.10,
-      "ING_ELECTROTECH_DEF": 0.10,
-      "SYS_CONT_COM_ELECTRONIQUE_DEF": 0.10
+      "RESP_ET_PROJ_DEF": 0.7,
+      "ING_MEC_SOL_DEF": 0.1,
+      "ING_ELECTROTECH_DEF": 0.1,
+      "SYS_CONT_COM_ELECTRONIQUE_DEF": 0.1
     },
     "INSTRUM_ATEX": {
-      "PROJ_MACHINE_DEF": 0.40,
+      "PROJ_MACHINE_DEF": 0.4,
       "PROJ_INSTRUM_DEF": 0.45,
       "RESP_ET_PROJ_DEF": 0.15
     },
     "CONSTR_PARTIC": {
-      "PROJ_MACHINE_DEF": 0.60,
-      "RESP_ET_PROJ_DEF": 0.30,
-      "ING_MEC_SOL_DEF": 0.10
+      "PROJ_MACHINE_DEF": 0.6,
+      "RESP_ET_PROJ_DEF": 0.3,
+      "ING_MEC_SOL_DEF": 0.1
     },
     "EXIG_TECH": {
-      "RESP_ET_PROJ_DEF": 0.70,
-      "ING_MEC_SOL_DEF": 0.30
+      "RESP_ET_PROJ_DEF": 0.7,
+      "ING_MEC_SOL_DEF": 0.3
     },
     "MIL": {
-      "RESP_ET_PROJ_DEF": 1.00
+      "RESP_ET_PROJ_DEF": 1.0
     },
     "FDMS": {
-      "REF_FDMS_DEF": 1.00
+      "REF_FDMS_DEF": 1.0
     },
     "SLI": {
-      "REF_SLI_DEF": 1.00
+      "REF_SLI_DEF": 1.0
     }
   },
 
@@ -85,281 +85,281 @@
     "BAGUES": [
       {
         "index": 1,
+        "label": "Autre options bagues",
+        "hours": 0
+      },
+      {
+        "index": 2,
         "label": "Fourniture de la résistance de démarrage",
         "hours": 20
       },
       {
-        "index": 2,
+        "index": 3,
         "label": "Fourniture de l'automate de pilotage de la résistance",
         "hours": 100
       },
       {
-        "index": 3,
+        "index": 4,
         "label": "Fourniture système de relevage de balais",
         "hours": 50
       },
       {
-        "index": 4,
+        "index": 5,
         "label": "Fourniture du système de détection d'usure (si pas de relevage de balais)",
         "hours": 2
       },
       {
-        "index": 5,
+        "index": 6,
         "label": "Fourniture du relais de détection d'usure",
         "hours": 4
       },
       {
-        "index": 6,
+        "index": 7,
         "label": "Résistances de réchauffage dans le compartiment bagues",
         "hours": 2
       },
       {
-        "index": 7,
+        "index": 8,
         "label": "coffret séparé pour résistance de réchauffage du compartiment bagues",
         "hours": 2
       },
       {
-        "index": 8,
+        "index": 9,
         "label": "fourniture d'un filtre (si pas de relevage de balais)",
         "hours": 4
       },
       {
-        "index": 9,
+        "index": 10,
         "label": "PE à fournir par JE pour alimentation des bagues",
         "hours": 10
       }
     ],
     "ATEX": [
       {
-        "index": 10,
+        "index": 11,
+        "label": "Autre certification atex",
+        "hours": 0
+      },
+      {
+        "index": 12,
         "label": "ATEX Expb (Z1)",
         "hours": 50
       },
       {
-        "index": 11,
+        "index": 13,
         "label": "ATEX Expzc (Z2)",
         "hours": 50
       },
       {
-        "index": 12,
+        "index": 14,
         "label": "ATEX Exeb (Z1)",
         "hours": 50
       },
       {
-        "index": 13,
+        "index": 15,
         "label": "ATEX Exec (Z2)",
         "hours": 20
       },
       {
-        "index": 14,
+        "index": 16,
         "label": "ATEX ExnAc (Z2)",
         "hours": 20
       },
       {
-        "index": 15,
+        "index": 17,
         "label": "Certification EN (EN 60079)",
         "hours": 0
       },
       {
-        "index": 16,
+        "index": 18,
         "label": "Certification IEC (IEC 60079)",
         "hours": 0
       },
       {
-        "index": 17,
+        "index": 19,
         "label": "Certification IECEx (IEC 60079)",
-        "hours": 0
-      },
-      {
-        "index": 18,
-        "label": "Autre certification atex",
         "hours": 0
       }
     ],
     "ENV": [
       {
-        "index": 19,
+        "index": 20,
+        "label": "Autres option environnement",
+        "hours": 0
+      },
+      {
+        "index": 21,
         "label": "TEMP amb < -20°C",
         "hours": 200
       },
       {
-        "index": 20,
+        "index": 22,
         "label": "ATEX et TEMP > 55°C",
         "hours": 20
       },
       {
-        "index": 21,
+        "index": 23,
         "label": "Installation extérieure",
         "hours": 0
       },
       {
-        "index": 22,
+        "index": 24,
         "label": "Climat : tropical / désertique / bord de mer / marin",
         "hours": 2
       },
       {
-        "index": 23,
+        "index": 25,
         "label": "Matériau proscrit : valeur à choisir : aluminium/autre",
         "hours": 1
       },
       {
-        "index": 24,
+        "index": 26,
         "label": "Matériau de la visserie imposée: inox/autre",
         "hours": 20
       },
       {
-        "index": 25,
+        "index": 27,
         "label": "Ambiance particulière définition: H2S/Ammoniaque (NH3-)/Sel/Autre",
         "hours": 100
       },
       {
-        "index": 26,
+        "index": 28,
         "label": "taques et ancrages",
         "hours": 4
       },
       {
-        "index": 27,
+        "index": 29,
         "label": "rehausse (bati)",
         "hours": 50
       },
       {
-        "index": 28,
+        "index": 30,
         "label": "tuyauteries eau",
         "hours": 20
       },
       {
-        "index": 29,
+        "index": 31,
         "label": "tuyauteries huile",
         "hours": 20
       }
     ],
     "NORME": [
       {
-        "index": 30,
+        "index": 32,
+        "label": "Autre option normative",
+        "hours": 0
+      },
+      {
+        "index": 33,
         "label": "fourniture de la centrale de balayage/pressurisation",
         "hours": 20
       },
       {
-        "index": 31,
+        "index": 34,
         "label": "Norme de dimensionnement à appliquer IEC",
         "hours": 0
       },
       {
-        "index": 32,
+        "index": 35,
         "label": "Norme de dimensionnement à appliquer IEEE",
         "hours": 20
       },
       {
-        "index": 33,
+        "index": 36,
         "label": "Norme de dimensionnement à appliquer NEMA",
         "hours": 80
       },
       {
-        "index": 34,
+        "index": 37,
         "label": "Norme de dimensionnement à appliquer autre",
         "hours": 0
       },
       {
-        "index": 35,
+        "index": 38,
         "label": "Spécifications particulières : Shell",
         "hours": 40
       },
       {
-        "index": 36,
+        "index": 39,
         "label": "Spécifications particulières : Total",
         "hours": 40
       },
       {
-        "index": 37,
+        "index": 40,
         "label": "Spécifications particulières : autre",
         "hours": 0
       },
       {
-        "index": 38,
+        "index": 41,
         "label": "Certification imposée :BV (Bureau Veritas)",
         "hours": 80
       },
       {
-        "index": 39,
+        "index": 42,
         "label": "Certification imposée : DNV&GL",
         "hours": 80
       },
       {
-        "index": 40,
-        "label": "Certification imposée : Autre",
-        "hours": 0
-      },
-      {
-        "index": 41,
+        "index": 43,
         "label": "Norme de soudage imposée : ASME (avec dérogation)",
         "hours": 100
       },
       {
-        "index": 42,
+        "index": 44,
         "label": "Norme de soudage imposée : autre",
         "hours": 0
       },
       {
-        "index": 43,
+        "index": 45,
         "label": "Norme de construction de l'hydro : ASTM",
         "hours": 1
       },
       {
-        "index": 44,
+        "index": 46,
         "label": "Norme de construction de l'hydro : ASME (avec dérogation)",
         "hours": 1
       },
       {
-        "index": 45,
+        "index": 47,
         "label": "Norme de construction de l'hydro : RCCM",
         "hours": 1
       },
       {
-        "index": 46,
+        "index": 48,
         "label": "Norme de construction de l'hydro : autre",
         "hours": 0
       },
       {
-        "index": 47,
+        "index": 49,
         "label": "Documents applicables",
         "hours": 0
       },
       {
-        "index": 48,
+        "index": 50,
         "label": "Clarifications et deviations",
         "hours": 0
       }
     ],
     "CONSTR_PARTIC": [
       {
-        "index": 49,
-        "label": "Indice de protection de la machine : autre",
+        "index": 51,
+        "label": "Autres impositions mécaniques",
         "hours": 0
       },
       {
-        "index": 50,
-        "label": "Survitesse imposée >1.2",
-        "hours": 1
-      },
-      {
-        "index": 51,
+        "index": 52,
         "label": "IM<> 1001 ou 4011/3011",
         "hours": 1
       },
       {
-        "index": 52,
+        "index": 53,
         "label": "Fourniture du manchon d'accouplement",
         "hours": 10
       },
       {
-        "index": 53,
+        "index": 54,
         "label": "Calage du manchon à réaliser à JE",
         "hours": 10
-      },
-      {
-        "index": 54,
-        "label": "autres impositions mécaniques",
-        "hours": 0
       },
       {
         "index": 55,
@@ -388,111 +388,111 @@
       },
       {
         "index": 60,
-        "label": "Autre imposition paliers",
-        "hours": 0
-      },
-      {
-        "index": 61,
         "label": "Matière des tubes de l'aéro imposée : inox 304L/ inox 316L",
         "hours": 0
       },
       {
-        "index": 62,
+        "index": 61,
         "label": "Quantité d'hydroréfrigérant par machine = 2 et répartition (fonctionnement %)",
         "hours": 24
       },
       {
-        "index": 63,
+        "index": 62,
         "label": "Position de l'hydroréfrigérant : verticale",
         "hours": 24
       },
       {
-        "index": 64,
+        "index": 63,
         "label": "Nature de l'eau de refroidissement <> eau douce",
         "hours": 0
       },
       {
-        "index": 65,
+        "index": 64,
         "label": "Construction tube : double tube",
         "hours": 0
       },
       {
-        "index": 66,
+        "index": 65,
         "label": "Construction plaque : double plaque",
         "hours": 0
       },
       {
-        "index": 67,
+        "index": 66,
         "label": "Matériau du tube coté eau : CuZnAl/inox 316L/CuNi90-10/CuNi70-30/inox 304L/inox 317L/inox 904L/Titane/Inox Uranus B6/Inox DUPLEX 2209",
         "hours": 0
       },
       {
-        "index": 68,
+        "index": 67,
         "label": "Matériau du tube coté non en contact avec l'eau (si double tube) : CuZnAl/inox 316L/CuNi90-10/CuNi",
         "hours": 0
       },
       {
-        "index": 69,
+        "index": 68,
         "label": "Matériau des ailettes : valeur à choisir : cuivre/cuivre étamé",
         "hours": 0
       },
       {
-        "index": 70,
+        "index": 69,
         "label": "Matériau de la première plaque tubulaire (coté eau) : laiton(Muntz)/inox 316L/CuNi90-10/CuNi70-30/titane",
         "hours": 0
       },
       {
-        "index": 71,
+        "index": 70,
         "label": "Matériau de la seconde plaque tubulaire : laiton(Muntz)/aluminium/inox 316L/CuNi90-10/CuNi70-30/titane",
         "hours": 0
       },
       {
-        "index": 72,
+        "index": 71,
         "label": "Matériau des boites à eau : acier revêtu/inox 316L/inox 304L/CuNi90-10/titane",
         "hours": 0
       },
       {
-        "index": 73,
+        "index": 72,
         "label": "Matériau de l'ossature: valeur à choisir : acier peint/ inox 316L",
         "hours": 0
       },
       {
-        "index": 74,
+        "index": 73,
         "label": "Matériau de la visserie hydro: A4 (=inox 316L)",
         "hours": 0
       },
       {
-        "index": 75,
+        "index": 74,
         "label": "Si type de refroidissement = autre",
         "hours": 0
       },
       {
-        "index": 76,
+        "index": 75,
         "label": "Option de construction boite phase <> standard JE",
         "hours": 0
       },
       {
-        "index": 77,
+        "index": 76,
         "label": "protection (IP) boite à bornes autre",
         "hours": 0
       },
       {
-        "index": 78,
+        "index": 77,
         "label": "boite neutre séparée",
         "hours": 8
       },
       {
-        "index": 79,
+        "index": 78,
         "label": "Fourniture des PE BaB",
         "hours": 8
       },
       {
-        "index": 80,
+        "index": 79,
         "label": "Autre outillage imposé",
         "hours": 0
       }
     ],
     "EXIG_TECH": [
+      {
+        "index": 80,
+        "label": "Autres imposition technique",
+        "hours": 0
+      },
       {
         "index": 81,
         "label": "Classe d'équilibrage (G selon ISO1940 ed 2003) <>2.5",
@@ -500,149 +500,149 @@
       },
       {
         "index": 82,
-        "label": "Niveau de vibrations de structure machine imposé",
+        "label": "Survitesse imposée >1.2",
         "hours": 1
       },
       {
         "index": 83,
-        "label": "Niveau de vibrations de structure paliers imposé <2.3 mm/s",
+        "label": "Niveau de vibrations de structure machine imposé",
         "hours": 1
       },
       {
         "index": 84,
-        "label": "Norme de vibrations de structure paliers imposée <> IEC60034-1 grade A",
+        "label": "Niveau de vibrations de structure paliers imposé <2.3 mm/s",
         "hours": 1
       },
       {
         "index": 85,
-        "label": "Déplacement d'arbre maximal imposé < 65 microns PP",
+        "label": "Norme de vibrations de structure paliers imposée <> IEC60034-1 grade A",
         "hours": 1
       },
       {
         "index": 86,
-        "label": "Norme de déplacements d'arbre imposée <> IEC60034-1 grade A",
+        "label": "Déplacement d'arbre maximal imposé < 65 microns PP",
         "hours": 1
       },
       {
         "index": 87,
+        "label": "Norme de déplacements d'arbre imposée <> IEC60034-1 grade A",
+        "hours": 1
+      },
+      {
+        "index": 88,
         "label": "Faux rond mécanique et électrique maximal imposé < 23 microns",
         "hours": 8
       },
       {
-        "index": 88,
+        "index": 89,
         "label": "insonorisation",
         "hours": 50
       }
     ],
     "INSTRUM": [
       {
-        "index": 89,
-        "label": "TAG (étiquette) client imposé",
-        "hours": 0
-      },
-      {
         "index": 90,
-        "label": "Certification particulière imposée instrumentation",
+        "label": "Autre imposition instrumentation",
         "hours": 0
       },
       {
         "index": 91,
-        "label": "calculs de boucle fourni par JE",
-        "hours": 20
+        "label": "TAG (étiquette) client imposé",
+        "hours": 0
       },
       {
         "index": 92,
-        "label": "sondes (stator+air+palier+huile+eau)",
+        "label": "Certification particulière imposée instrumentation",
         "hours": 0
       },
       {
         "index": 93,
-        "label": "transmetteur 4-20mA",
-        "hours": 0
+        "label": "calculs de boucle fourni par JE",
+        "hours": 20
       },
       {
         "index": 94,
-        "label": "Capteur de vibrations de structure",
+        "label": "sondes (stator+air+palier+huile+eau)",
         "hours": 0
       },
       {
         "index": 95,
-        "label": "Capteur de deplacements d'arbre (proximitor)",
+        "label": "transmetteur 4-20mA",
         "hours": 0
       },
       {
         "index": 96,
-        "label": "Visuel de circulation d'huile sur tyuyauterie de sortie d'huile",
+        "label": "Capteur de vibrations de structure",
         "hours": 0
       },
       {
         "index": 97,
-        "label": "Vanne ROR pour régler débit d'huile sur tuyauterie d'entrée d'huile",
+        "label": "Capteur de deplacements d'arbre (proximitor)",
         "hours": 0
       },
       {
         "index": 98,
-        "label": "Débitmètre sur tuyauterie d'entrée huile",
+        "label": "Visuel de circulation d'huile sur tyuyauterie de sortie d'huile",
         "hours": 0
       },
       {
         "index": 99,
-        "label": "Manomètre sur tuyauterie d'entrée d'huile",
+        "label": "Vanne ROR pour régler débit d'huile sur tuyauterie d'entrée d'huile",
         "hours": 0
       },
       {
         "index": 100,
-        "label": "Pressostat sur tuyauterie d'entrée d'huile",
+        "label": "Débitmètre sur tuyauterie d'entrée huile",
         "hours": 0
       },
       {
         "index": 101,
-        "label": "Thermomètre du bain d'huile des paliers",
+        "label": "Manomètre sur tuyauterie d'entrée d'huile",
         "hours": 0
       },
       {
         "index": 102,
-        "label": "Voyant au-dessus des paliers pour visualisation des bagues de circulation d'huile",
+        "label": "Pressostat sur tuyauterie d'entrée d'huile",
         "hours": 0
       },
       {
         "index": 103,
-        "label": "Thermomètre du palier (coussinet ou roulement)",
+        "label": "Thermomètre du bain d'huile des paliers",
         "hours": 0
       },
       {
         "index": 104,
-        "label": "Détection de fuite d'eau",
+        "label": "Voyant au-dessus des paliers pour visualisation des bagues de circulation d'huile",
         "hours": 0
       },
       {
         "index": 105,
-        "label": "Indicateur de température d'eau = thermomètre",
+        "label": "Thermomètre du palier (coussinet ou roulement)",
         "hours": 0
       },
       {
         "index": 106,
-        "label": "Autres appareils sur tuyauterie d'eau",
-        "hours": 1
+        "label": "Détection de fuite d'eau",
+        "hours": 0
       },
       {
         "index": 107,
-        "label": "Détecteur de rotation inverse",
+        "label": "Indicateur de température d'eau = thermomètre",
         "hours": 0
       },
       {
         "index": 108,
-        "label": "Capteur de vitesse inductif (proximitor)",
+        "label": "Détecteur de rotation inverse",
         "hours": 0
       },
       {
         "index": 109,
-        "label": "Humidostat",
+        "label": "Capteur de vitesse inductif (proximitor)",
         "hours": 0
       },
       {
         "index": 110,
-        "label": "Autre imposition instrumentation",
+        "label": "Humidostat",
         "hours": 0
       },
       {
@@ -682,46 +682,46 @@
       },
       {
         "index": 118,
-        "label": "Autres impositions particulières instrum BAB",
-        "hours": 0
-      },
-      {
-        "index": 119,
         "label": "controleur de débit d'eau",
         "hours": 0
       },
       {
-        "index": 120,
+        "index": 119,
         "label": "pressostat sur l'eau",
         "hours": 0
       },
       {
-        "index": 121,
+        "index": 120,
         "label": "pressostat air pressurisation",
         "hours": 0
       },
       {
-        "index": 122,
+        "index": 121,
         "label": "vanne de sécurité pour le circuit d'eau",
         "hours": 0
       },
       {
-        "index": 123,
+        "index": 122,
         "label": "vanne sur circuit d'eau",
         "hours": 0
       },
       {
-        "index": 124,
+        "index": 123,
         "label": "protection machine synchrone",
         "hours": 40
       },
       {
-        "index": 125,
+        "index": 124,
         "label": "synchronisation machine synchrone",
         "hours": 24
       }
     ],
     "INSTRUM_ATEX": [
+      {
+        "index": 125,
+        "label": "Autre imposition instrumentation ATEX",
+        "hours": 0
+      },
       {
         "index": 126,
         "label": "Certification boite phase atex Exe/Exn",
@@ -766,37 +766,37 @@
     "ESSAIS": [
       {
         "index": 134,
-        "label": "Mesure de bruit à vide",
+        "label": "Autre essai ou contrôle imposé",
         "hours": 0
       },
       {
         "index": 135,
-        "label": "Echauffement mécanique des paliers",
+        "label": "Mesure de bruit à vide",
         "hours": 0
       },
       {
         "index": 136,
-        "label": "Essai en charge",
+        "label": "Echauffement mécanique des paliers",
         "hours": 0
       },
       {
         "index": 137,
-        "label": "Essai en charge réduite",
+        "label": "Essai en charge",
         "hours": 0
       },
       {
         "index": 138,
-        "label": "Tracé courbe démarrage suivant vitesse",
+        "label": "Essai en charge réduite",
         "hours": 0
       },
       {
         "index": 139,
-        "label": "mesure décharges partielles (série)",
+        "label": "Tracé courbe démarrage suivant vitesse",
         "hours": 0
       },
       {
         "index": 140,
-        "label": "Autre essai de type imposé",
+        "label": "mesure décharges partielles (série)",
         "hours": 0
       },
       {
@@ -811,37 +811,39 @@
       },
       {
         "index": 143,
-        "label": "Autre essai de série imposé",
-        "hours": 0
-      },
-      {
-        "index": 144,
         "label": "Bobines d'essai stator requises pour essais",
         "hours": 0
       },
       {
-        "index": 145,
+        "index": 144,
         "label": "contrôle fab Tangeante delta",
         "hours": 0
       },
       {
-        "index": 146,
+        "index": 145,
         "label": "contrôle fab Surge test",
         "hours": 0
       },
       {
-        "index": 147,
+        "index": 146,
         "label": "contrôle fab Essai diélectrique",
-        "hours": 0
-      },
-      {
-        "index": 148,
-        "label": "Autre contrôle spécifique imposé",
         "hours": 0
       }
     ],
     "MIL": [],
-    "FDMS": [],
-    "SLI": []
+    "FDMS": [
+      {
+        "index": 147,
+        "label": "Options FDMS",
+        "hours": 0
+      }
+    ],
+    "SLI": [
+      {
+        "index": 148,
+        "label": "Options SLI",
+        "hours": 0
+      }
+    ]
   }
 }

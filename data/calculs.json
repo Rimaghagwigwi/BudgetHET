@@ -46,6 +46,51 @@
     "calculs": [
         {
         "index": 1,
+        "label": "Total calculs électromagnétiques",
+        "category": "ELECMAG",
+        "hours": {},
+        "selection": {
+            "MIL": "mandatory"
+            }
+        },
+        {
+        "index": 2,
+        "label": "Total calculs bobinage",
+        "category": "BOB",
+        "hours": {},
+        "selection": {
+            "MIL": "mandatory"
+            }
+        },
+        {
+        "index": 3,
+        "label": "Total calculs conception mécanique",
+        "category": "CONCEPT_MECA",
+        "hours": {},
+        "selection": {
+            "MIL": "mandatory"
+            }
+        },
+        {
+        "index": 4,
+        "label": "Total calculs méca ANSYS",
+        "category": "MECA_ANSYS",
+        "hours": {},
+        "selection": {
+            "MIL": "mandatory"
+            }
+        },
+        {
+        "index": 5,
+        "label": "Total calculs aérauliques et thermiques",
+        "category": "AERO_THERMIQUE",
+        "hours": {},
+        "selection": {
+            "MIL": "mandatory"
+            }
+        },
+        {
+        "index": 6,
         "label": "Calcul magnétique et thermique machine",
         "category": "ELECMAG",
         "hours": {
@@ -53,12 +98,13 @@
             "SYNCH": 8
             },
         "selection": {
-            "ASYNCH": "Oui",
-            "SYNCH": "Oui"
+            "ASYNCH": "mandatory",
+            "SYNCH": "mandatory",
+            "MIL": "optional"
             }
         },
         {
-        "index": 2,
+        "index": 7,
         "label": "Calcul Bout d'arbre,  Clavette,  Manchon (torsion)",
         "category": "CONCEPT_MECA",
         "hours": {
@@ -66,12 +112,13 @@
             "SYNCH": 8
             },
         "selection": {
-            "ASYNCH": "Oui",
-            "SYNCH": "Oui"
+            "ASYNCH": "mandatory",
+            "SYNCH": "mandatory",
+            "MIL": "optional"
             }
         },
         {
-        "index": 3,
+        "index": 8,
         "label": "Calcul diamètres équivalents en flexion",
         "category": "CONCEPT_MECA",
         "hours": {
@@ -79,12 +126,13 @@
             "SYNCH": 4
             },
         "selection": {
-            "ASYNCH": "Oui",
-            "SYNCH": "Oui"
+            "ASYNCH": "mandatory",
+            "SYNCH": "mandatory",
+            "MIL": "optional"
             }
         },
         {
-        "index": 4,
+        "index": 9,
         "label": "Calcul diamètres équivalents en torsion",
         "category": "CONCEPT_MECA",
         "hours": {
@@ -92,12 +140,13 @@
             "SYNCH": 4
             },
         "selection": {
-            "ASYNCH": "Oui",
-            "SYNCH": "Oui"
+            "ASYNCH": "mandatory",
+            "SYNCH": "mandatory",
+            "MIL": "optional"
             }
         },
         {
-        "index": 5,
+        "index": 10,
         "label": "Analyse latérale simplifiée VCFELX",
         "category": "CONCEPT_MECA",
         "hours": {
@@ -105,12 +154,13 @@
             "SYNCH": 8
             },
         "selection": {
-            "ASYNCH": "Oui",
-            "SYNCH": "Oui"
+            "ASYNCH": "mandatory",
+            "SYNCH": "mandatory",
+            "MIL": "optional"
             }
         },
         {
-        "index": 6,
+        "index": 11,
         "label": "Analyse latérale Rotorinsa",
         "category": "CONCEPT_MECA",
         "hours": {
@@ -118,12 +168,13 @@
             "SYNCH": 16
             },
         "selection": {
-            "ASYNCH": "Choix",
-            "SYNCH": "Choix"
+            "ASYNCH": "optional",
+            "SYNCH": "optional",
+            "MIL": "optional"
             }
         },
         {
-        "index": 7,
+        "index": 12,
         "label": "Calcul MODELE simplifié de torsion",
         "category": "CONCEPT_MECA",
         "hours": {
@@ -131,12 +182,13 @@
             "SYNCH": 8
             },
         "selection": {
-            "ASYNCH": "Choix",
-            "SYNCH": "Choix"
+            "ASYNCH": "optional",
+            "SYNCH": "optional",
+            "MIL": "optional"
             }
         },
         {
-        "index": 8,
+        "index": 13,
         "label": "Calcul couples transitoires (equations couples elec)",
         "category": "ELECMAG",
         "hours": {
@@ -144,12 +196,13 @@
             "SYNCH": 2
             },
         "selection": {
-            "ASYNCH": "Oui",
-            "SYNCH": "Oui"
+            "ASYNCH": "mandatory",
+            "SYNCH": "mandatory",
+            "MIL": "optional"
             }
         },
         {
-        "index": 9,
+        "index": 14,
         "label": "Calcul Couples transitoires (couple8 + VCTOR si requis par client ou analyse résultat client)",
         "category": "CONCEPT_MECA",
         "hours": {
@@ -157,12 +210,13 @@
             "SYNCH": 16
             },
         "selection": {
-            "ASYNCH": "Oui",
-            "SYNCH": "Oui"
+            "ASYNCH": "mandatory",
+            "SYNCH": "mandatory",
+            "MIL": "optional"
             }
         },
         {
-        "index": 10,
+        "index": 15,
         "label": "Calcul Serrage Tôlerie Rotor",
         "category": "CONCEPT_MECA",
         "hours": {
@@ -170,12 +224,13 @@
             "SYNCH": 4
             },
         "selection": {
-            "ASYNCH": "Oui",
-            "SYNCH": "Oui"
+            "ASYNCH": "mandatory",
+            "SYNCH": "mandatory",
+            "MIL": "optional"
             }
         },
         {
-        "index": 11,
+        "index": 16,
         "label": "Calcul Frettage",
         "category": "MECA_ANSYS",
         "hours": {
@@ -183,12 +238,13 @@
             "SYNCH": 15
             },
         "selection": {
-            "ASYNCH": "Choix",
-            "SYNCH": "Choix"
+            "ASYNCH": "optional",
+            "SYNCH": "optional",
+            "MIL": "optional"
             }
         },
         {
-        "index": 12,
+        "index": 17,
         "label": "Calcul Tenue méca barres rotor AS (cage)/ bobinage rotor SYNCH (ansys)/ frettage tete bobine jisalt",
         "category": "MECA_ANSYS",
         "hours": {
@@ -196,12 +252,13 @@
             "SYNCH": 16
             },
         "selection": {
-            "ASYNCH": "Oui",
-            "SYNCH": "Oui"
+            "ASYNCH": "mandatory",
+            "SYNCH": "mandatory",
+            "MIL": "optional"
             }
         },
         {
-        "index": 13,
+        "index": 18,
         "label": "Calcul ventilateurs internes (méca, fréq)",
         "category": "MECA_ANSYS",
         "hours": {
@@ -209,12 +266,13 @@
             "SYNCH": 10
             },
         "selection": {
-            "ASYNCH": "Oui",
-            "SYNCH": "Oui"
+            "ASYNCH": "mandatory",
+            "SYNCH": "mandatory",
+            "MIL": "optional"
             }
         },
         {
-        "index": 14,
+        "index": 19,
         "label": "Calcul ventilateurs externes (méca, fréq)",
         "category": "MECA_ANSYS",
         "hours": {
@@ -222,12 +280,13 @@
             "SYNCH": 10
             },
         "selection": {
-            "ASYNCH": "Choix",
-            "SYNCH": "Choix"
+            "ASYNCH": "optional",
+            "SYNCH": "optional",
+            "MIL": "optional"
             }
         },
         {
-        "index": 15,
+        "index": 20,
         "label": "Calcul serrage joue",
         "category": "CONCEPT_MECA",
         "hours": {
@@ -235,12 +294,13 @@
             "SYNCH": 2
             },
         "selection": {
-            "ASYNCH": "Oui",
-            "SYNCH": "Oui"
+            "ASYNCH": "mandatory",
+            "SYNCH": "mandatory",
+            "MIL": "optional"
             }
         },
         {
-        "index": 16,
+        "index": 21,
         "label": "Calcul Tiges de serrage/barreaux",
         "category": "CONCEPT_MECA",
         "hours": {
@@ -248,12 +308,13 @@
             "SYNCH": 4
             },
         "selection": {
-            "ASYNCH": "Oui",
-            "SYNCH": "Oui"
+            "ASYNCH": "mandatory",
+            "SYNCH": "mandatory",
+            "MIL": "optional"
             }
         },
         {
-        "index": 17,
+        "index": 22,
         "label": "Calcul Fixation lanterne",
         "category": "MECA_ANSYS",
         "hours": {
@@ -261,12 +322,13 @@
             "SYNCH": 4
             },
         "selection": {
-            "ASYNCH": "Oui",
-            "SYNCH": "Oui"
+            "ASYNCH": "mandatory",
+            "SYNCH": "mandatory",
+            "MIL": "optional"
             }
         },
         {
-        "index": 18,
+        "index": 23,
         "label": "Contraintes intercalaires externes (doigt de serrage)",
         "category": "CONCEPT_MECA",
         "hours": {
@@ -274,12 +336,13 @@
             "SYNCH": 4
             },
         "selection": {
-            "ASYNCH": "Choix",
-            "SYNCH": "Choix"
+            "ASYNCH": "optional",
+            "SYNCH": "optional",
+            "MIL": "optional"
             }
         },
         {
-        "index": 19,
+        "index": 24,
         "label": "Définition bobinage Coupe d'encoche (plbob)",
         "category": "BOB",
         "hours": {
@@ -287,12 +350,13 @@
             "SYNCH": 4
             },
         "selection": {
-            "ASYNCH": "Oui",
-            "SYNCH": "Oui"
+            "ASYNCH": "mandatory",
+            "SYNCH": "mandatory",
+            "MIL": "optional"
             }
         },
         {
-        "index": 20,
+        "index": 25,
         "label": "Calculs carcasse (méca +freq propres+raideur Ansys)",
         "category": "MECA_ANSYS",
         "hours": {
@@ -300,12 +364,13 @@
             "SYNCH": 24
             },
         "selection": {
-            "ASYNCH": "Oui",
-            "SYNCH": "Oui"
+            "ASYNCH": "mandatory",
+            "SYNCH": "mandatory",
+            "MIL": "optional"
             }
         },
         {
-        "index": 21,
+        "index": 26,
         "label": "Calcul au séisme",
         "category": "MECA_ANSYS",
         "hours": {
@@ -313,12 +378,13 @@
             "SYNCH": 100
             },
         "selection": {
-            "ASYNCH": "Choix",
-            "SYNCH": "Choix"
+            "ASYNCH": "optional",
+            "SYNCH": "optional",
+            "MIL": "optional"
             }
         },
         {
-        "index": 22,
+        "index": 27,
         "label": "Calcul Pivoterie - calcul roulements/paliers lisses",
         "category": "CONCEPT_MECA",
         "hours": {
@@ -326,12 +392,13 @@
             "SYNCH": 20
             },
         "selection": {
-            "ASYNCH": "Oui",
-            "SYNCH": "Oui"
+            "ASYNCH": "mandatory",
+            "SYNCH": "mandatory",
+            "MIL": "optional"
             }
         },
         {
-        "index": 23,
+        "index": 28,
         "label": "Calcul Aéraulique - Calcul aéraulique machine",
         "category": "AERO_THERMIQUE",
         "hours": {
@@ -339,12 +406,13 @@
             "SYNCH": 15
             },
         "selection": {
-            "ASYNCH": "Oui",
-            "SYNCH": "Oui"
+            "ASYNCH": "mandatory",
+            "SYNCH": "mandatory",
+            "MIL": "optional"
             }
         },
         {
-        "index": 24,
+        "index": 29,
         "label": "Calcul Aéraulique - Aéro-réfrigérant",
         "category": "AERO_THERMIQUE",
         "hours": {
@@ -352,12 +420,13 @@
             "SYNCH": 4
             },
         "selection": {
-            "ASYNCH": "Choix",
-            "SYNCH": "Choix"
+            "ASYNCH": "optional",
+            "SYNCH": "optional",
+            "MIL": "optional"
             }
         },
         {
-        "index": 25,
+        "index": 30,
         "label": "Calcul Autres - Lignage",
         "category": "CONCEPT_MECA",
         "hours": {
@@ -365,12 +434,13 @@
             "SYNCH": 4
             },
         "selection": {
-            "ASYNCH": "Oui",
-            "SYNCH": "Oui"
+            "ASYNCH": "mandatory",
+            "SYNCH": "mandatory",
+            "MIL": "optional"
             }
         },
         {
-        "index": 26,
+        "index": 31,
         "label": "Calcul Autres - Réactions ancrage",
         "category": "CONCEPT_MECA",
         "hours": {
@@ -378,12 +448,13 @@
             "SYNCH": 4
             },
         "selection": {
-            "ASYNCH": "Oui",
-            "SYNCH": "Oui"
+            "ASYNCH": "mandatory",
+            "SYNCH": "mandatory",
+            "MIL": "optional"
             }
         },
         {
-        "index": 27,
+        "index": 32,
         "label": "Calcul Autres - Dimensionnement ancrages et vis de fixation",
         "category": "CONCEPT_MECA",
         "hours": {
@@ -391,12 +462,13 @@
             "SYNCH": 4
             },
         "selection": {
-            "ASYNCH": "Choix",
-            "SYNCH": "Choix"
+            "ASYNCH": "optional",
+            "SYNCH": "optional",
+            "MIL": "optional"
             }
         },
         {
-        "index": 28,
+        "index": 33,
         "label": "Calcul Autres - Tuyauteries (vitesse, pression)",
         "category": "CONCEPT_MECA",
         "hours": {
@@ -404,12 +476,12 @@
             "SYNCH": 8
             },
         "selection": {
-            "ASYNCH": "Non",
-            "SYNCH": "Choix"
+            "SYNCH": "optional",
+            "MIL": "optional"
             }
         },
         {
-        "index": 29,
+        "index": 34,
         "label": "Calcul Autres - Liaisons boulonnées diverses",
         "category": "CONCEPT_MECA",
         "hours": {
@@ -417,12 +489,13 @@
             "SYNCH": 8
             },
         "selection": {
-            "ASYNCH": "Oui",
-            "SYNCH": "Oui"
+            "ASYNCH": "mandatory",
+            "SYNCH": "mandatory",
+            "MIL": "optional"
             }
         },
         {
-        "index": 30,
+        "index": 35,
         "label": "Calcul magnetique (JMAG) pour THD, scientifique spécial…",
         "category": "ELECMAG",
         "hours": {
@@ -430,12 +503,13 @@
             "SYNCH": 24
             },
         "selection": {
-            "ASYNCH": "Choix",
-            "SYNCH": "Choix"
+            "ASYNCH": "optional",
+            "SYNCH": "optional",
+            "MIL": "optional"
             }
         },
         {
-        "index": 31,
+        "index": 36,
         "label": "Calcul diode (roue RT)",
         "category": "ELECMAG",
         "hours": {
@@ -443,12 +517,12 @@
             "SYNCH": 4
             },
         "selection": {
-            "ASYNCH": "Non",
-            "SYNCH": "Oui"
+            "SYNCH": "mandatory",
+            "MIL": "optional"
             }
         },
         {
-        "index": 32,
+        "index": 37,
         "label": "Calcul AE",
         "category": "ELECMAG",
         "hours": {
@@ -456,12 +530,12 @@
             "SYNCH": 4
             },
         "selection": {
-            "ASYNCH": "Non",
-            "SYNCH": "Choix"
+            "SYNCH": "optional",
+            "MIL": "optional"
             }
         },
         {
-        "index": 33,
+        "index": 38,
         "label": "Calcul HNB",
         "category": "ELECMAG",
         "hours": {
@@ -469,12 +543,12 @@
             "SYNCH": 12
             },
         "selection": {
-            "ASYNCH": "Non",
-            "SYNCH": "Choix"
+            "SYNCH": "optional",
+            "MIL": "optional"
             }
         },
         {
-        "index": 34,
+        "index": 39,
         "label": "Calcul/définition module gate/pulse sin/resist balast/resistance démarrage",
         "category": "ELECMAG",
         "hours": {
@@ -482,12 +556,12 @@
             "SYNCH": 8
             },
         "selection": {
-            "ASYNCH": "Non",
-            "SYNCH": "Choix"
+            "SYNCH": "optional",
+            "MIL": "optional"
             }
         },
         {
-        "index": 35,
+        "index": 40,
         "label": "Calcul PMG",
         "category": "ELECMAG",
         "hours": {
@@ -495,12 +569,12 @@
             "SYNCH": 8
             },
         "selection": {
-            "ASYNCH": "Non",
-            "SYNCH": "Choix"
+            "SYNCH": "optional",
+            "MIL": "optional"
             }
         },
         {
-        "index": 36,
+        "index": 41,
         "label": "Calcul tolerie",
         "category": "ELECMAG",
         "hours": {
@@ -508,12 +582,13 @@
             "SYNCH": 4
             },
         "selection": {
-            "ASYNCH": "Oui",
-            "SYNCH": "Oui"
+            "ASYNCH": "mandatory",
+            "SYNCH": "mandatory",
+            "MIL": "optional"
             }
         },
         {
-        "index": 37,
+        "index": 42,
         "label": "Définition schéma bobinage",
         "category": "BOB",
         "hours": {
@@ -521,8 +596,9 @@
             "SYNCH": 4
             },
         "selection": {
-            "ASYNCH": "Oui",
-            "SYNCH": "Oui"
+            "ASYNCH": "mandatory",
+            "SYNCH": "mandatory",
+            "MIL": "optional"
             }
         }
     ]

@@ -180,6 +180,11 @@ class TaskTableWidget(QTableWidget):
         """Notifie le layout que la taille a changé."""
         self.updateGeometry()
 
+    @property
+    def is_empty(self) -> bool:
+        """Retourne True si le tableau ne contient aucune tâche."""
+        return not any(self.categories.values())
+
     def refresh(self):
         """Recrée l'affichage du tableau avec les données actuelles."""
         self.clearContents()
@@ -187,60 +192,68 @@ class TaskTableWidget(QTableWidget):
         self.show_table()
         self.adjust_height_to_content()
 
+    @staticmethod
+    def _fmt(hours: float) -> str:
+        """Formate un nombre d'heures en supprimant les zéros inutiles."""
+        return f"{hours:.1f}".rstrip("0").rstrip(".")
+
+    def _sync_manual_hours(self, task: AbstractTask, task_row: int) -> None:
+        """Lit le QLineEdit de correction et met à jour task.manual_hours."""
+        line_edit = self.cellWidget(task_row, self.col_offset + 4)
+        if not isinstance(line_edit, QLineEdit):
+            return
+        text = line_edit.text().strip()
+        if not text:
+            task.manual_hours = None
+            return
+        try:
+            task.manual_hours = float(text)
+        except ValueError:
+            task.manual_hours = None
+
+    def _is_task_checked(self, task_row: int) -> bool:
+        """Retourne True si la tâche est active (toujours True pour les tâches non-optionnelles)."""
+        if not self.is_optional:
+            return True
+        checkbox_widget = self.cellWidget(task_row, 0)
+        if not checkbox_widget:
+            return False
+        checkbox = checkbox_widget.findChild(QCheckBox)
+        return checkbox.isChecked() if checkbox else False
+
+    def _update_task_row(self, task: AbstractTask, task_row: int) -> float:
+        """Met à jour une ligne de tâche et retourne sa contribution au total."""
+        default_h = task.default_hours(self.context)
+
+        item_base = self.item(task_row, self.col_offset + 2)
+        if item_base:
+            item_base.setText(self._fmt(default_h))
+
+        item_final = self.item(task_row, self.col_offset + 3)
+        if item_final:
+            item_final.setText(self._fmt(task.effective_hours(self.context)))
+
+        self._sync_manual_hours(task, task_row)
+
+        if not self._is_task_checked(task_row):
+            return 0.0
+        return task.manual_hours if task.manual_hours is not None else default_h
+
+    def _update_category(self, task_list: List[AbstractTask], header_row: int) -> None:
+        """Met à jour toutes les lignes d'une catégorie et son total."""
+        total_hours = sum(
+            self._update_task_row(task, header_row + 1 + idx)
+            for idx, task in enumerate(task_list)
+        )
+        total_item = self.item(header_row, self.columnCount() - 1)
+        if total_item:
+            total_item.setText(self._fmt(total_hours))
+
     def update_table(self):
         """Met à jour les heures par défaut et les totaux des catégories sans recréer les widgets."""
         current_row = 0
-        for cat_name, task_list in self.categories.items():
-            # current_row est la ligne d'en-tête de la catégorie
-            total_hours = 0.0
-            
-            # Parcourir les lignes de tâches de cette catégorie
-            for task_idx, task in enumerate(task_list):
-                task_row = current_row + 1 + task_idx
-                
-                # Mettre à jour les heures par défaut affichées (recalculées depuis l'objet)
-                default_h = task.default_hours(self.context)
-                hours_item = self.item(task_row, self.col_offset + 2)
-                if hours_item:
-                    hours_item.setText(f"{default_h:.2f}".rstrip("0").rstrip("."))
-
-                # Mettre à jour les heures finales affichées (recalculées depuis l'objet)
-                final_h = task.effective_hours(self.context)
-                final_hours_item = self.item(task_row, self.col_offset + 3)
-                if final_hours_item:
-                    final_hours_item.setText(f"{final_h:.2f}".rstrip("0").rstrip("."))
-                
-                # Récupérer la valeur manuelle depuis le LineEdit
-                line_edit = self.cellWidget(task_row, self.col_offset + 4)
-                if isinstance(line_edit, QLineEdit):
-                    text = line_edit.text().strip()
-                    if text:
-                        try:
-                            task.manual_hours = float(text)
-                        except ValueError:
-                            task.manual_hours = None
-                    else:
-                        task.manual_hours = None
-                
-                # Vérifier si la tâche est cochée (pour les options)
-                is_checked = True
-                if self.is_optional:
-                    checkbox_widget = self.cellWidget(task_row, 0)
-                    if checkbox_widget:
-                        checkbox = checkbox_widget.findChild(QCheckBox)
-                        is_checked = checkbox.isChecked() if checkbox else False
-                
-                # Calculer les heures effectives
-                if is_checked:
-                    hours = task.manual_hours if task.manual_hours is not None else default_h
-                    total_hours += hours
-            
-            # Mettre à jour la cellule du total
-            total_item = self.item(current_row, self.columnCount() - 1)
-            if total_item:
-                total_item.setText(f"{total_hours:.2f}".rstrip("0").rstrip("."))
-            
-            # Passer à la catégorie suivante
+        for task_list in self.categories.values():
+            self._update_category(task_list, current_row)
             current_row += 1 + len(task_list)
 
 
@@ -293,9 +306,11 @@ class TabTasks(QWidget):
 
 
     def display_tables(self, tables: List[TaskTableWidget]):
-        """Affiche une liste de tables dans le conteneur."""
+        """Affiche une liste de tables dans le conteneur (les tables vides sont ignorées)."""
         self.clear()
         for table in tables:
+            if table.is_empty:
+                continue
             if table.label:
                 self.layout_container.addWidget(table.label)
             self.layout_container.addWidget(table)

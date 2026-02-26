@@ -19,10 +19,10 @@ class CalculsTabController(BaseTaskTabController):
         optional: Dict[str, List[Calcul]] = {}
 
         for calc in project.calculs:
-            selection = calc.selection.get(machine_type, "Non")
-            if selection == "Oui":
+            selection = calc.selection.get(machine_type, "")
+            if selection == "mandatory":
                 mandatory.setdefault(calc.category, []).append(calc)
-            elif selection == "Choix":
+            elif selection == "optional":
                 optional.setdefault(calc.category, []).append(calc)
 
         return [

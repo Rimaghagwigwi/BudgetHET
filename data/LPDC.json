@@ -7,17 +7,14 @@
     "MARINE_CIVILE": 1.0,
     "MIL": 0
   },
-
   "coeff_affaire": {
     "IDENTIQUE_JE": 0.2,
     "REMPLACEMENT": 1.2
   },
-
   "categories": {
     "BASE": "PDC de base",
     "PART": "PDC particuliers"
   },
-
   "ortems_repartition": {
     "BASE": {
       "PROJ_MACHINE_DEF": 0.3,
@@ -38,198 +35,213 @@
       "ING_ELECTROTECH_DEF": 0.2
     }
   },
-  
   "documents": [
     {
       "index": 1,
-      "label": "Langue des documents contractuels <> F/A",
-      "hours": 5.0,
+      "label": "Autre document imposé",
+      "hours": 0.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
     },
     {
       "index": 2,
-      "label": "Langue du Manuel d'entretien MEE <> F/A",
+      "label": "Langue des documents contractuels <> F/A",
       "hours": 5.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
     },
     {
       "index": 3,
-      "label": "Courbes électriques spécifiques",
-      "hours": 20.0,
+      "label": "Langue du Manuel d'entretien MEE <> F/A",
+      "hours": 5.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
     },
     {
       "index": 4,
-      "label": "Plan masses et inerties rotor (Rotor mass inertia drawing)",
-      "hours": 8.0,
+      "label": "Courbes électriques spécifiques",
+      "hours": 20.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
-      ],
-      "secteur_obligatoire": [
-        "OIL_GAS",
-        "INDUS",
-        "MARINE_CIVILE",
-        "NUC_NON_QUALIFIE",
-        "NUC_QUALIFIE",
+        "SYNCH",
         "MIL"
-      ],
-      "option_possible": false
-    },
-    {
-      "index": 5,
-      "label": "plan vue en coupe (section view)",
-      "hours": 15.0,
-      "applicable_pour": [
-        "ASYNCH",
-        "SYNCH"
-      ],
-      "secteur_obligatoire": [
-        "OIL_GAS",
-        "INDUS",
-        "MARINE_CIVILE",
-        "NUC_NON_QUALIFIE",
-        "NUC_QUALIFIE",
-        "MIL"
-      ],
-      "option_possible": false
-    },
-    {
-      "index": 6,
-      "label": "Données torsionelles (torsion data model)",
-      "hours": 15.0,
-      "applicable_pour": [
-        "ASYNCH",
-        "SYNCH"
-      ],
-      "secteur_obligatoire": [
-        "NUC_QUALIFIE",
-        "NUC_NON_QUALIFIE",
-        "MIL"
-      ],
-      "option_possible": true
-    },
-    {
-      "index": 7,
-      "label": "Analyse torsionnelle",
-      "hours": 25.0,
-      "applicable_pour": [
-        "ASYNCH",
-        "SYNCH"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
     },
     {
-      "index": 8,
-      "label": "Spécification de peinture",
+      "index": 5,
+      "label": "Plan masses et inerties rotor (Rotor mass inertia drawing)",
       "hours": 8.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "OIL_GAS",
-        "NUC_QUALIFIE",
+        "INDUS",
+        "MARINE_CIVILE",
         "NUC_NON_QUALIFIE",
+        "NUC_QUALIFIE"
+      ],
+      "option_possible": false
+    },
+    {
+      "index": 6,
+      "label": "plan vue en coupe (section view)",
+      "hours": 15.0,
+      "applicable_pour": [
+        "ASYNCH",
+        "SYNCH",
         "MIL"
+      ],
+      "secteur_obligatoire": [
+        "OIL_GAS",
+        "INDUS",
+        "MARINE_CIVILE",
+        "NUC_NON_QUALIFIE",
+        "NUC_QUALIFIE"
+      ],
+      "option_possible": false
+    },
+    {
+      "index": 7,
+      "label": "Données torsionelles (torsion data model)",
+      "hours": 15.0,
+      "applicable_pour": [
+        "ASYNCH",
+        "SYNCH",
+        "MIL"
+      ],
+      "secteur_obligatoire": [
+        "NUC_NON_QUALIFIE",
+        "NUC_QUALIFIE"
       ],
       "option_possible": true
     },
     {
+      "index": 8,
+      "label": "Analyse torsionnelle",
+      "hours": 25.0,
+      "applicable_pour": [
+        "ASYNCH",
+        "SYNCH",
+        "MIL"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
       "index": 9,
-      "label": "Liste des consommateurs (utility list)",
+      "label": "Spécification de peinture",
       "hours": 8.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "OIL_GAS",
-        "NUC_QUALIFIE",
         "NUC_NON_QUALIFIE",
-        "MIL"
+        "NUC_QUALIFIE"
       ],
       "option_possible": true
     },
     {
       "index": 10,
+      "label": "Liste des consommateurs (utility list)",
+      "hours": 8.0,
+      "applicable_pour": [
+        "ASYNCH",
+        "SYNCH",
+        "MIL"
+      ],
+      "secteur_obligatoire": [
+        "OIL_GAS",
+        "NUC_NON_QUALIFIE",
+        "NUC_QUALIFIE"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 11,
       "label": "manuel de maintenance",
       "hours": 40.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "INDUS",
         "OIL_GAS",
         "MARINE_CIVILE",
         "NUC_NON_QUALIFIE",
-        "NUC_QUALIFIE",
-        "MIL"
+        "NUC_QUALIFIE"
       ],
       "option_possible": false
     },
     {
-      "index": 11,
+      "index": 12,
       "label": "Notice d'assemblage exemple 6an21405",
       "hours": 30.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
-        "MIL",
         "NUC_QUALIFIE",
         "NUC_NON_QUALIFIE"
       ],
       "option_possible": true
     },
     {
-      "index": 12,
+      "index": 13,
       "label": "liste des instrum",
       "hours": 15.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "INDUS",
         "OIL_GAS",
         "MARINE_CIVILE",
         "NUC_NON_QUALIFIE",
-        "NUC_QUALIFIE",
-        "MIL"
+        "NUC_QUALIFIE"
       ],
       "option_possible": false
     },
     {
-      "index": 13,
+      "index": 14,
       "label": "schéma instrum 4ra",
       "hours": 15.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_NON_QUALIFIE",
         "NUC_QUALIFIE",
-        "MIL",
         "OIL_GAS",
         "INDUS",
         "MARINE_CIVILE"
@@ -237,103 +249,95 @@
       "option_possible": false
     },
     {
-      "index": 14,
+      "index": 15,
       "label": "schéma unifilaire armoire APN/machine SYNCH uniquement",
       "hours": 15.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "INDUS",
         "OIL_GAS",
         "MARINE_CIVILE",
         "NUC_NON_QUALIFIE",
-        "NUC_QUALIFIE",
-        "MIL"
-      ],
-      "option_possible": false
-    },
-    {
-      "index": 15,
-      "label": "Plan de démontage du rotor (rotor removal drawing)",
-      "hours": 30.0,
-      "applicable_pour": [
-        "SYNCH"
-      ],
-      "secteur_obligatoire": [
-        "INDUS",
-        "OIL_GAS",
-        "MARINE_CIVILE",
-        "NUC_NON_QUALIFIE",
-        "NUC_QUALIFIE",
-        "MIL"
+        "NUC_QUALIFIE"
       ],
       "option_possible": false
     },
     {
       "index": 16,
+      "label": "Plan de démontage du rotor (rotor removal drawing)",
+      "hours": 30.0,
+      "applicable_pour": [
+        "SYNCH",
+        "MIL"
+      ],
+      "secteur_obligatoire": [
+        "INDUS",
+        "OIL_GAS",
+        "MARINE_CIVILE",
+        "NUC_NON_QUALIFIE",
+        "NUC_QUALIFIE"
+      ],
+      "option_possible": false
+    },
+    {
+      "index": 17,
       "label": "Plan de transport de la machine (handling drawing)",
       "hours": 8.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
-      ],
-      "secteur_obligatoire": [],
-      "option_possible": true
-    },
-    {
-      "index": 17,
-      "label": "Plan d'ancrage (fundations drawing)",
-      "hours": 8.0,
-      "applicable_pour": [
-        "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
     },
     {
       "index": 18,
-      "label": "Plan encombrement 3D (enveloppe)",
-      "hours": 30.0,
+      "label": "Plan d'ancrage (fundations drawing)",
+      "hours": 8.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
     },
     {
       "index": 19,
-      "label": "Liste des graisses ou huiles préconisées",
-      "hours": 8.0,
+      "label": "Plan encombrement 3D (enveloppe)",
+      "hours": 30.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
     },
     {
       "index": 20,
-      "label": "Liste des pièces de rechange",
-      "hours": 15.0,
+      "label": "Liste des graisses ou huiles préconisées",
+      "hours": 8.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
-      "secteur_obligatoire": [
-        "NUC_QUALIFIE"
-      ],
+      "secteur_obligatoire": [],
       "option_possible": true
     },
     {
       "index": 21,
-      "label": "Spécification d'emballage, de transport et de stockage",
-      "hours": 20.0,
+      "label": "Liste des pièces de rechange",
+      "hours": 15.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -342,29 +346,44 @@
     },
     {
       "index": 22,
+      "label": "Spécification d'emballage, de transport et de stockage",
+      "hours": 20.0,
+      "applicable_pour": [
+        "ASYNCH",
+        "SYNCH",
+        "MIL"
+      ],
+      "secteur_obligatoire": [
+        "NUC_QUALIFIE"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 23,
       "label": "Plan plaque signalétique",
       "hours": 8.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "INDUS",
         "OIL_GAS",
         "MARINE_CIVILE",
         "NUC_NON_QUALIFIE",
-        "NUC_QUALIFIE",
-        "MIL"
+        "NUC_QUALIFIE"
       ],
       "option_possible": false
     },
     {
-      "index": 23,
+      "index": 24,
       "label": "DR/DI",
       "hours": 50.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE",
@@ -373,95 +392,88 @@
       "option_possible": true
     },
     {
-      "index": 24,
+      "index": 25,
       "label": "descriptif technique de la machine (exemple 6an21174)",
       "hours": 30.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
-      ],
-      "secteur_obligatoire": [
-        "NUC_QUALIFIE",
-        "NUC_NON_QUALIFIE",
+        "SYNCH",
         "MIL"
       ],
-      "option_possible": true
-    },
-    {
-      "index": 25,
-      "label": "Analyse de risque Qualification (exemple 6an21175)",
-      "hours": 30.0,
-      "applicable_pour": [
-        "ASYNCH",
-        "SYNCH"
+      "secteur_obligatoire": [
+        "NUC_NON_QUALIFIE",
+        "NUC_QUALIFIE"
       ],
-      "secteur_obligatoire": [],
       "option_possible": true
     },
     {
       "index": 26,
-      "label": "Fiability synthesis note - maintainability disponibility",
+      "label": "Analyse de risque Qualification (exemple 6an21175)",
       "hours": 30.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
     },
     {
       "index": 27,
-      "label": "Verification report and validation for ANSYS software 6SC28558",
-      "hours": 5.0,
+      "label": "Fiability synthesis note - maintainability disponibility",
+      "hours": 30.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
     },
     {
       "index": 28,
-      "label": "Note précisant les dispositions prévues à la conception pour limiter l'irradiation des composants sensibles (exemple 6an21252)",
-      "hours": 15.0,
+      "label": "Verification report and validation for ANSYS software 6SC28558",
+      "hours": 5.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
     },
     {
       "index": 29,
-      "label": "Procédure de mise en propreté (exemple 6gc21089)",
-      "hours": 10.0,
+      "label": "Note précisant les dispositions prévues à la conception pour limiter l'irradiation des composants sensibles (exemple 6an21252)",
+      "hours": 15.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
     },
     {
       "index": 30,
-      "label": "Qualification synthesis report (NSQ) note de synthèse de qualification (exemple 6an21370)",
-      "hours": 50.0,
+      "label": "Procédure de mise en propreté (exemple 6gc21089)",
+      "hours": 10.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
-      "secteur_obligatoire": [
-        "NUC_QUALIFIE"
-      ],
+      "secteur_obligatoire": [],
       "option_possible": true
     },
     {
       "index": 31,
-      "label": "Qualification sustainability report (FMQ) Fiche de Maintien de Qualification exemple 6an21391",
-      "hours": 25.0,
+      "label": "Qualification synthesis report (NSQ) note de synthèse de qualification (exemple 6an21370)",
+      "hours": 50.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -470,22 +482,12 @@
     },
     {
       "index": 32,
-      "label": "Note d'opérabilité au Séisme exemple 6an21235",
-      "hours": 200.0,
+      "label": "Qualification sustainability report (FMQ) Fiche de Maintien de Qualification exemple 6an21391",
+      "hours": 25.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
-      ],
-      "secteur_obligatoire": [],
-      "option_possible": true
-    },
-    {
-      "index": 33,
-      "label": "programme de qualification de la machine nucléaire",
-      "hours": 30.0,
-      "applicable_pour": [
-        "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -493,93 +495,108 @@
       "option_possible": true
     },
     {
-      "index": 34,
-      "label": "note de calcul thermique machine",
-      "hours": 15.0,
+      "index": 33,
+      "label": "Note d'opérabilité au Séisme exemple 6an21235",
+      "hours": 200.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 34,
+      "label": "programme de qualification de la machine nucléaire",
+      "hours": 30.0,
+      "applicable_pour": [
+        "ASYNCH",
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
-        "NUC_QUALIFIE",
-        "NUC_NON_QUALIFIE",
-        "MIL"
+        "NUC_QUALIFIE"
       ],
       "option_possible": true
     },
     {
       "index": 35,
+      "label": "note de calcul thermique machine",
+      "hours": 15.0,
+      "applicable_pour": [
+        "ASYNCH",
+        "SYNCH",
+        "MIL"
+      ],
+      "secteur_obligatoire": [
+        "NUC_NON_QUALIFIE",
+        "NUC_QUALIFIE"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 36,
       "label": "note de calcul thermique  système refroidissemnt",
       "hours": 30.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
     },
     {
-      "index": 36,
+      "index": 37,
       "label": "calcul modal carcasse",
       "hours": 35.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
-      ],
-      "secteur_obligatoire": [
-        "NUC_QUALIFIE",
-        "NUC_NON_QUALIFIE",
+        "SYNCH",
         "MIL"
       ],
-      "option_possible": true
-    },
-    {
-      "index": 37,
-      "label": "calcul paliers (roulement ou palier lisse)",
-      "hours": 20.0,
-      "applicable_pour": [
-        "ASYNCH",
-        "SYNCH"
-      ],
       "secteur_obligatoire": [
-        "NUC_QUALIFIE",
         "NUC_NON_QUALIFIE",
-        "MIL"
+        "NUC_QUALIFIE"
       ],
       "option_possible": true
     },
     {
       "index": 38,
+      "label": "calcul paliers (roulement ou palier lisse)",
+      "hours": 20.0,
+      "applicable_pour": [
+        "ASYNCH",
+        "SYNCH",
+        "MIL"
+      ],
+      "secteur_obligatoire": [
+        "NUC_NON_QUALIFIE",
+        "NUC_QUALIFIE"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 39,
       "label": "Efforts transmis aux ancrages",
       "hours": 8.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
     },
     {
-      "index": 39,
+      "index": 40,
       "label": "spec appro cuivre stator",
       "hours": 5.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
-      ],
-      "secteur_obligatoire": [
-        "NUC_QUALIFIE",
-        "NUC_NON_QUALIFIE"
-      ],
-      "option_possible": true
-    },
-    {
-      "index": 40,
-      "label": "spec appro tôles rotor",
-      "hours": 5.0,
-      "applicable_pour": [
-        "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE",
@@ -589,11 +606,12 @@
     },
     {
       "index": 41,
-      "label": "spec appro tôles stator",
+      "label": "spec appro tôles rotor",
       "hours": 5.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE",
@@ -603,11 +621,12 @@
     },
     {
       "index": 42,
-      "label": "spec appro cuivre rotor",
+      "label": "spec appro tôles stator",
       "hours": 5.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE",
@@ -617,11 +636,12 @@
     },
     {
       "index": 43,
-      "label": "spec appro arbre (+plan)",
-      "hours": 25.0,
+      "label": "spec appro cuivre rotor",
+      "hours": 5.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE",
@@ -631,11 +651,12 @@
     },
     {
       "index": 44,
-      "label": "spec appro carcasse (+plan)",
+      "label": "spec appro arbre (+plan)",
       "hours": 25.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE",
@@ -645,11 +666,12 @@
     },
     {
       "index": 45,
-      "label": "spec appro cercle rotor (+plan)",
-      "hours": 5.0,
+      "label": "spec appro carcasse (+plan)",
+      "hours": 25.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE",
@@ -659,11 +681,12 @@
     },
     {
       "index": 46,
-      "label": "spec paliers",
-      "hours": 8.0,
+      "label": "spec appro cercle rotor (+plan)",
+      "hours": 5.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE",
@@ -673,11 +696,12 @@
     },
     {
       "index": 47,
-      "label": "spec appro réfrigérant",
+      "label": "spec paliers",
       "hours": 8.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE",
@@ -687,24 +711,27 @@
     },
     {
       "index": 48,
-      "label": "Spécification d'approvisionnement Pièces de fonderie usinées exemple 6an21271",
+      "label": "spec appro réfrigérant",
       "hours": 8.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
-        "NUC_QUALIFIE"
+        "NUC_QUALIFIE",
+        "NUC_NON_QUALIFIE"
       ],
       "option_possible": true
     },
     {
       "index": 49,
-      "label": "cahier de brasage",
-      "hours": 50.0,
+      "label": "Spécification d'approvisionnement Pièces de fonderie usinées exemple 6an21271",
+      "hours": 8.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -713,11 +740,12 @@
     },
     {
       "index": 50,
-      "label": "cahier de soudure ",
+      "label": "cahier de brasage",
       "hours": 50.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -726,201 +754,12 @@
     },
     {
       "index": 51,
-      "label": "programme d'esssais",
-      "hours": 20.0,
-      "applicable_pour": [
-        "ASYNCH",
-        "SYNCH"
-      ],
-      "secteur_obligatoire": [
-        "INDUS",
-        "OIL_GAS",
-        "MARINE_CIVILE",
-        "NUC_NON_QUALIFIE",
-        "NUC_QUALIFIE",
-        "MIL"
-      ],
-      "option_possible": true
-    },
-    {
-      "index": 52,
-      "label": "calcul cage rotor",
-      "hours": 40.0,
-      "applicable_pour": [
-        "ASYNCH",
-        "SYNCH"
-      ],
-      "secteur_obligatoire": [
-        "NUC_QUALIFIE",
-        "NUC_NON_QUALIFIE"
-      ],
-      "option_possible": true
-    },
-    {
-      "index": 53,
-      "label": "Liste des Outillages Spéciaux",
-      "hours": 8.0,
-      "applicable_pour": [
-        "ASYNCH",
-        "SYNCH"
-      ],
-      "secteur_obligatoire": [],
-      "option_possible": true
-    },
-    {
-      "index": 54,
-      "label": "Matrice de Conformité aux Spécifications, Liste des Ecarts",
+      "label": "cahier de soudure ",
       "hours": 50.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
-      ],
-      "secteur_obligatoire": [
-        "NUC_QUALIFIE",
-        "NUC_NON_QUALIFIE",
+        "SYNCH",
         "MIL"
-      ],
-      "option_possible": true
-    },
-    {
-      "index": 55,
-      "label": "Note de Tenue Mécanique de l'Arbre",
-      "hours": 50.0,
-      "applicable_pour": [
-        "ASYNCH",
-        "SYNCH"
-      ],
-      "secteur_obligatoire": [
-        "NUC_QUALIFIE",
-        "NUC_NON_QUALIFIE"
-      ],
-      "option_possible": true
-    },
-    {
-      "index": 56,
-      "label": "data sheet",
-      "hours": 20.0,
-      "applicable_pour": [
-        "ASYNCH",
-        "SYNCH"
-      ],
-      "secteur_obligatoire": [
-        "INDUS",
-        "OIL_GAS",
-        "MARINE_CIVILE",
-        "NUC_NON_QUALIFIE",
-        "NUC_QUALIFIE",
-        "MIL"
-      ],
-      "option_possible": true
-    },
-    {
-      "index": 57,
-      "label": "Plan encombrement",
-      "hours": 30.0,
-      "applicable_pour": [
-        "ASYNCH",
-        "SYNCH"
-      ],
-      "secteur_obligatoire": [
-        "INDUS",
-        "OIL_GAS",
-        "MARINE_CIVILE",
-        "NUC_NON_QUALIFIE",
-        "NUC_QUALIFIE",
-        "MIL"
-      ],
-      "option_possible": true
-    },
-    {
-      "index": 58,
-      "label": "plan boites à bornes",
-      "hours": 10.0,
-      "applicable_pour": [
-        "ASYNCH",
-        "SYNCH"
-      ],
-      "secteur_obligatoire": [
-        "INDUS",
-        "OIL_GAS",
-        "MARINE_CIVILE",
-        "NUC_NON_QUALIFIE",
-        "NUC_QUALIFIE",
-        "MIL"
-      ],
-      "option_possible": true
-    },
-    {
-      "index": 59,
-      "label": "plan armoire P/N",
-      "hours": 10.0,
-      "applicable_pour": [
-        "SYNCH"
-      ],
-      "secteur_obligatoire": [
-        "INDUS",
-        "OIL_GAS",
-        "MARINE_CIVILE",
-        "NUC_NON_QUALIFIE",
-        "NUC_QUALIFIE",
-        "MIL"
-      ],
-      "option_possible": true
-    },
-    {
-      "index": 60,
-      "label": "plan AER",
-      "hours": 10.0,
-      "applicable_pour": [
-        "SYNCH"
-      ],
-      "secteur_obligatoire": [
-        "INDUS",
-        "OIL_GAS",
-        "MARINE_CIVILE",
-        "NUC_NON_QUALIFIE",
-        "NUC_QUALIFIE",
-        "MIL"
-      ],
-      "option_possible": true
-    },
-    {
-      "index": 61,
-      "label": "plan refrigérant (hydro ou aéro)",
-      "hours": 5.0,
-      "applicable_pour": [
-        "ASYNCH",
-        "SYNCH"
-      ],
-      "secteur_obligatoire": [
-        "NUC_QUALIFIE",
-        "NUC_NON_QUALIFIE",
-        "MIL"
-      ],
-      "option_possible": true
-    },
-    {
-      "index": 62,
-      "label": "plan des paliers",
-      "hours": 5.0,
-      "applicable_pour": [
-        "ASYNCH",
-        "SYNCH"
-      ],
-      "secteur_obligatoire": [
-        "NUC_QUALIFIE",
-        "NUC_NON_QUALIFIE",
-        "MIL"
-      ],
-      "option_possible": true
-    },
-    {
-      "index": 63,
-      "label": "Note Descriptive des Codes de Calcul utilisés",
-      "hours": 8.0,
-      "applicable_pour": [
-        "ASYNCH",
-        "SYNCH"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -928,29 +767,225 @@
       "option_possible": true
     },
     {
-      "index": 64,
-      "label": "analyse latérale",
-      "hours": 50.0,
+      "index": 52,
+      "label": "programme d'esssais",
+      "hours": 20.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
+      ],
+      "secteur_obligatoire": [
+        "INDUS",
+        "OIL_GAS",
+        "MARINE_CIVILE",
+        "NUC_NON_QUALIFIE",
+        "NUC_QUALIFIE"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 53,
+      "label": "calcul cage rotor",
+      "hours": 40.0,
+      "applicable_pour": [
+        "ASYNCH",
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE",
-        "NUC_NON_QUALIFIE",
+        "NUC_NON_QUALIFIE"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 54,
+      "label": "Liste des Outillages Spéciaux",
+      "hours": 8.0,
+      "applicable_pour": [
+        "ASYNCH",
+        "SYNCH",
         "MIL"
+      ],
+      "secteur_obligatoire": [],
+      "option_possible": true
+    },
+    {
+      "index": 55,
+      "label": "Matrice de Conformité aux Spécifications, Liste des Ecarts",
+      "hours": 50.0,
+      "applicable_pour": [
+        "ASYNCH",
+        "SYNCH",
+        "MIL"
+      ],
+      "secteur_obligatoire": [
+        "NUC_NON_QUALIFIE",
+        "NUC_QUALIFIE"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 56,
+      "label": "Note de Tenue Mécanique de l'Arbre",
+      "hours": 50.0,
+      "applicable_pour": [
+        "ASYNCH",
+        "SYNCH",
+        "MIL"
+      ],
+      "secteur_obligatoire": [
+        "NUC_QUALIFIE",
+        "NUC_NON_QUALIFIE"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 57,
+      "label": "data sheet",
+      "hours": 20.0,
+      "applicable_pour": [
+        "ASYNCH",
+        "SYNCH",
+        "MIL"
+      ],
+      "secteur_obligatoire": [
+        "INDUS",
+        "OIL_GAS",
+        "MARINE_CIVILE",
+        "NUC_NON_QUALIFIE",
+        "NUC_QUALIFIE"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 58,
+      "label": "Plan encombrement",
+      "hours": 30.0,
+      "applicable_pour": [
+        "ASYNCH",
+        "SYNCH",
+        "MIL"
+      ],
+      "secteur_obligatoire": [
+        "INDUS",
+        "OIL_GAS",
+        "MARINE_CIVILE",
+        "NUC_NON_QUALIFIE",
+        "NUC_QUALIFIE"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 59,
+      "label": "plan boites à bornes",
+      "hours": 10.0,
+      "applicable_pour": [
+        "ASYNCH",
+        "SYNCH",
+        "MIL"
+      ],
+      "secteur_obligatoire": [
+        "INDUS",
+        "OIL_GAS",
+        "MARINE_CIVILE",
+        "NUC_NON_QUALIFIE",
+        "NUC_QUALIFIE"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 60,
+      "label": "plan armoire P/N",
+      "hours": 10.0,
+      "applicable_pour": [
+        "SYNCH",
+        "MIL"
+      ],
+      "secteur_obligatoire": [
+        "INDUS",
+        "OIL_GAS",
+        "MARINE_CIVILE",
+        "NUC_NON_QUALIFIE",
+        "NUC_QUALIFIE"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 61,
+      "label": "plan AER",
+      "hours": 10.0,
+      "applicable_pour": [
+        "SYNCH",
+        "MIL"
+      ],
+      "secteur_obligatoire": [
+        "INDUS",
+        "OIL_GAS",
+        "MARINE_CIVILE",
+        "NUC_NON_QUALIFIE",
+        "NUC_QUALIFIE"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 62,
+      "label": "plan refrigérant (hydro ou aéro)",
+      "hours": 5.0,
+      "applicable_pour": [
+        "ASYNCH",
+        "SYNCH",
+        "MIL"
+      ],
+      "secteur_obligatoire": [
+        "NUC_NON_QUALIFIE",
+        "NUC_QUALIFIE"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 63,
+      "label": "plan des paliers",
+      "hours": 5.0,
+      "applicable_pour": [
+        "ASYNCH",
+        "SYNCH",
+        "MIL"
+      ],
+      "secteur_obligatoire": [
+        "NUC_NON_QUALIFIE",
+        "NUC_QUALIFIE"
+      ],
+      "option_possible": true
+    },
+    {
+      "index": 64,
+      "label": "Note Descriptive des Codes de Calcul utilisés",
+      "hours": 8.0,
+      "applicable_pour": [
+        "ASYNCH",
+        "SYNCH",
+        "MIL"
+      ],
+      "secteur_obligatoire": [
+        "NUC_QUALIFIE"
       ],
       "option_possible": true
     },
     {
       "index": 65,
-      "label": "Autre document imposé",
-      "hours": 0.0,
+      "label": "analyse latérale",
+      "hours": 50.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
-      "secteur_obligatoire": [],
+      "secteur_obligatoire": [
+        "NUC_NON_QUALIFIE",
+        "NUC_QUALIFIE"
+      ],
       "option_possible": true
     },
     {
@@ -959,15 +994,15 @@
       "hours": 0.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "INDUS",
         "OIL_GAS",
         "MARINE_CIVILE",
         "NUC_NON_QUALIFIE",
-        "NUC_QUALIFIE",
-        "MIL"
+        "NUC_QUALIFIE"
       ],
       "option_possible": true
     },
@@ -977,15 +1012,15 @@
       "hours": 0.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "INDUS",
         "OIL_GAS",
         "MARINE_CIVILE",
         "NUC_NON_QUALIFIE",
-        "NUC_QUALIFIE",
-        "MIL"
+        "NUC_QUALIFIE"
       ],
       "option_possible": true
     },
@@ -995,7 +1030,8 @@
       "hours": 0.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
@@ -1006,7 +1042,8 @@
       "hours": 0.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
@@ -1017,7 +1054,8 @@
       "hours": 0.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
@@ -1028,7 +1066,8 @@
       "hours": 8.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
@@ -1039,7 +1078,8 @@
       "hours": 20.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
@@ -1050,7 +1090,8 @@
       "hours": 0.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
@@ -1061,7 +1102,8 @@
       "hours": 20.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
@@ -1072,7 +1114,8 @@
       "hours": 20.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
@@ -1083,7 +1126,8 @@
       "hours": 20.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
@@ -1094,7 +1138,8 @@
       "hours": 10.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
@@ -1105,7 +1150,8 @@
       "hours": 10.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
@@ -1116,7 +1162,8 @@
       "hours": 30.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
@@ -1126,7 +1173,8 @@
       "label": "Harmonics on voltage waveform",
       "hours": 20.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
@@ -1136,7 +1184,8 @@
       "label": "Voltage drop calculation on load sequence (séquence de charge",
       "hours": 15.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE",
@@ -1150,7 +1199,8 @@
       "hours": 15.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
@@ -1161,7 +1211,8 @@
       "hours": 15.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
@@ -1172,7 +1223,8 @@
       "hours": 20.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [],
       "option_possible": true
@@ -1183,7 +1235,8 @@
       "hours": 8.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1196,7 +1249,8 @@
       "hours": 8.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1209,7 +1263,8 @@
       "hours": 50.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1222,7 +1277,8 @@
       "hours": 5.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1235,7 +1291,8 @@
       "hours": 20.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1248,7 +1305,8 @@
       "hours": 100.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1261,7 +1319,8 @@
       "hours": 30.0,
       "applicable_pour": [
         "ASYNCH",
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1273,7 +1332,8 @@
       "label": "Descriptif de Fonctionnement APN",
       "hours": 8.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1285,7 +1345,8 @@
       "label": "Programme  de Qualification APN",
       "hours": 10.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1297,7 +1358,8 @@
       "label": "Note de Synthèse de Qualification (NSQ) APN",
       "hours": 25.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1309,7 +1371,8 @@
       "label": "Fiches de Maintien de Qualification (FMQ) APN",
       "hours": 5.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1321,7 +1384,8 @@
       "label": "Dossier d'Identification ( DI/DR ) APN",
       "hours": 15.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1333,7 +1397,8 @@
       "label": "Spécification d'Approvisionnement APN",
       "hours": 8.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1345,7 +1410,8 @@
       "label": "Etude de Fiabilité AMDEC APN",
       "hours": 10.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1357,7 +1423,8 @@
       "label": "Plan d'Encombrement de l'Armoire Phase-Neutre (Plan de Serrurerie avec Implantation des Composants)",
       "hours": 8.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1369,7 +1436,8 @@
       "label": "Programme d'Essais de Type (idem Routine) APN",
       "hours": 5.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1381,7 +1449,8 @@
       "label": "Rapport d'Essais de Type APN",
       "hours": 5.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1393,7 +1462,8 @@
       "label": "Procédure de Qualification Sismique APN",
       "hours": 5.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1405,7 +1475,8 @@
       "label": "Rapport de Qualification Sismique  APN",
       "hours": 10.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1417,7 +1488,8 @@
       "label": "Procédure  de Qualification CEM APN",
       "hours": 10.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1429,7 +1501,8 @@
       "label": "Rapport d'Essais de Qualification CEM  APN",
       "hours": 10.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1441,7 +1514,8 @@
       "label": "Rapport de Qualification APN",
       "hours": 15.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1453,7 +1527,8 @@
       "label": "Procédure de Mise en peinture APN",
       "hours": 10.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1465,7 +1540,8 @@
       "label": "Spécification d'Emballage, de Stockage et de Transport APN",
       "hours": 8.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1477,7 +1553,8 @@
       "label": "Manuel d'Exploitation et d'Entretien de l'Equipement APN",
       "hours": 25.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1489,7 +1566,8 @@
       "label": "Liste des Pièces de Rechange APN",
       "hours": 5.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1501,7 +1579,8 @@
       "label": "Descriptif de Fonctionnement AER",
       "hours": 8.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1513,7 +1592,8 @@
       "label": "Programme  de Qualification AER",
       "hours": 10.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1525,7 +1605,8 @@
       "label": "Note de Synthèse de Qualification (NSQ) AER",
       "hours": 25.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1537,7 +1618,8 @@
       "label": "Fiches de Maintien de Qualification (FMQ) AER",
       "hours": 5.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1549,7 +1631,8 @@
       "label": "Dossier d'Identification ( DI/DR ) AER",
       "hours": 15.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1561,7 +1644,8 @@
       "label": "Spécification d'Approvisionnement AER",
       "hours": 8.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1573,7 +1657,8 @@
       "label": "Etude de Fiabilité  AMDEC AER",
       "hours": 10.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1585,7 +1670,8 @@
       "label": "Plan d'Encombrement AER ",
       "hours": 8.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1597,7 +1683,8 @@
       "label": "Programme d'Essais de Type (idem Routine) AER",
       "hours": 5.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1609,7 +1696,8 @@
       "label": "Rapport d'Essais de Type AER",
       "hours": 5.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1621,7 +1709,8 @@
       "label": "Procédure de Qualification Sismique AER",
       "hours": 5.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1633,7 +1722,8 @@
       "label": "Rapport de Qualification Sismique  AER",
       "hours": 10.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1645,7 +1735,8 @@
       "label": "Procédure  de Qualification CEM AER",
       "hours": 10.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1657,7 +1748,8 @@
       "label": "Rapport d'Essais de Qualification CEM  AER",
       "hours": 10.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1669,7 +1761,8 @@
       "label": "Rapport de Qualification AER",
       "hours": 15.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1681,7 +1774,8 @@
       "label": "Procédure de Mise en peinture AER",
       "hours": 10.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1693,7 +1787,8 @@
       "label": "Spécification d'Emballage, de Stockage et de Transport AER",
       "hours": 8.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1705,7 +1800,8 @@
       "label": "Manuel d'Exploitation et d'Entretien de l'Equipement AER",
       "hours": 25.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1717,7 +1813,8 @@
       "label": "Liste des Pièces de Rechange AER",
       "hours": 5.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1729,7 +1826,8 @@
       "label": "Spécification d'Approvisionnement du Régulateur de Tension",
       "hours": 5.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1741,7 +1839,8 @@
       "label": "Schéma du Régulateur de Tension - Nomenclature du Régulateur de Tension",
       "hours": 10.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
@@ -1753,7 +1852,8 @@
       "label": "Schéma Electrique de l'armoire  d'Excitation Régulation -Nomenclature de l'armoire  d'Excitation Régulation",
       "hours": 10.0,
       "applicable_pour": [
-        "SYNCH"
+        "SYNCH",
+        "MIL"
       ],
       "secteur_obligatoire": [
         "NUC_QUALIFIE"
