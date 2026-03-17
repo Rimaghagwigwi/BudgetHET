@@ -88,6 +88,15 @@
     "job_suffixes": {
         "DEF": "Définition",
         "PROD": "Production"
+    },
+
+    "n_projeteurs": {
+        "INDUS": 1,
+        "OIL_GAS": 1.1,
+        "NUC_QUALIFIE": 1.25,
+        "NUC_NON_QUALIFIE": 1.25,
+        "MARINE_CIVILE": 1,
+        "MIL": 1.8
     }
 }
   

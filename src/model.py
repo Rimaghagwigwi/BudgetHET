@@ -254,8 +254,10 @@ class Project:
 
         # --- Feuille 'Calculs' : B3 = 1.2, C3 = 1.5 ---
         ws_calculs = wb["Calculs"]
-        ws_calculs["B3"] = 1.2
-        ws_calculs["C3"] = 1.5
+        n_projeteurs = self.app_data.n_projeteurs[self.secteur]
+        print("Secteur : ", self.secteur)
+        print(f"Nombre de projeteurs à appliquer dans le template : {n_projeteurs}")
+        ws_calculs["B3"] = n_projeteurs
 
         wb.save(path)
 

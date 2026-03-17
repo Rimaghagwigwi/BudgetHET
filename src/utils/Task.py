@@ -14,7 +14,10 @@ class AbstractTask:
 
     @abstractmethod
     def effective_hours(self, context: Dict[str, Any]) -> float:
-        pass
+        if self.manual_hours is not None:
+            return self.manual_hours
+        else:
+            return self.default_hours(context)
 
 
 class GeneralTask(AbstractTask):
@@ -43,13 +46,6 @@ class GeneralTask(AbstractTask):
         coeff_secteur = self.coeff_secteur.get(secteur, 1.0)
         
         return base * coeff_affaire * coeff_secteur
-    
-    @override
-    def effective_hours(self, context: Dict[str, Any]) -> float:
-        if self.manual_hours is not None:
-            return self.manual_hours
-        else:
-            return self.default_hours(context)
         
 class LPDCDocument(AbstractTask):
     def __init__(self, label: str,
@@ -162,19 +158,34 @@ class Calcul(AbstractTask):
             return self.default_hours(context) * affaire_activity_coeff
         
 class Labo(AbstractTask):
-    def __init__(self, index: int, label: str, hours: float, category: str):
+    def __init__(self, index: int, label: str, hours: float, category: str, coeff_secteur: Dict[str, float]):
         super().__init__(label)
         self.index = index
         self.hours = hours
         self.category = category
+        self.coeff_secteur = coeff_secteur
+        self.is_selected: bool = False
+
+    def is_mandatory(self, context: Dict[str, Any]) -> bool:
+        secteur = context.get("secteur", "")
+        return secteur in self.coeff_secteur
+    
+    def is_active(self, context: Dict[str, Any]) -> bool:
+        return self.is_mandatory(context) or self.is_selected
 
     @override
     def default_hours(self, context: Dict[str, Any]) -> float:
-        return self.hours
-    
+        secteur = context.get("secteur", "")
+        if secteur in self.coeff_secteur:
+            return self.hours * self.coeff_secteur[secteur]
+        else:
+            return self.hours
+
     @override
     def effective_hours(self, context: Dict[str, Any]) -> float:
-        if self.manual_hours is not None:
+        if not self.is_active(context):
+            return 0.0
+        elif self.manual_hours is not None:
             return self.manual_hours
         else:
             return self.default_hours(context)

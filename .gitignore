@@ -9,6 +9,7 @@ __pycache__/
 dist/
 build/
 *.spec
+build.bat
 
 # Virtual environments
 .venv/

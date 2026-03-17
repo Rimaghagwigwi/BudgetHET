@@ -16,13 +16,212 @@
     "labo": [
         {
         "index": 1,
-        "label": "Labo Métalo",
+        "label": "Autre labo métalo - correction",
         "category": "LAB_METAL",
         "hours": 0
         },
         {
         "index": 2,
-        "label": "Labo isolant",
+        "label": "Autre labo isolant - correction",
+        "category": "LAB_ISOL",
+        "hours": 0
+        },
+        {
+        "index": 3,
+        "label": "CDS Carcasse et flasques",
+        "category": "LAB_METAL",
+        "hours": 60,
+        "coeff_secteur": {
+            "INDUS": 0.1,
+            "OIL_GAS": 0.1,
+            "MARINE_CIVILE": 0.1,
+            "NUC_QUALIFIE": 1,
+            "NUC_NON_QUALIFIE": 1,
+            "MIL": 1
+            }
+        },
+        {
+        "index": 4,
+        "label": "CDS externe ventilateur",
+        "category": "LAB_METAL",
+        "hours": 30,
+        "coeff_secteur": {
+            "NUC_QUALIFIE": 1,
+            "NUC_NON_QUALIFIE": 1
+            }
+        },
+        {
+        "index": 5,
+        "label": "CDS externe arbre à bras",
+        "category": "LAB_METAL",
+        "hours": 30
+        },
+        {
+        "index": 6,
+        "label": "CDS externe tuyauteries",
+        "category": "LAB_METAL",
+        "hours": 40,
+        "coeff_secteur": {
+            "MIL": 1
+            }
+        },
+        {
+        "index": 7,
+        "label": "CDS externe refrigérant",
+        "category": "LAB_METAL",
+        "hours": 30,
+        "coeff_secteur": {
+            "NUC_QUALIFIE": 1,
+            "NUC_NON_QUALIFIE": 1,
+            "MIL": 1
+            }
+        },
+        {
+        "index": 8,
+        "label": "CDS interne tôles enveloppe",
+        "category": "LAB_METAL",
+        "hours": 20,
+        "coeff_secteur": {
+            "NUC_QUALIFIE": 1,
+            "NUC_NON_QUALIFIE": 1,
+            "MIL": 1
+            }
+        },
+        {
+        "index": 9,
+        "label": "CDS interne autres (barreaux, lanternes, calage, supports, etc.)",
+        "category": "LAB_METAL",
+        "hours": 60,
+        "coeff_secteur": {
+            "INDUS": 0.1,
+            "OIL_GAS": 0.1,
+            "MARINE_CIVILE": 0.1,
+            "NUC_QUALIFIE": 1,
+            "NUC_NON_QUALIFIE": 1,
+            "MIL": 1
+            }
+        },
+        {
+        "index": 10,
+        "label": "CDS si soudure classe A ou B NFE83-100",
+        "category": "LAB_METAL",
+        "hours": 40
+        },
+        {
+        "index": 11,
+        "label": "QMOS interne si nouveau assemblage",
+        "category": "LAB_METAL",
+        "hours": 150,
+        "coeff_secteur": {
+            "NUC_QUALIFIE": 0.2,
+            "NUC_NON_QUALIFIE": 0.2,
+            "MIL": 0.2
+            }
+        },
+        {
+        "index": 12,
+        "label": "QS interne si nouveau assemblage",
+        "category": "LAB_METAL",
+        "hours": 30,
+        "coeff_secteur": {
+            "INDUS": 0.1,
+            "OIL_GAS": 0.1,
+            "MARINE_CIVILE": 0.1,
+            "NUC_QUALIFIE": 0.1,
+            "NUC_NON_QUALIFIE": 0.1,
+            "MIL": 0.1
+            }
+        },
+        {
+        "index": 13,
+        "label": "CRT 91.C118 si EDF",
+        "category": "LAB_METAL",
+        "hours": 70,
+        "coeff_secteur": {
+            "NUC_QUALIFIE": 1,
+            "NUC_NON_QUALIFIE": 1
+            }
+        },
+        {
+        "index": 14,
+        "label": "Spécification métaux d'apport",
+        "category": "LAB_METAL",
+        "hours": 30,
+        "coeff_secteur": {
+            "NUC_QUALIFIE": 1,
+            "NUC_NON_QUALIFIE": 1
+            }
+        },
+        {
+        "index": 15,
+        "label": "Fiche suivi des réalisation de soudure",
+        "category": "LAB_METAL",
+        "hours": 40,
+        "coeff_secteur": {
+            "NUC_QUALIFIE": 1,
+            "NUC_NON_QUALIFIE": 1,
+            "MIL": 1
+            }
+        },
+        {
+        "index": 16,
+        "label": "Spec nettoyage avant soudure",
+        "category": "LAB_METAL",
+        "hours": 30,
+        "coeff_secteur": {
+            "NUC_QUALIFIE": 1,
+            "NUC_NON_QUALIFIE": 1,
+            "MIL": 1
+            }
+        },
+        {
+        "index": 17,
+        "label": "QMOB",
+        "category": "LAB_METAL",
+        "hours": 0
+        },
+        {
+        "index": 18,
+        "label": "QB",
+        "category": "LAB_METAL",
+        "hours": 0
+        },
+        {
+        "index": 19,
+        "label": "DMOB",
+        "category": "LAB_METAL",
+        "hours": 0
+        },
+        {
+        "index": 20,
+        "label": "ASME IX ou AWS D1.1",
+        "category": "LAB_METAL",
+        "hours": 0
+        },
+
+        {
+        "index": 21,
+        "label": "Essai section d'essais",
+        "category": "LAB_ISOL",
+        "hours": 24,
+        "coeff_secteur": {
+            "INDUS": 1,
+            "OIL_GAS": 1,
+            "MARINE_CIVILE": 1,
+            "NUC_QUALIFIE": 1,
+            "NUC_NON_QUALIFIE": 1,
+            "MIL": 1
+            }
+        },
+        {
+        "index": 22,
+        "label": "Expertise isolation labo",
+        "category": "LAB_ISOL",
+        "hours": 0
+        },
+        {
+        "index": 23,
+        "label": "Expertise instrumentation labo",
         "category": "LAB_ISOL",
         "hours": 0
         }

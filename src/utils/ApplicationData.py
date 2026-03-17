@@ -20,6 +20,7 @@ class ApplicationData:
         self.das: Dict[str, str] = {} # Dict[code: label] - {"MS": "Machines spéciales", ...}
         self.secteurs: Dict[str, Dict[str, str]] = {} # Dict[DAS: Dict[code: label]] - {"MS": {"INDUS": "Industrie", ...}, ...}
         self.jobs: Dict[str, str] = {} # Dict[code: label] - {"ADM_COA": "Admin CAO", ...}
+        self.n_projeteurs: Dict[str, int] = {} # Dict[secteur: nombre] - {"INDUS": 1, ...}
 
         self.tasks: Dict[str, Dict[str, List[GeneralTask]]] = {} # Dict[category: Dict[sub-category: List[GeneralTask]]]
 
@@ -100,6 +101,7 @@ class ApplicationData:
                 full_code = f"{job_code}_{suffix_code}"
                 full_label = f"{job_label} {suffix_label}"
                 self.jobs[full_code] = full_label
+        self.n_projeteurs = base_data.get("n_projeteurs", {})
 
         # 2. Tâches générales
         tasks_data = self.raw_data['tasks'].get("tasks", {})
@@ -189,6 +191,7 @@ class ApplicationData:
                 index=item.get("index", 0),
                 label=item.get("label", ""),
                 hours=item.get("hours", 0.0),
-                category=item.get("category", "")
+                category=item.get("category", ""),
+                coeff_secteur=item.get("coeff_secteur", {})
             )
             self.labo.append(labo_task)
