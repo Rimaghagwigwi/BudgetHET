@@ -3,8 +3,8 @@ import pandas as pd
 from typing import Dict, List, Optional, Any
 from src.utils.ApplicationData import ApplicationData
 from src.utils.Task import AbstractTask, GeneralTask, LPDCDocument, Labo, Option, Calcul
+from src.utils.exports import export_ortems_excel as _export_ortems, export_excel_report as _export_report
 from PyQt6.QtCore import QObject, pyqtSignal
-import openpyxl
 
 class Project:
     def __init__(self, app_data: ApplicationData):
@@ -235,31 +235,10 @@ class Project:
         return repartition
     
     def export_ortems_excel(self, path: str):
-        """Exporte la répartition ortems dans un fichier Excel basé sur le template."""
-        repartition = self.make_ortems_repartition()
+        _export_ortems(self, path)
 
-        template_path = self.app_data.ortems_template_path
-        wb = openpyxl.load_workbook(template_path)
-
-        # --- Feuille 'prepa ORTEMS' : clés en ligne 1 (B:AX), valeurs en ligne 2 ---
-        print("Répartition ORTEMS à exporter :")
-        ws_ortems = wb["prepa ORTEMS"]
-        col = 3
-        job_labels = self.app_data.jobs
-        for job, hours in repartition.items():
-            print(f"    {job} : {hours:.1f} h")
-            ws_ortems.cell(row=1, column=col).value = job_labels.get(job, job)
-            ws_ortems.cell(row=2, column=col).value = hours
-            col += 1
-
-        # --- Feuille 'Calculs' : B3 = 1.2, C3 = 1.5 ---
-        ws_calculs = wb["Calculs"]
-        n_projeteurs = self.app_data.n_projeteurs[self.secteur]
-        print("Secteur : ", self.secteur)
-        print(f"Nombre de projeteurs à appliquer dans le template : {n_projeteurs}")
-        ws_calculs["B3"] = n_projeteurs
-
-        wb.save(path)
+    def export_excel_report(self, path: str):
+        _export_report(self, path)
 
 
 class Model(QObject):

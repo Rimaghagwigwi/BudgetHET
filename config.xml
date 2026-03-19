@@ -13,6 +13,7 @@
     <!-- Dossier import/export-->
     <asset-dir>assets/</asset-dir>
     <ortems-template-path>template/ortems_template.xlsx</ortems-template-path>
+    <excel-report-template-path>template/chiffrage_template.xlsx</excel-report-template-path>
 
     <!-- Configuration de l'interface utilisateur -->
     <ui>

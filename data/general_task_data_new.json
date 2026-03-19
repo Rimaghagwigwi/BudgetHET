@@ -2,7 +2,7 @@
     "tasks": {
         "Enclenchement et Suivi": {
             "Enclenchement": {
-                "réunion": {
+                "Réunion": {
                     "base": {
                         "ALT_2P": 4,
                         "ALT_4P_L": 4,
@@ -28,7 +28,7 @@
                         "RESP_ET_PROJ_DEF": 1
                     }
                 },
-                "lancement structure gen IFS (caméléon)": {
+                "Lancement structure gen IFS (caméléon)": {
                     "base": {
                         "ALT_2P": 8,
                         "ALT_4P_L": 8,
@@ -45,7 +45,7 @@
                         "ING_ELECTROTECH_DEF": 1
                     }
                 },
-                "tracé d'ensemble (3D)": {
+                "Tracé d'ensemble (3D)": {
                     "base": {
                         "ALT_2P": 40,
                         "ALT_4P_L": 40,
@@ -65,7 +65,7 @@
                         "PROJ_MACHINE_DEF": 1
                     }
                 },
-                "revue de conception (ensemble)": {
+                "Revue de conception (ensemble)": {
                     "base": {
                         "ALT_2P": 20,
                         "ALT_4P_L": 20,
@@ -91,7 +91,7 @@
                 }
             },
             "Suivi": {
-                "SUIVI FOURNISSEUR": {
+                "Suivi Fournisseur": {
                     "base": {
                         "ALT_2P": 20,
                         "ALT_4P_L": 20,
@@ -116,7 +116,7 @@
                         "ING_MEC_SOL_PROD": 0.05
                     }
                 },
-                "SUIVI FABRICATION machine": {
+                "Suivi Fabrication machine": {
                     "base": {
                         "ALT_2P": 20,
                         "ALT_4P_L": 20,
@@ -141,7 +141,7 @@
                         "ING_MEC_SOL_PROD": 0.05
                     }
                 },
-                "SUIVI FABRICATION armoires": {
+                "Suivi Fabrication armoires": {
                     "base": {
                         "ALT_2P": 20,
                         "ALT_4P_L": 20,
@@ -167,7 +167,7 @@
                         "SYS_CONT_COM_ELECTRIQUE_PROD": 0.2
                     }
                 },
-                "SUIVI ESSAIS machine": {
+                "Suivi Essais machine": {
                     "base": {
                         "ALT_2P": 10,
                         "ALT_4P_L": 10,
@@ -184,7 +184,7 @@
                         "ING_ELECTROTECH_PROD": 0.35
                     }
                 },
-                "SUIVI ESSAIS armoires": {
+                "Suivi Essais armoires": {
                     "base": {
                         "ALT_2P": 10,
                         "ALT_4P_L": 10,
@@ -203,7 +203,7 @@
                         "SYS_CONT_COM_EP_PROD": 0.2
                     }
                 },
-                "SUIVI CLIENT/ REUNION": {
+                "Suivi Client/ Réunion": {
                     "base": {
                         "ALT_2P": 20,
                         "ALT_4P_L": 20,

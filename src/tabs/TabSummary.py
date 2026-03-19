@@ -186,11 +186,11 @@ class TabSummary(QWidget):
         self.action_export_json = export_menu.addAction("Sauvegarde - JSON")
         self.action_export_json.triggered.connect(self.export_json_clicked.emit)
 
-        self.action_export_ORTEMS = export_menu.addAction("ORTEMS - Excel (à venir)")
-        self.action_export_ORTEMS.triggered.connect(self.export_ortems_clicked.emit) # NOT IMPLEMENTED YET
+        self.action_export_ORTEMS = export_menu.addAction("ORTEMS - Excel")
+        self.action_export_ORTEMS.triggered.connect(self.export_ortems_clicked.emit)
 
-        self.action_export_excel = export_menu.addAction("Raport - Excel (à venir)")
-        self.action_export_excel.triggered.connect(self.export_excel_clicked.emit) # NOT IMPLEMENTED YET
+        self.action_export_excel = export_menu.addAction("Rapport - Excel")
+        self.action_export_excel.triggered.connect(self.export_excel_clicked.emit)
 
         self.btn_export.setMenu(export_menu)
         layout.addWidget(self.btn_export, row, 0, 1, 2)

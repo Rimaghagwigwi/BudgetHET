@@ -51,6 +51,7 @@ class Controller:
         self.view_general.btn_import.clicked.connect(self._on_import_project)
         self.view_summary.export_json_clicked.connect(self._on_export_json)
         self.view_summary.export_ortems_clicked.connect(self._on_export_ortems)
+        self.view_summary.export_excel_clicked.connect(self.on_export_excel_report)
 
     # ------------------------------------------------------------------
     # Import
@@ -113,3 +114,22 @@ class Controller:
             print(f"Export ORTEMS : {path}")
         except Exception as e:
             print(f"Erreur export ORTEMS : {e}")
+
+    def on_export_excel_report(self):
+        default_dir = self.model.app_data.asset_dir
+        crm = self.model.project.crm_number or "projet"
+        rev = self.model.project.revision or "rev"
+        default_path = os.path.join(default_dir, f"{crm}_{rev}_report.xlsx")
+        path, _ = QFileDialog.getSaveFileName(
+            self.window,
+            "Exporter rapport Excel",
+            default_path,
+            "Fichiers Excel (*.xlsx)",
+        )
+        if not path:
+            return
+        try:
+            self.model.project.export_excel_report(path)
+            print(f"Rapport Excel exporté : {path}")
+        except Exception as e:
+            print(f"Erreur export rapport Excel : {e}")
