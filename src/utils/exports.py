@@ -145,26 +145,34 @@ def _write_options(ws, row: int, categories: Dict[str, str], grouped: dict,
 
 # ── En-tête projet ──────────────────────────────────────────────────
 
-_HEADER_FIELDS = [
-    (3,  "crm_number"),
-    (4,  "client"),
-    (5,  "affaire"),
-    (6,  "das"),
-    (7,  "secteur"),
-    (8,  "machine_type"),
-    (9,  "product"),
-    (10, "designation"),
-    (11, "quantity"),
-    (12, "revision"),
-    (13, "date"),
-    (14, "created_by"),
-    (15, "validated_by"),
-]
+def _header_fields(project: "Project"):
+    secteur_labels = {code: label for das, sectors in project.app_data.secteurs.items() for code, label in sectors.items()}
+    product_labels = {code: label for mt, products in project.app_data.product.items() for code, label in products.items()}
+    # row, attr, label_map
+    return [
+        (3,  "crm_number", None),
+        (4,  "client", None),
+        (5,  "affaire", project.app_data.types_affaires),
+        (6,  "das", project.app_data.das),
+        (7,  "secteur", secteur_labels),
+        (8,  "machine_type", project.app_data.product_types),
+        (9,  "product", product_labels),
+        (10, "designation", None),
+        (11, "quantity", None),
+        (12, "revision", None),
+        (13, "date", None),
+        (14, "created_by", None),
+        (15, "validated_by", None),
+    ]
 
 
 def _write_header(ws, project: "Project"):
-    for row, attr in _HEADER_FIELDS:
-        ws[f"C{row}"] = getattr(project, attr)
+    for row, attr, label_map in _header_fields(project):
+        if label_map:
+            value = getattr(project, attr)
+            ws[f"C{row}"] = label_map.get(value, value)
+        else:
+            ws[f"C{row}"] = getattr(project, attr)
     ws["D4"] = project.description
 
 
@@ -175,7 +183,6 @@ def export_ortems_excel(project: "Project", path: str):
 
     template_path = project.app_data.ortems_template_path
     wb = openpyxl.load_workbook(template_path)
-
     ws_ortems = wb["prepa ORTEMS"]
     col = 3
     job_labels = project.app_data.jobs
