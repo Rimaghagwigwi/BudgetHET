@@ -187,6 +187,7 @@ def export_ortems_excel(project: "Project", path: str):
     ws_calculs = wb["Calculs"]
     ws_calculs["B3"] = project.app_data.n_projeteurs[project.secteur]
 
+    wb.active = ws_ortems
     wb.save(path)
 
 

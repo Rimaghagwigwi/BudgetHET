@@ -42,33 +42,33 @@
       "RESP_ET_PROJ_DEF": 0.05
     },
     "INSTRUM": {
-      "PROJ_MACHINE_DEF": 0.4,
       "PROJ_INSTRUM_DEF": 0.45,
+      "PROJ_MACHINE_DEF": 0.40,
       "RESP_ET_PROJ_DEF": 0.15
     },
     "ESSAIS": {
-      "RESP_ET_PROJ_DEF": 0.7,
-      "ING_ELECTROTECH_DEF": 0.3
+      "ING_ELECTROTECH_DEF": 0.3,
+      "RESP_ET_PROJ_DEF": 0.7
     },
     "NORME": {
-      "RESP_ET_PROJ_DEF": 0.7,
-      "ING_MEC_SOL_DEF": 0.1,
       "ING_ELECTROTECH_DEF": 0.1,
+      "ING_MEC_SOL_DEF": 0.1,
+      "RESP_ET_PROJ_DEF": 0.7,
       "SYS_CONT_COM_ELECTRONIQUE_DEF": 0.1
     },
     "INSTRUM_ATEX": {
-      "PROJ_MACHINE_DEF": 0.4,
       "PROJ_INSTRUM_DEF": 0.45,
+      "PROJ_MACHINE_DEF": 0.4,
       "RESP_ET_PROJ_DEF": 0.15
     },
     "CONSTR_PARTIC": {
+      "ING_MEC_SOL_DEF": 0.1,
       "PROJ_MACHINE_DEF": 0.6,
-      "RESP_ET_PROJ_DEF": 0.3,
-      "ING_MEC_SOL_DEF": 0.1
+      "RESP_ET_PROJ_DEF": 0.3
     },
     "EXIG_TECH": {
-      "RESP_ET_PROJ_DEF": 0.7,
-      "ING_MEC_SOL_DEF": 0.3
+      "ING_MEC_SOL_DEF": 0.3,
+      "RESP_ET_PROJ_DEF": 0.7
     },
     "MIL": {
       "RESP_ET_PROJ_DEF": 1.0

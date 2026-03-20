@@ -111,9 +111,9 @@
                     },
                     "is_multiplicative": true,
                     "ortems_repartition": {
+                        "ING_MEC_SOL_PROD": 0.05,
                         "PROJ_MACHINE_PROD" : 0.65,
-                        "RESP_ET_PROJ_PROD" : 0.3,
-                        "ING_MEC_SOL_PROD": 0.05
+                        "RESP_ET_PROJ_PROD" : 0.3
                     }
                 },
                 "Suivi Fabrication machine": {
@@ -136,9 +136,9 @@
                     },
                     "is_multiplicative": true,
                     "ortems_repartition": {
+                        "ING_MEC_SOL_PROD": 0.05,
                         "PROJ_MACHINE_PROD" : 0.65,
-                        "RESP_ET_PROJ_PROD" : 0.3,
-                        "ING_MEC_SOL_PROD": 0.05
+                        "RESP_ET_PROJ_PROD" : 0.3
                     }
                 },
                 "Suivi Fabrication armoires": {
@@ -162,9 +162,9 @@
                     "is_multiplicative": true,
                     "ortems_repartition": {
                         "RESP_ET_PROJ_PROD" : 0.3,
+                        "SYS_CONT_COM_ELECTRIQUE_PROD": 0.2,
                         "SYS_CONT_COM_ELECTRONIQUE_PROD": 0.2,
-                        "SYS_CONT_COM_EP_PROD": 0.3,
-                        "SYS_CONT_COM_ELECTRIQUE_PROD": 0.2
+                        "SYS_CONT_COM_EP_PROD": 0.3
                     }
                 },
                 "Suivi Essais machine": {
@@ -179,9 +179,9 @@
                     },
                     "is_multiplicative": true,
                     "ortems_repartition": {
-                        "RESP_ET_PROJ_PROD" : 0.3,
+                        "ING_ELECTROTECH_PROD": 0.35,
                         "ING_MEC_SOL_PROD": 0.35,
-                        "ING_ELECTROTECH_PROD": 0.35
+                        "RESP_ET_PROJ_PROD" : 0.3
                     }
                 },
                 "Suivi Essais armoires": {
@@ -197,8 +197,8 @@
                     "is_multiplicative": true,
                     "ortems_repartition": {
                         "RESP_ET_PROJ_PROD" : 0.2,
-                        "SYS_CONT_COM_LOGICIEL_PROD": 0.2,
                         "SYS_CONT_COM_AUTO_PROD": 0.2,
+                        "SYS_CONT_COM_LOGICIEL_PROD": 0.2,
                         "SYS_CONT_COM_ELECTRONIQUE_PROD": 0.2,
                         "SYS_CONT_COM_EP_PROD": 0.2
                     }
@@ -224,9 +224,9 @@
                     "is_multiplicative": true,
                     "ortems_repartition": {
                         "PROJ_MACHINE_DEF": 0.1,
+                        "REF_QUAL_ET_DEF": 0.2,
                         "RESP_ET_PROJ_DEF": 0.6,
-                        "SYS_CONT_COM_ELECTRIQUE_DEF": 0.1,
-                        "REF_QUAL_ET_DEF": 0.2
+                        "SYS_CONT_COM_ELECTRIQUE_DEF": 0.1
                     }
                 }
             }
@@ -469,7 +469,7 @@
                     },
                     "ortems_repartition": {
                         "PROJ_MACHINE_DEF": 0.70,
-                        "ING_MEC_SOL_DEF": 0.30
+                        "RESP_ET_PROJ_DEF": 0.30
                     }
                 },
                 "système de refroidissement": {
@@ -492,7 +492,7 @@
                     },
                     "ortems_repartition": {
                         "PROJ_MACHINE_DEF": 0.70,
-                        "ING_MEC_SOL_DEF": 0.30
+                        "RESP_ET_PROJ_DEF": 0.30
                     }
                 },
                 "Boites à bornes de puissance base": {
@@ -594,9 +594,9 @@
                     },
                     "ortems_repartition": {
                         "RESP_ET_PROJ_DEF": 0.05,
+                        "SYS_CONT_COM_AUTO_DEF": 0.20,
                         "SYS_CONT_COM_ELECTRONIQUE_DEF": 0.20,
-                        "SYS_CONT_COM_EP_DEF": 0.20,
-                        "PROJ_ARMOIRE_DEF": 0.55
+                        "SYS_CONT_COM_ELECTRIQUE_DEF": 0.55
                     }
                 },
                 "armoire phase neutre APN": {
@@ -674,12 +674,12 @@
                         "REMPLACEMENT": 1.2
                     },
                     "ortems_repartition": {
+                        "PROJ_ARMOIRE_DEF": 0.10,
                         "RESP_ET_PROJ_DEF": 0.05,
                         "SYS_CONT_COM_AUTO_DEF": 0.10,
-                        "SYS_CONT_COM_ELECTRONIQUE_DEF": 0.10,
-                        "SYS_CONT_COM_EP_DEF": 0.50,
                         "SYS_CONT_COM_ELECTRIQUE_DEF": 0.15,
-                        "PROJ_ARMOIRE_DEF": 0.10
+                        "SYS_CONT_COM_ELECTRONIQUE_DEF": 0.10,
+                        "SYS_CONT_COM_EP_DEF": 0.50
                     }
                 },
                 "développement logiciels (soft pour drive ou gestion régulaton)": {
@@ -701,11 +701,11 @@
                         "REMPLACEMENT": 1.2
                     },
                     "ortems_repartition": {
-                        "SYS_CONT_COM_LOGICIEL_DEF": 0.60,
                         "SYS_CONT_COM_AUTO_DEF": 0.10,
+                        "SYS_CONT_COM_ELECTRIQUE_DEF": 0.05,
+                        "SYS_CONT_COM_LOGICIEL_DEF": 0.60,
                         "SYS_CONT_COM_ELECTRONIQUE_DEF": 0.15,
-                        "SYS_CONT_COM_EP_DEF": 0.10,
-                        "SYS_CONT_COM_ELECTRIQUE_DEF": 0.05
+                        "SYS_CONT_COM_EP_DEF": 0.10
                     }
                 }
             }

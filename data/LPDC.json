@@ -5,7 +5,7 @@
     "NUC_QUALIFIE": 1.8,
     "NUC_NON_QUALIFIE": 1.5,
     "MARINE_CIVILE": 1.0,
-    "MIL": 0
+    "MIL": 1.0
   },
   "coeff_affaire": {
     "IDENTIQUE_JE": 0.2,
@@ -17,22 +17,22 @@
   },
   "ortems_repartition": {
     "BASE": {
-      "PROJ_MACHINE_DEF": 0.3,
-      "PROJ_INSTRUM_DEF": 0.1,
-      "ING_MEC_SOL_DEF": 0.1,
       "ING_ELECTROTECH_DEF": 0.1,
+      "ING_MEC_SOL_DEF": 0.1,
+      "PROJ_INSTRUM_DEF": 0.1,
+      "PROJ_MACHINE_DEF": 0.3,
       "RESP_ET_PROJ_DEF": 0.15,
-      "SYS_CONT_COM_LOGICIEL_DEF": 0.1,
       "SYS_CONT_COM_AUTO_DEF": 0.05,
-      "SYS_CONT_COM_ELECTRONIQUE_DEF": 0.05,
-      "SYS_CONT_COM_ELECTRIQUE_DEF": 0.05
+      "SYS_CONT_COM_ELECTRIQUE_DEF": 0.05,
+      "SYS_CONT_COM_LOGICIEL_DEF": 0.1,
+      "SYS_CONT_COM_ELECTRONIQUE_DEF": 0.05
     },
     "PART": {
-      "PROJ_MACHINE_DEF": 0.3,
-      "PROJ_INSTRUM_DEF": 0.1,
-      "RESP_ET_PROJ_DEF": 0.2,
+      "ING_ELECTROTECH_DEF": 0.2,
       "ING_MEC_SOL_DEF": 0.2,
-      "ING_ELECTROTECH_DEF": 0.2
+      "PROJ_INSTRUM_DEF": 0.1,
+      "PROJ_MACHINE_DEF": 0.3,
+      "RESP_ET_PROJ_DEF": 0.2
     }
   },
   "documents": [
@@ -45,7 +45,9 @@
         "SYNCH",
         "MIL"
       ],
-      "secteur_obligatoire": [],
+      "secteur_obligatoire": [
+        "MIL"
+      ],
       "option_possible": true
     },
     {
