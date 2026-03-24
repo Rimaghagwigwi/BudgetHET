@@ -1,5 +1,4 @@
 import copy
-import pandas as pd
 from typing import Dict, List, Optional, Any
 from src.utils.ApplicationData import ApplicationData
 from src.utils.Task import AbstractTask, GeneralTask, LPDCDocument, Labo, Option, Calcul
@@ -91,21 +90,18 @@ class Project:
         """Retourne la liste plate de toutes les tâches générales."""
         return [task for subcats in self.tasks.values() for tasks in subcats.values() for task in tasks]
     
-    def grouped_claculs(self) -> Dict[str, List[Calcul]]:
-        grouped_calculs = {}
-        for calc in self.calculs:
-            if calc.category not in grouped_calculs:
-                grouped_calculs[calc.category] = []
-            grouped_calculs[calc.category].append(calc)
-        return grouped_calculs
+    @staticmethod
+    def _group_by_category(items) -> Dict[str, list]:
+        grouped = {}
+        for item in items:
+            grouped.setdefault(item.category, []).append(item)
+        return grouped
+
+    def grouped_calculs(self) -> Dict[str, List[Calcul]]:
+        return self._group_by_category(self.calculs)
     
     def grouped_options(self) -> Dict[str, List[Option]]:
-        grouped_options = {}
-        for opt in self.options:
-            if opt.category not in grouped_options:
-                grouped_options[opt.category] = []
-            grouped_options[opt.category].append(opt)
-        return grouped_options
+        return self._group_by_category(self.options)
     
     def grouped_lpdc(self) -> Dict[str, List[LPDCDocument]]:
         """Retourne les documents LPDC regroupés en 'Base' et 'Particulières'."""
@@ -121,12 +117,7 @@ class Project:
         return grouped_lpdc
     
     def grouped_labo(self) -> Dict[str, List[Labo]]:
-        grouped_labo = {}
-        for labo in self.labo:
-            if labo.category not in grouped_labo:
-                grouped_labo[labo.category] = []
-            grouped_labo[labo.category].append(labo)
-        return grouped_labo
+        return self._group_by_category(self.labo)
 
     def _change_group_label(self, grouped: Dict[str, List], label_map: Dict[str, str]) -> Dict[str, List]:
         """Change les labels des groupes selon un mapping fourni."""
@@ -139,7 +130,7 @@ class Project:
     def generate_summary_tree(self) -> Dict[str, Any]:
         return {
             "Tâches Générales": self.tasks,
-            "Calculs": self._change_group_label(self.grouped_claculs(), self.app_data.calcul_categories),
+            "Calculs": self._change_group_label(self.grouped_calculs(), self.app_data.calcul_categories),
             "Options": self._change_group_label(self.grouped_options(), self.app_data.option_categories),
             "Plans et documents contractuels": self._change_group_label(self.grouped_lpdc(), self.app_data.lpdc_categories),
             "Laboratoire": self._change_group_label(self.grouped_labo(), self.app_data.labo_categories),
@@ -180,7 +171,7 @@ class Project:
         
     def compute_n_machines_total(self) -> float:
         """Calcule le total pour n machines."""
-        multiplicative_tasks_hours = sum([t.effective_hours(self.context()) for t in self.get_all_tasks() if t.mutiplicative])
+        multiplicative_tasks_hours = sum([t.effective_hours(self.context()) for t in self.get_all_tasks() if t.multiplicative])
         coeff = self._compute_multi_machine_coeff(self.quantity)
         additional_hours = multiplicative_tasks_hours * coeff
 
@@ -220,7 +211,7 @@ class Project:
 
         # Sources catégorisées
         for grouped, ortems_map in [
-            (self.grouped_claculs(), self.app_data.calcul_ortems),
+            (self.grouped_calculs(), self.app_data.calcul_ortems),
             (self.grouped_options(), self.app_data.option_ortems),
             (self.grouped_lpdc(),    self.app_data.lpdc_ortems),
             (self.grouped_labo(),    self.app_data.labo_ortems),
@@ -234,6 +225,28 @@ class Project:
 
         return repartition
     
+    def compute_delai_etude(self) -> Dict[str, float]:
+        """Calcule le délai d'étude (mois) à partir de la répartition ORTEMS."""
+        repartition = self.make_ortems_repartition()
+        heures_proj = repartition.get("PROJ_MACHINE_DEF", 0.0)
+        n_proj = self.app_data.n_projeteurs.get(self.secteur, 1)
+        jours_ouvrables_par_mois = 365.25 / 12 * 5 / 7
+
+        delai_brut = (heures_proj / 7.7) / jours_ouvrables_par_mois / n_proj if n_proj else 0.0
+        taux = self.app_data.taux_productivite or 1.0
+        delai_productif = delai_brut / taux
+        conges_mois = delai_productif * self.app_data.pct_conges
+        delai_reel = self.app_data.demarrage_mois + conges_mois + delai_productif
+
+        return {
+            "heures_proj": heures_proj,
+            "n_projeteurs": n_proj,
+            "delai_brut": delai_brut,
+            "delai_productif": delai_productif,
+            "conges_mois": conges_mois,
+            "delai_reel": delai_reel,
+        }
+
     def export_ortems_excel(self, path: str):
         _export_ortems(self, path)
 

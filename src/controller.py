@@ -1,6 +1,8 @@
 import json
 import os
-from PyQt6.QtWidgets import QFileDialog
+import subprocess
+from PyQt6.QtWidgets import QFileDialog, QMessageBox, QDialog, QVBoxLayout, QLabel, QPushButton, QHBoxLayout
+from PyQt6.QtCore import Qt
 
 from src.model import Model
 from src.view import MainWindow
@@ -12,6 +14,7 @@ from src.tabs.OptionsTabController import OptionsTabController
 from src.tabs.LPDCTabController import LPDCTabController
 from src.tabs.LaboTabController import LaboTabController
 from src.tabs.TabSummary import TabSummary, TabSummaryController
+from src.tabs.TabMachineSearch import TabMachineSearch, MachineSearchController
 
 
 class Controller:
@@ -35,6 +38,7 @@ class Controller:
             (TabTasks(),        LPDCTabController,        "LPDC"),
             (TabTasks(),        LaboTabController,        "Labo"),
             (self.view_summary, TabSummaryController,     "Résumé"),
+            (TabMachineSearch(), MachineSearchController, "Recherche Machines"),
         ]
 
         controllers = []
@@ -52,6 +56,7 @@ class Controller:
         self.view_summary.export_json_clicked.connect(self._on_export_json)
         self.view_summary.export_ortems_clicked.connect(self._on_export_ortems)
         self.view_summary.export_excel_clicked.connect(self.on_export_excel_report)
+        self.view_summary.quick_export_clicked.connect(self.on_quick_export)
 
     # ------------------------------------------------------------------
     # Import
@@ -76,6 +81,54 @@ class Controller:
     # ------------------------------------------------------------------
     # Export
     # ------------------------------------------------------------------
+
+    def on_quick_export(self):
+        try:
+            from src.utils.exports import quick_export
+            paths = quick_export(self.model)
+            
+            data = self.model.save_project()
+            file_name = f"{self.model.project.crm_number}_{self.model.project.revision}_{self.model.project.date}.json"
+            json_path = os.path.join(self.model.app_data.asset_dir, file_name)
+            with open(json_path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+
+            all_paths = [
+                ("Sauvegarde JSON", json_path),
+                ("Prepa ORTEMS", paths["ortems"]),
+                ("Rapport chiffrage", paths["rapport"]),
+            ]
+            self._show_export_result_dialog(all_paths)
+        except Exception as e:
+            QMessageBox.critical(self.window, "Erreur", f"Erreur lors de l'export rapide :\n{e}")
+
+    def _show_export_result_dialog(self, file_entries: list):
+        dialog = QDialog(self.window)
+        dialog.setWindowTitle("Export rapide terminé")
+        dialog.setMinimumWidth(600)
+        layout = QVBoxLayout(dialog)
+
+        title = QLabel("Export rapide terminé")
+        title.setStyleSheet("font-weight: bold; font-size: 16px;")
+        layout.addWidget(title)
+
+        for label_text, filepath in file_entries:
+            normalized = os.path.normpath(filepath)
+            row = QHBoxLayout()
+            desc = QLabel(f"{label_text}:")
+            desc.setFixedWidth(130)
+            link = QLabel(f'<a href="#">{normalized}</a>')
+            link.setTextFormat(Qt.TextFormat.RichText)
+            link.setWordWrap(True)
+            link.linkActivated.connect(lambda _, p=normalized: subprocess.Popen(["explorer", "/select,", p]))
+            row.addWidget(desc)
+            row.addWidget(link, 1)
+            layout.addLayout(row)
+
+        btn_ok = QPushButton("OK")
+        btn_ok.clicked.connect(dialog.accept)
+        layout.addWidget(btn_ok, alignment=Qt.AlignmentFlag.AlignRight)
+        dialog.exec()
 
     def _on_export_json(self):
         default_dir = self.model.app_data.asset_dir

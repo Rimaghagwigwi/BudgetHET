@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QSpinBox, QDoubleSpinBox
+from PyQt6.QtWidgets import QSpinBox, QDoubleSpinBox, QComboBox
 from PyQt6.QtGui import QValidator
 
 class NoWheelSpinBox(QSpinBox):
@@ -15,6 +15,10 @@ class NoWheelDoubleSpinBox(QDoubleSpinBox):
         super().__init__(parent)
         self.setFocusPolicy(self.focusPolicy())
 
+    def wheelEvent(self, event):
+        event.ignore()
+
+class NoWheelComboBox(QComboBox):
     def wheelEvent(self, event):
         event.ignore()
 

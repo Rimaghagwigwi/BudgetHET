@@ -139,11 +139,7 @@ class TaskTableWidget(QTableWidget):
         )
         self.setCellWidget(row, self.col_offset + 4, line_edit)
 
-        # Calculer les heures effectives pour le total
-        is_checked = not self.is_optional or (checkbox and checkbox.isChecked())
-        if is_checked:
-            return task.manual_hours if task.manual_hours is not None else default_h
-        return 0.0
+        return task.effective_hours(self.context)
 
     def show_table(self):
         """Affiche toutes les catégories et leurs tâches."""
@@ -235,9 +231,7 @@ class TaskTableWidget(QTableWidget):
 
         self._sync_manual_hours(task, task_row)
 
-        if not self._is_task_checked(task_row):
-            return 0.0
-        return task.manual_hours if task.manual_hours is not None else default_h
+        return task.effective_hours(self.context)
 
     def _update_category(self, task_list: List[AbstractTask], header_row: int) -> None:
         """Met à jour toutes les lignes d'une catégorie et son total."""

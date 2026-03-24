@@ -1,18 +1,16 @@
 {
     "people": [
-      "Walid BOUGHANMI",
-      "Thérèse VANDEWYNCKEL",
-      "Antoine DONFUT",
-      "Nicolas SCATOLI",
-      "Medhi BELHAJ"
+        "Walid BOUGHANMI",
+        "Thérèse VANDEWYNCKEL",
+        "Antoine DONFUT",
+        "Nicolas SCATOLI",
+        "Medhi BELHAJ"
     ],
-
     "product_types": {
         "SYNCH": "Synchrone",
         "ASYNCH": "Asynchrone",
         "MIL": "Marine militaire"
     },
-
     "products": {
         "SYNCH": {
             "ALT_2P": "Alternateur 2p",
@@ -31,23 +29,20 @@
             "TAR": "TAR"
         }
     },
-
     "types_affaire": {
         "NEUF": "Machine neuve",
         "IDENTIQUE_JE": "Identique à une machine Jeumont-Electric",
         "REMPLACEMENT": "Remplacement en lieu et place"
     },
-
     "DAS": {
         "MS": "Machines spéciales",
         "NUC": "Nucléaire",
         "MIL": "Marine militaire"
     },
-
     "sectors": {
         "MS": {
-            "INDUS": "Industrie", 
-            "OIL_GAS": "Oil & Gas", 
+            "INDUS": "Industrie",
+            "OIL_GAS": "Oil & Gas",
             "MARINE_CIVILE": "Marine civile"
         },
         "NUC": {
@@ -58,7 +53,6 @@
             "MIL": "Marine militaire"
         }
     },
-
     "jobs": {
         "ADM_COA": "Administrateur CAO",
         "ASS_ADMIN": "Assistant Administratif",
@@ -89,14 +83,17 @@
         "DEF": "Définition",
         "PROD": "Production"
     },
-
     "n_projeteurs": {
-        "INDUS": 1,
+        "INDUS": 1.0,
         "OIL_GAS": 1.1,
         "NUC_QUALIFIE": 1.25,
         "NUC_NON_QUALIFIE": 1.25,
-        "MARINE_CIVILE": 1,
+        "MARINE_CIVILE": 1.0,
         "MIL": 1.8
+    },
+    "delai_etude_params": {
+        "taux_productivite": 0.55,
+        "pct_conges": 0.17,
+        "demarrage_mois": 0.5
     }
 }
-  

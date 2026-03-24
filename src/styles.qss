@@ -106,7 +106,63 @@ QFrame#totalsFrame {
     border-top: 2px solid #dcdcdc;
 }
 
+QFrame#totalsFrame QToolButton#gearButton {
+    font-family: "Segoe UI Symbol", "Segoe UI Emoji", sans-serif;
+    font-size: 16px;
+    color: #555;
+    background: transparent;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+QFrame#totalsFrame QToolButton#gearButton:hover {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
 QFrame#rowSeparator {
     background-color: #dcdcdc;
     max-height: 1px;
+}
+
+/* ── Machine search tab ──────────────────────────────────── */
+#collapsibleHeader {
+    background-color: #0063AF;
+    border-radius: 4px;
+}
+
+#collapsibleHeader QLabel#collapsibleTitle {
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    background: transparent;
+    border: none;
+}
+
+#collapsibleHeader QToolButton#collapseToggle {
+    border: none;
+    background: transparent;
+}
+
+#tabMachineSearch QGroupBox {
+    font-weight: bold;
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+    margin-top: 8px;
+    padding-top: 14px;
+}
+
+#tabMachineSearch QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 10px;
+    padding: 0 4px;
+}
+
+#machineResults {
+    alternate-background-color: #eaf1f8;
+}
+
+#machineResults QTableCornerButton::section {
+    background-color: #0063AF;
+    border: none;
 }

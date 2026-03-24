@@ -1,9 +1,7 @@
-from typing import List
+from typing import Dict, List
 from src.utils.BaseTaskTabController import BaseTaskTabController
 from src.utils.TabTasks import TaskTableWidget
-from src.utils.Task import AbstractTask
-from src.utils.Task import Labo
-from typing import Dict, List
+from src.utils.Task import AbstractTask, Labo
 
 
 class LaboTabController(BaseTaskTabController):
@@ -29,13 +27,13 @@ class LaboTabController(BaseTaskTabController):
 
     def _create_table(self, label: str, task_type: str, is_optional: bool,
                       grouped: Dict[str, List[Labo]]) -> TaskTableWidget:
-        """Crée et remplit une table de calculs groupés par catégorie."""
+        """Crée et remplit une table de labo groupée par catégorie."""
         table = TaskTableWidget(label=label, task_type=task_type, is_optional=is_optional)
         table.context = self.model.project.context()
         self._connect_table(table)
 
         for category, calculs in grouped.items():
-            cat_label = self.model.project.app_data.calcul_categories.get(category, category)
+            cat_label = self.model.project.app_data.labo_categories.get(category, category)
             table.add_category(cat_label)
             for calc in calculs:
                 table.add_task(cat_label, calc)

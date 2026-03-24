@@ -6,7 +6,7 @@ import openpyxl
 from openpyxl.styles import Font, PatternFill, Border, Alignment
 
 if TYPE_CHECKING:
-    from src.model import Project
+    from src.model import Model, Project
 
 
 # ── Helpers bas-niveau pour la feuille Excel ────────────────────────
@@ -191,8 +191,8 @@ def export_ortems_excel(project: "Project", path: str):
         ws_ortems.cell(row=2, column=col).value = hours
         col += 1
 
-    ws_calculs = wb["Calculs"]
-    ws_calculs["B3"] = project.app_data.n_projeteurs[project.secteur]
+    delai = project.compute_delai_etude()
+    ws_ortems["B2"] = delai["delai_reel"]
 
     wb.active = ws_ortems
     wb.save(path)
@@ -230,7 +230,7 @@ def export_excel_report(project: "Project", path: str):
     row = _write_task_section(ws, row, enclenchement, "Enclenchement", ctx, rex, ref['enclenchement'])
 
     row = _write_grouped_section(
-        ws, row, app.calcul_categories, project.grouped_claculs(),
+        ws, row, app.calcul_categories, project.grouped_calculs(),
         "Calculs de définition de la machine", ctx, rex, ref['calculs'],
         filter_fn=lambda items, c: [x for x in items if x.is_active(c)],
     )
@@ -287,3 +287,14 @@ def export_excel_report(project: "Project", path: str):
     ws.cell(row=row, column=4).value = "Heures REX"
 
     wb.save(path)
+
+
+def quick_export(model: "Model") -> Dict[str, str]:
+    prj = model.project
+    file_name = f"{prj.crm_number}_{prj.revision}_{prj.date}"
+    excel_path = prj.app_data.quick_export_path
+    rapport_path = excel_path + file_name + "_rapport.xlsx"
+    ortems_path = excel_path + file_name + "_ortems.xlsx"
+    export_excel_report(prj, rapport_path)
+    export_ortems_excel(prj, ortems_path)
+    return {"rapport": rapport_path, "ortems": ortems_path}

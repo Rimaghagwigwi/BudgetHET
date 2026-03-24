@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 import json
 import xml.etree.ElementTree as ET
 from typing import Dict, List, Optional, Any
@@ -21,6 +20,9 @@ class ApplicationData:
         self.secteurs: Dict[str, Dict[str, str]] = {} # Dict[DAS: Dict[code: label]] - {"MS": {"INDUS": "Industrie", ...}, ...}
         self.jobs: Dict[str, str] = {} # Dict[code: label] - {"ADM_COA": "Admin CAO", ...}
         self.n_projeteurs: Dict[str, int] = {} # Dict[secteur: nombre] - {"INDUS": 1, ...}
+        self.taux_productivite: float = 0.55
+        self.pct_conges: float = 0.17
+        self.demarrage_mois: float = 0.5
 
         self.tasks: Dict[str, Dict[str, List[GeneralTask]]] = {} # Dict[category: Dict[sub-category: List[GeneralTask]]]
 
@@ -39,7 +41,6 @@ class ApplicationData:
         self.option_categories: Dict[str, str] = {} # Dict[code: label]
         self.option_category_coeff: Dict[str, Dict[str, float]] = {} # Dict[type_affaire: Dict[category: coeff]]
         self.option_ortems: Dict[str, Dict[str, float]] = {} # Dict[category: Dict[code: coeff]]
-        self.option_availability: Dict[str, List[str]] = {} # Dict[category: List[machine_type]]
         
         self.labo: List[Labo] = []
         self.labo_categories: Dict[str, str] = {} # Dict[code: label]
@@ -71,6 +72,8 @@ class ApplicationData:
         self.asset_dir = root.findtext("./asset-dir", "assets/")
         self.ortems_template_path = root.findtext("./ortems-template-path", "template/ortems_template.xlsx")
         self.excel_report_template_path = root.findtext("./excel-report-template-path", "template/chiffrage_template.xlsx")
+        self.rex_database_path = root.findtext("./rex-database-path", "data/REX_HET.xlsx")
+        self.quick_export_path = root.findtext("./quick-export-path", "S:/COMMUN_OFFRES/Chiffrage HET/")
 
         # Stylesheet
         stylesheet_path = root.findtext("./ui/stylesheet", "")
@@ -104,6 +107,11 @@ class ApplicationData:
                 self.jobs[full_code] = full_label
         self.n_projeteurs = base_data.get("n_projeteurs", {})
 
+        delai_params = base_data.get("delai_etude_params", {})
+        self.taux_productivite = delai_params.get("taux_productivite", 0.55)
+        self.pct_conges = delai_params.get("pct_conges", 0.17)
+        self.demarrage_mois = delai_params.get("demarrage_mois", 0.5)
+
         # 2. Tâches générales
         tasks_data = self.raw_data['tasks'].get("tasks", {})
 
@@ -126,7 +134,7 @@ class ApplicationData:
                         base_hours_machine=base_hours_machine,
                         coeff_type_affaire=coeff_type_affaire,
                         coeff_secteur=coeff_secteur,
-                        mutiplicative=is_multiplicative,
+                        multiplicative=is_multiplicative,
                         ortems_repartition=ortems_repartition
                     )
                     self.tasks[category][sub_category].append(general_task)
@@ -196,3 +204,19 @@ class ApplicationData:
                 coeff_secteur=item.get("coeff_secteur", {})
             )
             self.labo.append(labo_task)
+
+    def save_delai_params(self):
+        """Persiste les paramètres de délai d'étude et n_projeteurs dans base_data.json."""
+        path = self.paths.get("base_data")
+        if not path:
+            return
+        with open(path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        data["n_projeteurs"] = self.n_projeteurs
+        data["delai_etude_params"] = {
+            "taux_productivite": self.taux_productivite,
+            "pct_conges": self.pct_conges,
+            "demarrage_mois": self.demarrage_mois,
+        }
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)

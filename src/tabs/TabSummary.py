@@ -1,8 +1,10 @@
 ﻿from typing import Any, Dict, Tuple
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QLabel, QFrame, QTreeWidget, QTreeWidgetItem,
-                             QHBoxLayout, QGridLayout, QLineEdit, QPushButton, QMenu)
+                             QHBoxLayout, QGridLayout, QLineEdit, QPushButton, QMenu,
+                             QDialog, QDialogButtonBox, QGroupBox, QFormLayout, QScrollArea,
+                             QToolButton)
 from PyQt6.QtCore import Qt, pyqtSignal, QRegularExpression
-from PyQt6.QtGui import QFont, QRegularExpressionValidator
+from PyQt6.QtGui import QFont, QRegularExpressionValidator, QIcon
 from src.model import Model, Project
 from src.utils.Task import AbstractTask
 
@@ -46,8 +48,9 @@ class CollapsibleSection(QTreeWidget):
         for i in range(item.childCount()):
             self._apply_expand(item.child(i), current, paths)
 
-    def build_tree(self, items: Dict[str, Any], context: Dict[str, Any]):
+    def build_tree(self, items: Dict[str, Any], context: Dict[str, Any], rex_coeff: float = 1.0):
         """Construit l'arbre à partir d'un dictionnaire de données."""
+        self._rex_coeff = rex_coeff
         expanded = self._get_expanded_paths()
 
         self.clear()
@@ -96,8 +99,8 @@ class CollapsibleSection(QTreeWidget):
         return total_hours
 
     def _add_task_node(self, task: AbstractTask, parent: QTreeWidgetItem, context: Dict[str, Any]) -> float:
-        """Ajoute un noeud de tâche et retourne ses heures effectives."""
-        hours = task.effective_hours(context)
+        """Ajoute un noeud de tâche et retourne ses heures effectives (× REX)."""
+        hours = task.effective_hours(context) * self._rex_coeff
         
         # Cacher les tâches à 0h
         if hours == 0:
@@ -124,9 +127,11 @@ class TabSummary(QWidget):
     rex_coeff_changed = pyqtSignal(float)
     rex_hours_changed = pyqtSignal(float)
     rex_hours_cleared = pyqtSignal()
+    quick_export_clicked = pyqtSignal()
     export_json_clicked = pyqtSignal()
     export_ortems_clicked = pyqtSignal()
     export_excel_clicked = pyqtSignal()
+    delai_settings_clicked = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -182,6 +187,9 @@ class TabSummary(QWidget):
         # Bouton Exporter avec menu déroulant
         self.btn_export = QPushButton("Exporter le projet ▾")
         export_menu = QMenu(self.btn_export)
+
+        self.action_quick_export = export_menu.addAction("Export rapide")
+        self.action_quick_export.triggered.connect(self.quick_export_clicked.emit)
 
         self.action_export_json = export_menu.addAction("Sauvegarde - JSON")
         self.action_export_json.triggered.connect(self.export_json_clicked.emit)
@@ -254,6 +262,24 @@ class TabSummary(QWidget):
         self.total_with_rex_val = self._create_styled_label(object_name="veryImportant")
         layout.addWidget(total_with_rex_label, row, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
         layout.addWidget(self.total_with_rex_val, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
+        row += 1
+
+        self._add_row_separator(layout, row); row += 1
+
+        # Délai étude (mois)
+        delai_label = self._create_styled_label(text="Délai étude (mois):", object_name="important")
+        delai_value_layout = QHBoxLayout()
+        self.val_delai_etude = self._create_styled_label(object_name="important")
+        self.btn_delai_settings = QToolButton()
+        self.btn_delai_settings.setObjectName("gearButton")
+        self.btn_delai_settings.setText("\u2699")
+        self.btn_delai_settings.setFixedSize(24, 24)
+        self.btn_delai_settings.setToolTip("Paramètres du délai d'étude")
+        self.btn_delai_settings.clicked.connect(self.delai_settings_clicked.emit)
+        delai_value_layout.addWidget(self.val_delai_etude)
+        delai_value_layout.addWidget(self.btn_delai_settings)
+        layout.addWidget(delai_label, row, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
+        layout.addLayout(delai_value_layout, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
 
         return frame
     
@@ -282,18 +308,129 @@ class TabSummary(QWidget):
             except ValueError:
                 pass
 
-    def update_totals(self, first_machine_subtotal: float, first_machine_total: float, quantity: int, n_machines_total: float, total_with_rex: float):
+    def update_totals(self, first_machine_subtotal: float, first_machine_total: float, quantity: int, n_machines_total: float, total_with_rex: float, delai_etude: float = 0.0):
         """Met à jour l'affichage des totaux."""
         self.val_first_machine_subtotal.setText(f"{first_machine_subtotal:.2f} h")
         self.val_first_machine_total.setText(f"{first_machine_total:.2f} h")
         self.label_n_machines.setText(f"Total {quantity} machines:")
         self.val_n_machines_total.setText(f"{n_machines_total:.2f} h")
         self.total_with_rex_val.setText(f"{total_with_rex:.2f} h")
+        self.val_delai_etude.setText(f"{delai_etude:.1f}")
 
     def sync_rex_fields(self, coeff_pct: float, rex_hours: float):
         """Synchronise les deux champs REX sans déclencher de signaux."""
         self.edit_rex_percent.setText(f"{coeff_pct:.1f}")
         self.edit_rex_hours.setText(f"{rex_hours:.2f}")
+
+
+class DelaiEtudeDialog(QDialog):
+    """Popup de configuration des paramètres de délai d'étude."""
+
+    def __init__(self, app_data, secteur: str, results: Dict[str, float], parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Paramètres délai d'étude")
+        self.setMinimumWidth(420)
+        self.app_data = app_data
+        self.secteur = secteur
+
+        layout = QVBoxLayout(self)
+
+        # --- Section paramètres d'entrée ---
+        params_group = QGroupBox("Paramètres d'entrée")
+        params_layout = QFormLayout(params_group)
+
+        self.edit_productivite = QLineEdit(f"{app_data.taux_productivite * 100:.1f}")
+        self.edit_productivite.setValidator(float_validator)
+        params_layout.addRow("Taux de productivité (%):", self.edit_productivite)
+
+        self.edit_conges = QLineEdit(f"{app_data.pct_conges * 100:.1f}")
+        self.edit_conges.setValidator(float_validator)
+        params_layout.addRow("% Congés:", self.edit_conges)
+
+        self.edit_demarrage = QLineEdit(f"{app_data.demarrage_mois:.2f}")
+        self.edit_demarrage.setValidator(float_validator)
+        params_layout.addRow("Démarrage (mois):", self.edit_demarrage)
+
+        layout.addWidget(params_group)
+
+        # --- Section n_projeteurs par secteur ---
+        proj_group = QGroupBox("Nombre de projeteurs par secteur")
+        proj_layout = QFormLayout(proj_group)
+
+        secteur_labels = {code: label for sectors in app_data.secteurs.values() for code, label in sectors.items()}
+        self.edits_n_projeteurs: Dict[str, QLineEdit] = {}
+        for code, value in app_data.n_projeteurs.items():
+            edit = QLineEdit(f"{value}")
+            edit.setValidator(float_validator)
+            label_text = secteur_labels.get(code, code)
+            if code == secteur:
+                label_text += "  ◄"
+            proj_layout.addRow(f"{label_text}:", edit)
+            self.edits_n_projeteurs[code] = edit
+
+        layout.addWidget(proj_group)
+
+        # --- Section résultats intermédiaires (lecture seule) ---
+        results_group = QGroupBox("Résultats intermédiaires")
+        results_layout = QFormLayout(results_group)
+
+        fields = [
+            ("Heures prises en compte:", f"{results.get('heures_proj', 0):.0f} h"),
+            ("Nombre de projeteurs:", f"{results.get('n_projeteurs', 0):.1f}"),
+            ("Délai brut (mois):", f"{results.get('delai_brut', 0):.1f}"),
+            ("Délai étude productif (mois):", f"{results.get('delai_productif', 0):.1f}"),
+            ("Congés (mois):", f"{results.get('conges_mois', 0):.1f}"),
+        ]
+        for label_text, value_text in fields:
+            val_label = QLabel(value_text)
+            val_label.setAlignment(Qt.AlignmentFlag.AlignRight)
+            results_layout.addRow(label_text, val_label)
+
+        # Résultat final mis en valeur
+        delai_reel_label = QLabel(f"{results.get('delai_reel', 0):.1f} mois")
+        delai_reel_label.setObjectName("veryImportant")
+        delai_reel_label.setAlignment(Qt.AlignmentFlag.AlignRight)
+        results_layout.addRow("Délai réel étude:", delai_reel_label)
+
+        layout.addWidget(results_group)
+
+        # --- Boutons ---
+        buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+        layout.addWidget(buttons)
+
+    def get_values(self) -> Dict:
+        """Retourne les valeurs saisies par l'utilisateur."""
+        n_proj = {}
+        for code, edit in self.edits_n_projeteurs.items():
+            try:
+                n_proj[code] = float(edit.text()) if edit.text() else self.app_data.n_projeteurs[code]
+            except ValueError:
+                n_proj[code] = self.app_data.n_projeteurs[code]
+
+        try:
+            taux = float(self.edit_productivite.text()) / 100 if self.edit_productivite.text() else self.app_data.taux_productivite
+        except ValueError:
+            taux = self.app_data.taux_productivite
+
+        try:
+            conges = float(self.edit_conges.text()) / 100 if self.edit_conges.text() else self.app_data.pct_conges
+        except ValueError:
+            conges = self.app_data.pct_conges
+
+        try:
+            demarrage = float(self.edit_demarrage.text()) if self.edit_demarrage.text() else self.app_data.demarrage_mois
+        except ValueError:
+            demarrage = self.app_data.demarrage_mois
+
+        return {
+            "taux_productivite": taux,
+            "pct_conges": conges,
+            "demarrage_mois": demarrage,
+            "n_projeteurs": n_proj,
+        }
+
 
 class TabSummaryController:
     """Contrôleur pour l'onglet récapitulatif."""
@@ -311,17 +448,20 @@ class TabSummaryController:
         self.view.rex_coeff_changed.connect(self._on_rex_coeff_changed)
         self.view.rex_hours_changed.connect(self._on_rex_hours_changed)
         self.view.rex_hours_cleared.connect(self._on_rex_hours_cleared)
+        self.view.delai_settings_clicked.connect(self._on_delai_settings_clicked)
+
+    def _rebuild_tree(self):
+        """Reconstruit l'arbre récapitulatif avec le coefficient REX courant."""
+        project = self.model.project
+        tree_items = project.generate_summary_tree()
+        self.view.tree.build_tree(tree_items, project.context(), rex_coeff=project.manual_rex_coeff)
 
     def _on_project_changed(self):
         """Appelé quand le projet change - reconstruit l'arbre."""
-        project = self.model.project
-        
-        # Construire l'arbre avec les données du projet
-        tree_items = project.generate_summary_tree()
-        self.view.tree.build_tree(tree_items, project.context())
+        self._rebuild_tree()
         
         # Synchroniser le champ divers
-        self.view.edit_divers.setText(f"{project.divers_percent * 100:.1f}")
+        self.view.edit_divers.setText(f"{self.model.project.divers_percent * 100:.1f}")
         # Vider le champ heures REX (manual_rex_hours = None après apply_defaults)
         self.view.edit_rex_hours.setText("")
         
@@ -330,14 +470,7 @@ class TabSummaryController:
     
     def _on_data_updated(self):
         """Appelé lors de modifications mineures (valeurs, checkboxes) - met à jour l'arbre."""
-
-        project = self.model.project
-        
-        # Reconstruire l'arbre avec les nouvelles valeurs
-        tree_items = project.generate_summary_tree()
-        self.view.tree.build_tree(tree_items, project.context())
-        
-        # Mettre à jour les totaux
+        self._rebuild_tree()
         self._update_totals()
 
     def _update_totals(self):
@@ -348,6 +481,10 @@ class TabSummaryController:
         first_machine_total = project.compute_first_machine_total()
         n_machines_total = project.compute_n_machines_total()
         total_with_rex = project.calculate_total_with_rex()
+
+        # Délai d'étude
+        self._delai_results = project.compute_delai_etude()
+        delai_etude = self._delai_results.get("delai_reel", 0.0)
         
         # Mettre à jour l'affichage
         self.view.update_totals(
@@ -355,7 +492,8 @@ class TabSummaryController:
             first_machine_total=first_machine_total,
             quantity=project.quantity,
             n_machines_total=n_machines_total,
-            total_with_rex=total_with_rex
+            total_with_rex=total_with_rex,
+            delai_etude=delai_etude,
         )
 
         # Synchroniser les deux champs REX (toujours liés : coeff = heures / n_machines)
@@ -379,6 +517,7 @@ class TabSummaryController:
         """Appelé quand le coefficient REX change — efface les heures manuelles."""
         self.model.project.manual_rex_coeff = coeff
         self.model.project.manual_rex_hours = None  # Le coeff devient maître
+        self._rebuild_tree()
         self._update_totals()
 
     def _on_rex_hours_changed(self, hours: float):
@@ -387,9 +526,27 @@ class TabSummaryController:
         n_machines = self.model.project.n_machines_total or 0
         if n_machines != 0:
             self.model.project.manual_rex_coeff = hours / n_machines
+        self._rebuild_tree()
         self._update_totals()
 
     def _on_rex_hours_cleared(self):
         """Appelé quand le champ heures REX est vidé — revient au calcul par coeff."""
         self.model.project.manual_rex_hours = None
+        self._rebuild_tree()
         self._update_totals()
+
+    def _on_delai_settings_clicked(self):
+        """Ouvre la popup de paramétrage du délai d'étude."""
+        project = self.model.project
+        results = getattr(self, '_delai_results', project.compute_delai_etude())
+
+        dialog = DelaiEtudeDialog(project.app_data, project.secteur, results, parent=self.view)
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            values = dialog.get_values()
+            app_data = project.app_data
+            app_data.taux_productivite = values["taux_productivite"]
+            app_data.pct_conges = values["pct_conges"]
+            app_data.demarrage_mois = values["demarrage_mois"]
+            app_data.n_projeteurs = values["n_projeteurs"]
+            app_data.save_delai_params()
+            self._update_totals()
