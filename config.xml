@@ -11,12 +11,15 @@
     </datapaths>
 
     <!-- Dossier import/export-->
-    <asset-dir>assets/Affaires/</asset-dir>
+
+    <project-save-dir>\\SRV-JE-005\public_ji$\W_BOUGHANMI\Nouveau_BudgetHET\assets\Affaires\</project-save-dir>
+    <asset-dir>\\SRV-JE-005\public_ji$\W_BOUGHANMI\Nouveau_BudgetHET\assets</asset-dir>
+
+    <quick-export-path>S:\COMMUN_OFFRES\Chiffrage HET\</quick-export-path>
+
     <ortems-template-path>template/ortems_template.xlsx</ortems-template-path>
     <excel-report-template-path>template/chiffrage_template.xlsx</excel-report-template-path>
     <rex-database-path>data/REX_HET.xlsx</rex-database-path>
-
-    <quick-export-path>S:\COMMUN_OFFRES\Chiffrage HET\</quick-export-path>
 
     <!-- Configuration de l'interface utilisateur -->
     <ui>

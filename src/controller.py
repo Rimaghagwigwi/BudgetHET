@@ -89,7 +89,9 @@ class Controller:
             
             data = self.model.save_project()
             file_name = f"{self.model.project.crm_number}_{self.model.project.revision}_{self.model.project.date}.json"
-            json_path = os.path.join(self.model.app_data.asset_dir, file_name)
+            save_dir = self.model.app_data.project_save_dir
+            os.makedirs(save_dir, exist_ok=True)
+            json_path = os.path.join(save_dir, file_name)
             with open(json_path, 'w', encoding='utf-8') as f:
                 json.dump(data, f, indent=2, ensure_ascii=False)
 
@@ -105,7 +107,7 @@ class Controller:
     def _show_export_result_dialog(self, file_entries: list):
         dialog = QDialog(self.window)
         dialog.setWindowTitle("Export rapide terminé")
-        dialog.setMinimumWidth(600)
+        dialog.setMinimumWidth(800)
         layout = QVBoxLayout(dialog)
 
         title = QLabel("Export rapide terminé")
@@ -131,7 +133,7 @@ class Controller:
         dialog.exec()
 
     def _on_export_json(self):
-        default_dir = self.model.app_data.asset_dir
+        default_dir = self.model.app_data.project_save_dir
         crm = self.model.project.crm_number or "projet"
         rev = self.model.project.revision or "rev"
         default_path = os.path.join(default_dir, f"{crm}_{rev}.json")
@@ -150,7 +152,7 @@ class Controller:
             print(f"Erreur lors de l'export du projet : {e}")
 
     def _on_export_ortems(self):
-        default_dir = self.model.app_data.asset_dir
+        default_dir = self.model.app_data.project_save_dir
         crm = self.model.project.crm_number or "projet"
         rev = self.model.project.revision or "rev"
         default_path = os.path.join(default_dir, f"{crm}_{rev}.xlsx")
@@ -169,7 +171,7 @@ class Controller:
             print(f"Erreur export ORTEMS : {e}")
 
     def on_export_excel_report(self):
-        default_dir = self.model.app_data.asset_dir
+        default_dir = self.model.app_data.project_save_dir
         crm = self.model.project.crm_number or "projet"
         rev = self.model.project.revision or "rev"
         default_path = os.path.join(default_dir, f"{crm}_{rev}_report.xlsx")

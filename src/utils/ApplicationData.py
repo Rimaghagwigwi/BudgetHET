@@ -69,11 +69,12 @@ class ApplicationData:
             self.window_height = 720
 
         # Dossier projets
-        self.asset_dir = root.findtext("./asset-dir", "assets/")
-        self.ortems_template_path = root.findtext("./ortems-template-path", "template/ortems_template.xlsx")
-        self.excel_report_template_path = root.findtext("./excel-report-template-path", "template/chiffrage_template.xlsx")
-        self.rex_database_path = root.findtext("./rex-database-path", "data/REX_HET.xlsx")
-        self.quick_export_path = root.findtext("./quick-export-path", "S:/COMMUN_OFFRES/Chiffrage HET/")
+        self.asset_dir = root.findtext("./asset-dir")
+        self.project_save_dir = root.findtext("./project-save-dir")
+        self.ortems_template_path = root.findtext("./ortems-template-path")
+        self.excel_report_template_path = root.findtext("./excel-report-template-path")
+        self.rex_database_path = root.findtext("./rex-database-path")
+        self.quick_export_path = root.findtext("./quick-export-path")
 
         # Stylesheet
         stylesheet_path = root.findtext("./ui/stylesheet", "")
