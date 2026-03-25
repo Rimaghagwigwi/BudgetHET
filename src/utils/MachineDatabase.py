@@ -1,4 +1,5 @@
 import pandas as pd
+import openpyxl
 from pathlib import Path
 from typing import List, Dict, Any
 
@@ -45,6 +46,10 @@ LABEL_MAP_COLUMNS = [COL_TYPE_PRODUIT, COL_PRODUIT, COL_TYPE_AFFAIRE, COL_DAS, C
 # Colonne(s) à ne pas afficher dans les résultats
 HIDDEN_COLUMNS = ["Heures projet"]
 
+# Colonnes de la feuille Projets (heures par code job)
+PROJET_HOURS_COLUMNS = ["230ETELEC", "230ETMECA", "230ETMECNC", "230ETNQ",
+                        "230ETREGU", "240RD", "240RDNC", "Total général"]
+
 
 class MachineDatabase:
     """Charge et interroge la base de machines à partir d'un fichier Excel."""
@@ -52,6 +57,7 @@ class MachineDatabase:
     def __init__(self, filepath: str):
         self.filepath = filepath
         self.df: pd.DataFrame = pd.DataFrame()
+        self.df_projets: pd.DataFrame = pd.DataFrame()
         self.unique_values: Dict[str, List[str]] = {}
         self._loaded = False
 
@@ -63,6 +69,7 @@ class MachineDatabase:
             return False
         try:
             self.df = pd.read_excel(self.filepath, sheet_name="Machines")
+            self._load_projets_sheet()
             self._normalize_ip()
             self._extract_unique_values()
             self._loaded = True
@@ -74,6 +81,20 @@ class MachineDatabase:
     @property
     def is_loaded(self) -> bool:
         return self._loaded and not self.df.empty
+
+    def _load_projets_sheet(self):
+        """Charge la feuille Projets (heures par code job par projet)."""
+        try:
+            raw = pd.read_excel(self.filepath, sheet_name="Projets", header=None)
+            # Column 0 = Projet ID, columns 1-7 = job codes, column 8 = Total
+            cols = ["Projet"] + PROJET_HOURS_COLUMNS
+            self.df_projets = raw.iloc[1:, :len(cols)].copy()
+            self.df_projets.columns = cols
+            self.df_projets["Projet"] = self.df_projets["Projet"].astype(str).str.strip()
+            self.df_projets = self.df_projets.reset_index(drop=True)
+        except Exception as e:
+            print(f"Erreur lors du chargement de la feuille Projets : {e}")
+            self.df_projets = pd.DataFrame()
 
     def _normalize_ip(self):
         """Convertit la colonne IP en chaînes propres ('23', '55', …)."""
@@ -193,3 +214,83 @@ class MachineDatabase:
                 mask &= is_empty | matches
 
         return self.df[mask].reset_index(drop=True)
+
+    # ── Données projet (double-clic) ─────────────────────────────────
+    def get_project_machines(self, project_id: str) -> pd.DataFrame:
+        """Retourne toutes les machines appartenant au même projet."""
+        if self.df.empty or COL_NUM_PROJET not in self.df.columns:
+            return pd.DataFrame()
+        mask = self.df[COL_NUM_PROJET].astype(str).str.strip() == project_id.strip()
+        return self.df[mask].reset_index(drop=True)
+
+    def get_project_hours(self, project_id: str) -> Dict[str, Any]:
+        """Retourne les heures du projet (ventilation par code job)."""
+        if self.df_projets.empty:
+            return {}
+        row = self.df_projets[self.df_projets["Projet"] == project_id.strip()]
+        if row.empty:
+            return {}
+        result = {}
+        for col in PROJET_HOURS_COLUMNS:
+            val = row.iloc[0][col]
+            result[col] = val if pd.notna(val) else 0.0
+        return result
+
+    # ── Modification d'une cellule ───────────────────────────────────
+    def update_machine_cell(self, df_index: int, column: str, value) -> bool:
+        """Met à jour une cellule dans le DataFrame en mémoire ET dans le fichier Excel.
+        
+        df_index : index dans self.df (pas l'index du sous-DataFrame filtré).
+        """
+        if column not in self.df.columns:
+            return False
+        # Gérer l'incompatibilité de type (ex: string dans colonne float64)
+        import numpy as np
+        if self.df[column].dtype.kind in ("f", "i", "u"):
+            if value == "":
+                value = np.nan
+            elif isinstance(value, str):
+                self.df[column] = self.df[column].astype(object)
+        # Mise à jour en mémoire
+        self.df.at[df_index, column] = value
+        # Mise à jour dans le fichier Excel
+        try:
+            wb = openpyxl.load_workbook(self.filepath)
+            ws = wb["Machines"]
+            # Trouver l'index de la colonne dans le fichier (1-based, row 1 = header)
+            header_row = [cell.value for cell in ws[1]]
+            # La colonne Excel peut avoir un nom légèrement différent — correspondance exacte
+            excel_col_map = {
+                COL_NUM_PROJET: "N° Projet", COL_DATE: "DATE",
+                "Nom projet": "PROJET", COL_NUM_MACHINE: "NUMERO",
+                COL_CLIENT: "CLIENT", COL_CLIENT_FINAL: "CLIENT FINAL",
+                COL_DESIGNATION: "DESCRIPTION", COL_REFERENCE: "REFERENCE",
+                COL_NBR_MACHINES: "NB MACHINES", COL_MW: "MW", COL_KV: "KV",
+                COL_COS_PHI: "CPHI", COL_HZ: "HZ", COL_TR_MIN: "TR/MIN",
+                COL_DAL: "DAL", COL_LFER: "LFER", COL_NB_POLES: "NB POLES",
+                COL_NB_ENCOCHES: "NB ENCOCHES", COL_IC: "IC", COL_IM: "IM",
+                COL_IP: "IP", COL_EEX: "EEX", COL_TYPE_PRODUIT: "Type produit",
+                COL_PRODUIT: "Produit", COL_TYPE_AFFAIRE: "Type affaire",
+                COL_DAS: "DAS", COL_SECTEUR: "Secteur",
+            }
+            excel_col_name = excel_col_map.get(column, column)
+            if excel_col_name not in header_row:
+                wb.close()
+                return False
+            col_idx = header_row.index(excel_col_name) + 1  # 1-based
+            row_idx = df_index + 2  # 1-based, +1 header +1 for 0-based
+            excel_value = None if (isinstance(value, float) and np.isnan(value)) else value
+            ws.cell(row=row_idx, column=col_idx, value=excel_value)
+            wb.save(self.filepath)
+            wb.close()
+            return True
+        except Exception as e:
+            print(f"Erreur sauvegarde Excel : {e}")
+            return False
+
+    def get_original_df_indices(self, project_id: str) -> list:
+        """Retourne les indices du DataFrame principal pour un projet donné."""
+        if self.df.empty or COL_NUM_PROJET not in self.df.columns:
+            return []
+        mask = self.df[COL_NUM_PROJET].astype(str).str.strip() == project_id.strip()
+        return self.df[mask].index.tolist()

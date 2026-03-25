@@ -2,17 +2,18 @@ import pandas as pd
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QGroupBox,
     QLabel, QLineEdit, QComboBox, QPushButton, QTableWidget,
-    QTableWidgetItem, QHeaderView, QSpinBox, QToolButton,
-    QSizePolicy, QFrame, QScrollArea, QAbstractScrollArea, QScrollBar
+    QTableWidgetItem, QToolButton,
+    QFrame, QScrollArea, QAbstractScrollArea, QScrollBar,
+    QDialog, QStyledItemDelegate, QMessageBox
 )
 from PyQt6.QtCore import Qt
 
 from src.model import Model
 from src.utils.MachineDatabase import (
     MachineDatabase,
-    STRING_FIELDS, NUMERIC_FIELDS, DROPDOWN_FIELDS, PREFILL_FIELDS,
-    LABEL_MAP_COLUMNS, HIDDEN_COLUMNS,
-    COL_DATE, COL_NB_POLES, COL_IP,
+    STRING_FIELDS, NUMERIC_FIELDS, DROPDOWN_FIELDS,
+    LABEL_MAP_COLUMNS, HIDDEN_COLUMNS, PROJET_HOURS_COLUMNS,
+    COL_DATE, COL_NB_POLES, COL_IP, COL_NUM_PROJET,
     COL_TYPE_PRODUIT, COL_PRODUIT, COL_TYPE_AFFAIRE, COL_DAS, COL_SECTEUR,
     COL_IM, COL_EEX,
 )
@@ -91,6 +92,218 @@ class _CollapsibleSection(QWidget):
         self.content_layout.addLayout(lay)
 
 
+# ─────────────────────────────────────────────────────────────────────
+#  Delegate pour l'édition dans le dialogue projet
+# ─────────────────────────────────────────────────────────────────────
+class _EditDelegate(QStyledItemDelegate):
+    """Crée un QComboBox pour les colonnes dropdown, QLineEdit sinon."""
+
+    def __init__(self, dialog, parent=None):
+        super().__init__(parent)
+        self._dialog = dialog
+
+    def createEditor(self, parent, option, index):
+        col_name = self._dialog.columns[index.column()]
+        choices = self._dialog._get_choices_for(col_name, index.row())
+        if choices is not None:
+            combo = NoWheelComboBox(parent)
+            combo.addItem("", "")  # option vide
+            for code, label in choices:
+                combo.addItem(label, code)
+            return combo
+        return super().createEditor(parent, option, index)
+
+    def setEditorData(self, editor, index):
+        if isinstance(editor, QComboBox):
+            # Retrouver le code stocké
+            code = index.data(Qt.ItemDataRole.UserRole)
+            if code is None:
+                code = index.data(Qt.ItemDataRole.DisplayRole)
+            for i in range(editor.count()):
+                if editor.itemData(i) == code:
+                    editor.setCurrentIndex(i)
+                    return
+            # Fallback : chercher par texte affiché
+            txt = index.data(Qt.ItemDataRole.DisplayRole) or ""
+            idx = editor.findText(txt)
+            if idx >= 0:
+                editor.setCurrentIndex(idx)
+        else:
+            super().setEditorData(editor, index)
+
+    def setModelData(self, editor, model, index):
+        col_name = self._dialog.columns[index.column()]
+        if isinstance(editor, QComboBox):
+            code = editor.currentData()
+            label = editor.currentText()
+            item = self._dialog.table.item(index.row(), index.column())
+            if item:
+                item.setData(Qt.ItemDataRole.UserRole, code)
+                item.setText(label)
+            self._dialog._on_cell_edited(index.row(), index.column(), code, col_name)
+        else:
+            super().setModelData(editor, model, index)
+            text = editor.text() if hasattr(editor, 'text') else ""
+            self._dialog._on_cell_edited(index.row(), index.column(), text, col_name)
+
+
+# ─────────────────────────────────────────────────────────────────────
+#  Dialogue détail projet (double-clic) — éditable
+# ─────────────────────────────────────────────────────────────────────
+class ProjectDetailDialog(QDialog):
+    """Affiche les machines et les heures d'un projet, avec édition directe."""
+
+    def __init__(self, project_id: str, machines_df: pd.DataFrame,
+                 hours: dict, label_maps: dict = None,
+                 app_data=None, db=None, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(f"Projet {project_id}")
+        self.resize(1400, 700)
+        self.project_id = project_id
+        self.label_maps = label_maps or {}
+        self.app_data = app_data
+        self.db = db
+        # Indices originaux du DataFrame pour la sauvegarde
+        self.original_indices = db.get_original_df_indices(project_id) if db else []
+        layout = QVBoxLayout(self)
+
+        # ── Heures du projet ─────────────────────────────────────────
+        hours_group = QGroupBox("Heures du projet")
+        hours_lay = QGridLayout(hours_group)
+        col = 0
+        for code in PROJET_HOURS_COLUMNS:
+            val = hours.get(code, 0.0)
+            hours_lay.addWidget(QLabel(code), 0, col)
+            lbl_val = QLabel(f"{val:.2f}" if isinstance(val, float) else str(val))
+            lbl_val.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            if code == "Total général":
+                lbl_val.setStyleSheet("font-weight: bold;")
+            hours_lay.addWidget(lbl_val, 1, col)
+            col += 1
+        layout.addWidget(hours_group)
+
+        # ── Machines du projet (éditable) ────────────────────────────
+        machines_group = QGroupBox(f"Machines du projet ({len(machines_df)})")
+        machines_lay = QVBoxLayout(machines_group)
+
+        # Garder le df brut (codes) pour référence
+        self.raw_df = machines_df.drop(
+            columns=[c for c in HIDDEN_COLUMNS if c in machines_df.columns],
+            errors="ignore"
+        ).copy()
+        self.columns = list(self.raw_df.columns)
+
+        self.table = QTableWidget()
+        self.table.setObjectName("machineResults")
+        self.table.setAlternatingRowColors(True)
+        self.table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        self.table.horizontalHeader().setStretchLastSection(False)
+        self.table.horizontalHeader().setSectionsClickable(True)
+        self.table.setSortingEnabled(False)
+        self.table.setColumnCount(len(self.columns))
+        self.table.setHorizontalHeaderLabels(self.columns)
+        self.table.setRowCount(len(self.raw_df))
+
+        # Activer l'édition au double-clic
+        self.table.setEditTriggers(QTableWidget.EditTrigger.DoubleClicked)
+        self.table.setItemDelegate(_EditDelegate(self, self.table))
+
+        # Remplissage
+        for row_idx in range(len(self.raw_df)):
+            for col_idx, col_name in enumerate(self.columns):
+                value = self.raw_df.iloc[row_idx, col_idx]
+                if pd.isna(value):
+                    text = ""
+                    code = ""
+                elif isinstance(value, pd.Timestamp):
+                    text = value.strftime("%d/%m/%Y")
+                    code = text
+                elif isinstance(value, float):
+                    text = str(int(value)) if value == int(value) else f"{value:.4g}"
+                    code = str(value)
+                else:
+                    text = str(value)
+                    code = text
+
+                # Pour les colonnes avec label_map, afficher le label mais stocker le code
+                if col_name in self.label_maps:
+                    display = self.label_maps[col_name].get(str(value).strip(), text)
+                else:
+                    display = text
+
+                item = _SortableItem(display)
+                item.setData(Qt.ItemDataRole.UserRole, code)
+                self.table.setItem(row_idx, col_idx, item)
+
+        self.table.resizeColumnsToContents()
+        for col_idx in range(self.table.columnCount()):
+            self.table.setColumnWidth(col_idx, self.table.columnWidth(col_idx) + 40)
+        self.table.setSortingEnabled(True)
+        self.table.setStyleSheet("QTableCornerButton::section { background-color: #2980b9; }")
+        machines_lay.addWidget(self.table)
+        layout.addWidget(machines_group)
+
+        # ── Bouton fermer ────────────────────────────────────────────
+        btn_close = QPushButton("Fermer")
+        btn_close.clicked.connect(self.reject)
+        lay_btn = QHBoxLayout()
+        lay_btn.addStretch()
+        lay_btn.addWidget(btn_close)
+        layout.addLayout(lay_btn)
+
+    # ── Choix pour les colonnes dropdown ─────────────────────────────
+    def _get_choices_for(self, col_name: str, row: int):
+        """Retourne une liste de (code, label) pour une colonne dropdown, ou None."""
+        if not self.app_data:
+            return None
+
+        ad = self.app_data
+
+        if col_name == COL_TYPE_PRODUIT:
+            return list(ad.product_types.items())
+        if col_name == COL_PRODUIT:
+            # Dépend du Type produit de cette ligne
+            type_item = self.table.item(row, self.columns.index(COL_TYPE_PRODUIT)) if COL_TYPE_PRODUIT in self.columns else None
+            type_code = type_item.data(Qt.ItemDataRole.UserRole) if type_item else None
+            if type_code and type_code in ad.product:
+                return list(ad.product[type_code].items())
+            return [(c, l) for prods in ad.product.values() for c, l in prods.items()]
+        if col_name == COL_TYPE_AFFAIRE:
+            return list(ad.types_affaires.items())
+        if col_name == COL_DAS:
+            return list(ad.das.items())
+        if col_name == COL_SECTEUR:
+            # Dépend du DAS de cette ligne
+            das_item = self.table.item(row, self.columns.index(COL_DAS)) if COL_DAS in self.columns else None
+            das_code = das_item.data(Qt.ItemDataRole.UserRole) if das_item else None
+            if das_code and das_code in ad.secteurs:
+                return list(ad.secteurs[das_code].items())
+            return [(c, l) for sects in ad.secteurs.values() for c, l in sects.items()]
+        if col_name in (COL_IM, COL_EEX) and self.db:
+            vals = self.db.unique_values.get(col_name, [])
+            return [(v, v) for v in vals]
+        return None
+
+    # ── Sauvegarde d'une cellule ─────────────────────────────────────
+    def _on_cell_edited(self, row: int, _col_idx: int, value, col_name: str):
+        """Appelé après la modification d'une cellule — sauvegarde dans le Excel."""
+        if not self.db or row >= len(self.original_indices):
+            return
+        df_index = self.original_indices[row]
+        # Convertir en numérique si possible
+        save_value = value
+        if col_name not in LABEL_MAP_COLUMNS and col_name not in (COL_IM, COL_EEX):
+            try:
+                save_value = float(value)
+                if save_value == int(save_value):
+                    save_value = int(save_value)
+            except (ValueError, TypeError):
+                pass
+        ok = self.db.update_machine_cell(df_index, col_name, save_value)
+        if not ok:
+            QMessageBox.warning(self, "Erreur", f"Impossible de sauvegarder la modification de '{col_name}'.")
+
+
 # =====================================================================
 #  VUE
 # =====================================================================
@@ -98,6 +311,7 @@ class TabMachineSearch(QWidget):
     def __init__(self):
         super().__init__()
         self.setObjectName("tabMachineSearch")
+        self._last_results_df: pd.DataFrame = pd.DataFrame()  # résultats bruts
 
         # Scroll vertical global de l'onglet
         outer = QVBoxLayout(self)
@@ -295,10 +509,12 @@ class TabMachineSearch(QWidget):
     # ── Affichage des résultats ──────────────────────────────────────
     def set_results(self, df: pd.DataFrame, label_maps: dict = None):
         """Affiche les résultats. label_maps: dict[col_name → dict[code → label]]."""
+        self._last_results_df = df.copy()
         self.table_results.setSortingEnabled(False)
         self.table_results.clear()
 
         if df.empty:
+            self._last_results_df = pd.DataFrame()
             self.table_results.setRowCount(0)
             self.table_results.setColumnCount(0)
             self.label_count.setText("Aucun résultat")
@@ -320,6 +536,12 @@ class TabMachineSearch(QWidget):
         self.table_results.setRowCount(len(display_df))
 
         for row_idx in range(len(display_df)):
+            # Stocker le N° Projet pour le double-clic
+            project_id = ""
+            if COL_NUM_PROJET in df.columns:
+                val = df.iloc[row_idx][COL_NUM_PROJET]
+                project_id = str(val).strip() if pd.notna(val) else ""
+
             for col_idx, col_name in enumerate(columns):
                 value = display_df.iloc[row_idx, col_idx]
 
@@ -334,6 +556,7 @@ class TabMachineSearch(QWidget):
                     text = str(value)
 
                 item = _SortableItem(text)
+                item.setData(Qt.ItemDataRole.UserRole, project_id)
                 self.table_results.setItem(row_idx, col_idx, item)
 
         self.table_results.resizeColumnsToContents()
@@ -351,6 +574,13 @@ class TabMachineSearch(QWidget):
         h += t.horizontalScrollBar().sizeHint().height()
         t.setMinimumHeight(h)
         t.setMaximumHeight(h)
+
+    def get_project_id_at_row(self, row: int) -> str:
+        """Retourne le N° Projet stocké dans la ligne (survit au tri)."""
+        item = self.table_results.item(row, 0)
+        if item is None:
+            return ""
+        return item.data(Qt.ItemDataRole.UserRole) or ""
 
     # ── Collecte des filtres ─────────────────────────────────────────
     def get_all_filters(self) -> dict:
@@ -430,6 +660,7 @@ class MachineSearchController:
         self.view.btn_search.clicked.connect(self._on_search)
         self.view.btn_reset.clicked.connect(self._on_reset)
         self.model.project_changed.connect(self._on_project_changed)
+        self.view.table_results.doubleClicked.connect(self._on_double_click)
 
         # Filtrage dynamique des combos dépendants
         self.view.dropdown_inputs[COL_TYPE_PRODUIT].currentIndexChanged.connect(
@@ -478,6 +709,23 @@ class MachineSearchController:
         tolerance = self.view.get_tolerance()
         results   = self.db.search(filters, tolerance)
         self.view.set_results(results, self._build_label_maps())
+
+    def _on_double_click(self, index):
+        """Double-clic sur une ligne : affiche le détail du projet."""
+        row = index.row()
+        project_id = self.view.get_project_id_at_row(row)
+        if not project_id:
+            return
+        machines = self.db.get_project_machines(project_id)
+        hours = self.db.get_project_hours(project_id)
+        dlg = ProjectDetailDialog(
+            project_id, machines, hours,
+            label_maps=self._build_label_maps(),
+            app_data=self.model.app_data,
+            db=self.db,
+            parent=self.view,
+        )
+        dlg.exec()
 
     def _build_label_maps(self) -> dict:
         """Construit les mappings code → label pour les colonnes à traduire."""

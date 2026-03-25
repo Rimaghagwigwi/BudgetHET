@@ -9,6 +9,7 @@
 5. [Modèle de données](#5-modèle-de-données)
 6. [Classes de tâches](#6-classes-de-tâches)
 7. [Interface utilisateur — Onglets](#7-interface-utilisateur--onglets)
+   - 7.8 [Onglet « Recherche machine »](#78-onglet--recherche-machine--tabmachinesearch)
 8. [Logique de calcul](#8-logique-de-calcul)
 9. [Gestion des coefficients](#9-gestion-des-coefficients)
 10. [Flux de données et signaux](#10-flux-de-données-et-signaux)
@@ -35,6 +36,7 @@
 - **Coefficient REX** (Retour d'Expérience) applicable au total.
 - **Export Excel** au format ORTEMS (distribution sur postes de travail) et au format rapport de chiffrage détaillé.
 - **Sauvegarde/chargement de projets** au format JSON (sérialisation par delta).
+- **Recherche dans la base REX** : interrogation de la base de machines historiques (fichier Excel `REX_HET.xlsx`) avec filtres textuels, numériques (± tolérance) et par listes déroulantes. Double-clic sur un résultat pour consulter et éditer les machines du projet.
 
 ---
 
@@ -82,7 +84,7 @@ L'application suit le patron **Modèle-Vue-Contrôleur (MVC)** avec une communic
 │ TabGeneral │ GeneralTask│  Calculs  │  Options  │  LPDC  │ Labo│
 │ Controller │ TabCtrl    │  TabCtrl  │  TabCtrl  │  TabCtrl│TabC│
 │            │            │           │           │        │     │
-│ (TabSummary│ Controller)│           │           │        │     │
+│ (TabSummary│ Controller)│ (MachineSearchController)│     │     │
 └─────┬──────┴─────┬──────┴─────┬─────┴─────┬─────┴────┬───┴─────┘
       │            │            │           │          │
       ▼            ▼            ▼           ▼          ▼
@@ -118,7 +120,7 @@ HET_3/
 ├── main.py                          # Point d'entrée
 ├── config.xml                       # Configuration de l'application
 ├── build.bat                        # Script de compilation PyInstaller
-├── requirements.txt                 # Dépendances (vide actuellement)
+├── requirements.txt                 # Dépendances Python
 ├── notes.txt                        # Notes et problèmes connus
 │
 ├── src/
@@ -134,6 +136,7 @@ HET_3/
 │   │   ├── OptionsTabController.py  # Onglet Options
 │   │   ├── LPDCTabController.py     # Onglet LPDC
 │   │   ├── LaboTabController.py     # Onglet Labo
+│   │   ├── TabMachineSearch.py      # Onglet Recherche machine (vue + contrôleur + dialogue)
 │   │   └── TabSummary.py            # Onglet Résumé
 │   │
 │   └── utils/                       # Utilitaires et classes de base
@@ -141,6 +144,7 @@ HET_3/
 │       ├── BaseTaskTabController.py # Contrôleur de base pour onglets
 │       ├── Task.py                  # Hiérarchie des classes de tâches
 │       ├── TabTasks.py              # Widget tableau de tâches
+│       ├── MachineDatabase.py       # Chargement et interrogation de la base REX
 │       ├── widgets.py               # Widgets personnalisés (spinbox)
 │       └── exports.py               # Fonctions d'export Excel
 │
@@ -333,7 +337,7 @@ Représente les travaux de test en laboratoire (métallurgie, isolant).
 
 ## 7. Interface utilisateur — Onglets
 
-L'interface est composée de 7 onglets dans un `QTabWidget` :
+L'interface est composée de 8 onglets dans un `QTabWidget` :
 
 ### 7.1 Onglet « Général » (`TabGeneral`)
 
@@ -403,7 +407,54 @@ Deux tableaux :
 
 **Catégories** : Labo métallurgie (`LAB_METAL`), Labo isolant (`LAB_ISOL`)
 
-### 7.7 Onglet « Résumé » (`TabSummary`)
+### 7.8 Onglet « Recherche machine » (`TabMachineSearch`)
+
+Onglet permettant d'interroger la base de données REX (Retour d'Expérience) contenue dans le fichier Excel `data/REX_HET.xlsx`. L'objectif est de retrouver des machines similaires réalisées par le passé pour aider au chiffrage.
+
+#### Source de données
+
+Le fichier Excel contient deux feuilles exploitées :
+- **Machines** : une ligne par machine, avec ~28 colonnes (projet, client, désignation, caractéristiques électriques, type produit, DAS, secteur, etc.)
+- **Projets** : heures réalisées par projet, ventilées sur 8 codes job (`230ETELEC`, `230ETMECA`, `230ETMECNC`, `230ETNQ`, `230ETREGU`, `240RD`, `240RDNC`, `Total général`)
+
+Le chemin du fichier est configuré dans `config.xml` via la balise `<rex-database-path>`.
+
+#### Interface de recherche
+
+L'interface est organisée en sections repliables :
+
+1. **Recherche par texte** (contient) : N° Projet, Nom projet, Client, Client final, Désignation
+2. **Filtres de sélection** : Année, NB POLES (`2`, `4`, `>4`), IP (deux chiffres séparés), IM, EEX, Type produit, Produit, Type affaire, DAS, Secteur
+3. **Valeurs numériques** (± tolérance) : Nbr machines, MW, KV, Cos(phi), Hz, TR/MIN, DAL, LFER, NB ENCOCHES — avec tolérance configurable (5–100%, défaut 10%)
+
+**Comportement des filtres** :
+- Les filtres sont combinés en « ET » logique
+- Les lignes dont la cellule est vide/NaN pour un champ filtré ne sont **pas** exclues (inclusion par défaut des données manquantes)
+- Les combos Type produit → Produit et DAS → Secteur sont filtrés dynamiquement (comme dans l'onglet Général)
+- Les champs Type produit, Produit et DAS sont pré-remplis depuis le projet courant
+- La touche Entrée dans un champ texte/numérique lance la recherche
+
+#### Tableau de résultats
+
+Les résultats s'affichent dans un `QTableWidget` triable par colonnes. Les colonnes à codes (Type produit, Produit, Type affaire, DAS, Secteur) sont affichées avec leurs libellés lisibles. La colonne « Heures projet » est masquée.
+
+Une scrollbar horizontale externe est synchronisée avec la scrollbar interne du tableau pour un défilement fluide même quand le tableau est intégré dans la scroll area principale.
+
+#### Dialogue détail projet (double-clic)
+
+Un double-clic sur une ligne ouvre un `ProjectDetailDialog` (1400×700) affichant :
+
+1. **Heures du projet** : grille des 8 codes job avec les heures réalisées (issues de la feuille « Projets »)
+2. **Machines du projet** : tableau de toutes les machines partageant le même N° Projet
+
+**Édition directe** : chaque cellule du tableau est éditable par double-clic :
+- Les colonnes **Type produit, Produit, Type affaire, DAS, Secteur** présentent un `QComboBox` avec les labels de l'application. Le filtrage dynamique est appliqué (Produit dépend du Type produit, Secteur dépend du DAS). Une option vide est toujours disponible.
+- Les colonnes **IM, EEX** présentent un `QComboBox` avec les valeurs existantes dans la base
+- Les autres colonnes présentent un champ texte libre (`QLineEdit`)
+
+**Sauvegarde** : toute modification est immédiatement persistée dans le fichier Excel source via `openpyxl` (écriture cellule par cellule). Le DataFrame en mémoire est mis à jour simultanément.
+
+### 7.9 Onglet « Résumé » (`TabSummary`)
 
 Panneau gauche : **arbre récapitulatif** (`CollapsibleSection`) affichant la hiérarchie complète du projet avec les heures par section.
 
@@ -855,6 +906,40 @@ Attributs principaux :
 |---------|-------------|
 | `__init__(app_data, app)` | Crée la vue, le modèle, tous les contrôleurs d'onglets |
 | Import/export wiring | Connecte les boutons import/export aux dialogues fichiers |
+
+---
+
+### `MachineDatabase` (`src/utils/MachineDatabase.py`)
+
+Charge et interroge la base de machines REX depuis un fichier Excel.
+
+| Méthode | Description |
+|---------|-------------|
+| `load()` | Charge les feuilles « Machines » et « Projets », normalise IP, extrait les valeurs uniques |
+| `search(filters, tolerance)` | Filtre le DataFrame selon les critères (texte, numérique ± tolérance, dropdown) |
+| `get_project_machines(project_id)` | Retourne toutes les machines d'un projet |
+| `get_project_hours(project_id)` | Retourne les heures du projet (ventilation par code job) |
+| `update_machine_cell(df_index, column, value)` | Met à jour une cellule en mémoire et dans le fichier Excel via openpyxl |
+| `get_original_df_indices(project_id)` | Retourne les indices du DataFrame principal pour un projet |
+
+Attributs principaux :
+- `df` — DataFrame des machines
+- `df_projets` — DataFrame des heures projet
+- `unique_values` — dict des valeurs uniques par colonne (pour les filtres)
+
+---
+
+### `MachineSearchController` (`src/tabs/TabMachineSearch.py`)
+
+| Méthode | Description |
+|---------|-------------|
+| `_on_search()` | Lance la recherche avec les filtres courants |
+| `_on_double_click(index)` | Ouvre le `ProjectDetailDialog` pour le projet sélectionné |
+| `_on_reset()` | Réinitialise les filtres et pré-remplit depuis le projet courant |
+| `_update_produit_combo()` | Met à jour Produit selon Type produit |
+| `_update_secteur_combo()` | Met à jour Secteur selon DAS |
+| `_prefill_from_project()` | Pré-remplit Type produit, Produit, DAS depuis le projet courant |
+| `_build_label_maps()` | Construit les mappings code → label pour l'affichage |
 
 ---
 
