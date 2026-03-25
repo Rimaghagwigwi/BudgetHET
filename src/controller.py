@@ -111,7 +111,7 @@ class Controller:
         layout = QVBoxLayout(dialog)
 
         title = QLabel("Export rapide terminé")
-        title.setStyleSheet("font-weight: bold; font-size: 16px;")
+        title.setObjectName("dialogTitle")
         layout.addWidget(title)
 
         for label_text, filepath in file_entries:

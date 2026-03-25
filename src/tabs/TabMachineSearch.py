@@ -177,7 +177,7 @@ class ProjectDetailDialog(QDialog):
             lbl_val = QLabel(f"{val:.2f}" if isinstance(val, float) else str(val))
             lbl_val.setAlignment(Qt.AlignmentFlag.AlignCenter)
             if code == "Total général":
-                lbl_val.setStyleSheet("font-weight: bold;")
+                lbl_val.setObjectName("totalValue")
             hours_lay.addWidget(lbl_val, 1, col)
             col += 1
         layout.addWidget(hours_group)
@@ -239,7 +239,6 @@ class ProjectDetailDialog(QDialog):
         for col_idx in range(self.table.columnCount()):
             self.table.setColumnWidth(col_idx, self.table.columnWidth(col_idx) + 40)
         self.table.setSortingEnabled(True)
-        self.table.setStyleSheet("QTableCornerButton::section { background-color: #2980b9; }")
         machines_lay.addWidget(self.table)
         layout.addWidget(machines_group)
 

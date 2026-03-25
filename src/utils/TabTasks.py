@@ -119,7 +119,7 @@ class TaskTableWidget(QTableWidget):
         hours_item = QTableWidgetItem(f"{default_h:.2f}".rstrip("0").rstrip("."))
         hours_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
         hours_item.setFlags(Qt.ItemFlag.ItemIsEnabled)
-        hours_item.setForeground(QBrush(QColor("#2980b9")))
+        hours_item.setForeground(QBrush(QColor("#0063AF")))
         self.setItem(row, self.col_offset + 2, hours_item)
 
         # Heures finales (lecture seule, mise à jour dynamique)
