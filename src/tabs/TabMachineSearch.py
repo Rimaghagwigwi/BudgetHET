@@ -1,4 +1,5 @@
-import pandas as pd
+from __future__ import annotations
+
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QGroupBox,
     QLabel, QLineEdit, QComboBox, QPushButton, QTableWidget,
@@ -153,9 +154,10 @@ class _EditDelegate(QStyledItemDelegate):
 class ProjectDetailDialog(QDialog):
     """Affiche les machines et les heures d'un projet, avec édition directe."""
 
-    def __init__(self, project_id: str, machines_df: pd.DataFrame,
+    def __init__(self, project_id: str, machines_df,
                  hours: dict, label_maps: dict = None,
                  app_data=None, db=None, parent=None):
+        import pandas as pd
         super().__init__(parent)
         self.setWindowTitle(f"Projet {project_id}")
         self.resize(1400, 700)
@@ -310,7 +312,7 @@ class TabMachineSearch(QWidget):
     def __init__(self):
         super().__init__()
         self.setObjectName("tabMachineSearch")
-        self._last_results_df: pd.DataFrame = pd.DataFrame()  # résultats bruts
+        self._last_results_df = None  # résultats bruts
 
         # Scroll vertical global de l'onglet
         outer = QVBoxLayout(self)
@@ -506,8 +508,9 @@ class TabMachineSearch(QWidget):
         self.combo_ip_second.addItems(second_digits)
 
     # ── Affichage des résultats ──────────────────────────────────────
-    def set_results(self, df: pd.DataFrame, label_maps: dict = None):
+    def set_results(self, df, label_maps: dict = None):
         """Affiche les résultats. label_maps: dict[col_name → dict[code → label]]."""
+        import pandas as pd
         self._last_results_df = df.copy()
         self.table_results.setSortingEnabled(False)
         self.table_results.clear()

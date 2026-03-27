@@ -1,7 +1,11 @@
-import pandas as pd
+from __future__ import annotations
+
 import openpyxl
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import List, Dict, Any, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import pandas as pd
 
 # ── Noms de colonnes (correspondant aux en-têtes Excel) ──────────────
 COL_NUM_PROJET   = "N° Projet"
@@ -55,6 +59,7 @@ class MachineDatabase:
     """Charge et interroge la base de machines à partir d'un fichier Excel."""
 
     def __init__(self, filepath: str):
+        import pandas as pd
         self.filepath = filepath
         self.df: pd.DataFrame = pd.DataFrame()
         self.df_projets: pd.DataFrame = pd.DataFrame()
@@ -63,6 +68,7 @@ class MachineDatabase:
 
     # ── Chargement ───────────────────────────────────────────────────
     def load(self) -> bool:
+        import pandas as pd
         path = Path(self.filepath)
         if not path.exists():
             print(f"Fichier base machines non trouvé : {self.filepath}")
@@ -84,6 +90,7 @@ class MachineDatabase:
 
     def _load_projets_sheet(self):
         """Charge la feuille Projets (heures par code job par projet)."""
+        import pandas as pd
         try:
             raw = pd.read_excel(self.filepath, sheet_name="Projets", header=None)
             # Column 0 = Projet ID, columns 1-7 = job codes, column 8 = Total
@@ -98,6 +105,7 @@ class MachineDatabase:
 
     def _normalize_ip(self):
         """Convertit la colonne IP en chaînes propres ('23', '55', …)."""
+        import pandas as pd
         if COL_IP not in self.df.columns:
             return
         def _to_ip_str(v):
@@ -110,6 +118,7 @@ class MachineDatabase:
 
     def _extract_unique_values(self):
         """Prépare les listes de valeurs uniques pour les filtres."""
+        import pandas as pd
         # Champs dropdown
         for col in DROPDOWN_FIELDS:
             if col in self.df.columns:
@@ -138,6 +147,7 @@ class MachineDatabase:
         Règle : si une cellule de la base est vide/NaN pour un champ filtré,
         la ligne n'est **pas** exclue (les cases vides sont toujours incluses).
         """
+        import pandas as pd
         if self.df.empty:
             return self.df.copy()
 
@@ -218,6 +228,7 @@ class MachineDatabase:
     # ── Données projet (double-clic) ─────────────────────────────────
     def get_project_machines(self, project_id: str) -> pd.DataFrame:
         """Retourne toutes les machines appartenant au même projet."""
+        import pandas as pd
         if self.df.empty or COL_NUM_PROJET not in self.df.columns:
             return pd.DataFrame()
         mask = self.df[COL_NUM_PROJET].astype(str).str.strip() == project_id.strip()
@@ -230,6 +241,7 @@ class MachineDatabase:
         row = self.df_projets[self.df_projets["Projet"] == project_id.strip()]
         if row.empty:
             return {}
+        import pandas as pd
         result = {}
         for col in PROJET_HOURS_COLUMNS:
             val = row.iloc[0][col]

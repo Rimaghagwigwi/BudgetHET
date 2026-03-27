@@ -14,7 +14,6 @@ from src.tabs.OptionsTabController import OptionsTabController
 from src.tabs.LPDCTabController import LPDCTabController
 from src.tabs.LaboTabController import LaboTabController
 from src.tabs.TabSummary import TabSummary, TabSummaryController
-from src.tabs.TabMachineSearch import TabMachineSearch, MachineSearchController
 
 
 class Controller:
@@ -27,6 +26,7 @@ class Controller:
 
     def _create_tabs(self):
         """Crée tous les onglets et leurs contrôleurs."""
+        from src.tabs.TabMachineSearch import TabMachineSearch, MachineSearchController
         self.view_general = TabGeneral()
         self.view_summary = TabSummary()
 

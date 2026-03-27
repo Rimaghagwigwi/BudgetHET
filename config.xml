@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
+
+    <!-- Dossier import/export-->
+
+    <!-- Dossier par défaut pour "Importer un projet" -->
+    <asset-dir>
+        S:\COMMUN_OFFRES\SUIVI archive\Budget_HET_python\assets
+    </asset-dir>
+
+    <!-- Dossier des sauvegardes JSON des projets - format interne au programme -->
+    <project-save-dir>
+        S:\COMMUN_OFFRES\SUIVI archive\Budget_HET_python\assets\Affaires\
+    </project-save-dir>
+
+    <!-- Dossier d'export rapide pour les fichiers Excel générés -->
+    <quick-export-path>
+        S:\COMMUN_OFFRES\SUIVI archive\Budget_HET_python\Chiffrages HET
+    </quick-export-path>
+
+
+
     <!-- Chemins des fichiers de données -->
     <datapaths>
         <path key="base_data">data/base_data.json</path>
@@ -10,16 +30,13 @@
         <path key="labo">data/labo.json</path>
     </datapaths>
 
-    <!-- Dossier import/export-->
+    <rex-database-path>
+    data/REX_HET.xlsx
+    </rex-database-path>
 
-    <project-save-dir>\\SRV-JE-005\public_ji$\W_BOUGHANMI\Nouveau_BudgetHET\assets\Affaires\</project-save-dir>
-    <asset-dir>\\SRV-JE-005\public_ji$\W_BOUGHANMI\Nouveau_BudgetHET\assets</asset-dir>
-
-    <quick-export-path>S:\COMMUN_OFFRES\Chiffrage HET\</quick-export-path>
-
+    <!-- Emplacement des modèles excel pour Ortems et Rapport-->
     <ortems-template-path>template/ortems_template.xlsx</ortems-template-path>
     <excel-report-template-path>template/chiffrage_template.xlsx</excel-report-template-path>
-    <rex-database-path>data/REX_HET.xlsx</rex-database-path>
 
     <!-- Configuration de l'interface utilisateur -->
     <ui>
