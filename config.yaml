@@ -1,0 +1,43 @@
+# Dossier import/export
+
+# Dossier par défaut pour "Importer un projet"
+asset-dir: S:\COMMUN_OFFRES\SUIVI archive\Budget_HET_python\assets\
+
+# Dossier des sauvegardes JSON des projets - format interne au programme
+project-save-dir: S:\COMMUN_OFFRES\SUIVI archive\Budget_HET_python\assets\Affaires\
+
+# Dossier d'export rapide pour les fichiers Excel générés
+quick-export-path: S:\COMMUN_OFFRES\SUIVI archive\Budget_HET_python\Chiffrages HET\
+
+# Chemins des fichiers de données
+datapaths:
+  base_data: data/base_data.json
+  options: data/options.json
+  tasks: data/general_task_data_new.json
+  LPDC: data/LPDC.json
+  calculs: data/calculs.json
+  labo: data/labo.json
+
+rex-database-path: data/REX_HET.xlsx
+
+# Emplacement des modèles excel pour Ortems et Rapport
+ortems-template-path: template/ortems_template.xlsx
+excel-report-template-path: template/chiffrage_template.xlsx
+
+# Configuration de l'interface utilisateur
+ui:
+  # Thème de l'application (ex: Fusion, Windows, WindowsVista)
+  theme: Fusion
+  # Feuille de styles QSS
+  stylesheet: src/styles.qss
+
+  window:
+    title: Chiffrage HET
+    width: 1080
+    height: 720
+
+  colors:
+    background: "#ecf0f1"
+    text: "#2c3e50"
+    header: "#34495e"
+    highlight: "#2980b9"

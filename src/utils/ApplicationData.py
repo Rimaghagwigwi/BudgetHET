@@ -1,10 +1,10 @@
 import json
-import xml.etree.ElementTree as ET
+import yaml
 from typing import Dict, List, Optional, Any
 from src.utils.Task import GeneralTask, LPDCDocument, Option, Calcul, Labo
 
 class ApplicationData:
-    def __init__(self, config_path="config.xml"):
+    def __init__(self, config_path="config.yaml"):
         self.load_config(config_path)
 
         self.raw_data = {}
@@ -47,37 +47,34 @@ class ApplicationData:
         self.labo_ortems: Dict[str, Dict[str, float]] = {} # Dict[category: Dict[code: coeff]]
 
     def load_config(self, config_path):
-        tree = ET.parse(config_path)
-        root = tree.getroot()
-        
+        with open(config_path, 'r', encoding='utf-8') as f:
+            config = yaml.safe_load(f)
+
         # Paths
-        self.paths = {}
-        for path_elem in root.findall("./datapaths/path"):
-            key = path_elem.get("key")
-            path = path_elem.text
-            if key and path:
-                self.paths[key] = path
-                
+        self.paths = config.get("datapaths", {})
+
         # UI
-        self.ui_theme = root.findtext("./ui/theme", "Fusion")
-        self.window_title = root.findtext("./ui/window/title", "Chiffrage HET")
+        ui = config.get("ui", {})
+        self.ui_theme = ui.get("theme", "Fusion")
+        window = ui.get("window", {})
+        self.window_title = window.get("title", "Chiffrage HET")
         try:
-            self.window_width = int(root.findtext("./ui/window/width", "1080"))
-            self.window_height = int(root.findtext("./ui/window/height", "720"))
-        except ValueError:
+            self.window_width = int(window.get("width", 1080))
+            self.window_height = int(window.get("height", 720))
+        except (ValueError, TypeError):
             self.window_width = 1080
             self.window_height = 720
 
         # Dossier projets
-        self.asset_dir = root.findtext("./asset-dir")
-        self.project_save_dir = root.findtext("./project-save-dir")
-        self.ortems_template_path = root.findtext("./ortems-template-path")
-        self.excel_report_template_path = root.findtext("./excel-report-template-path")
-        self.rex_database_path = root.findtext("./rex-database-path")
-        self.quick_export_path = root.findtext("./quick-export-path")
+        self.asset_dir = config.get("asset-dir")
+        self.project_save_dir = config.get("project-save-dir")
+        self.ortems_template_path = config.get("ortems-template-path")
+        self.excel_report_template_path = config.get("excel-report-template-path")
+        self.rex_database_path = config.get("rex-database-path")
+        self.quick_export_path = config.get("quick-export-path")
 
         # Stylesheet
-        stylesheet_path = root.findtext("./ui/stylesheet", "")
+        stylesheet_path = ui.get("stylesheet", "")
         self.stylesheet = ""
         if stylesheet_path:
             try:
