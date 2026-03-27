@@ -106,12 +106,13 @@ class Option(AbstractTask):
 
     @override
     def default_hours(self, context: Dict[str, Any]) -> float:
-        return self.hours
+        return self.hours * context["option_coeff_category"].get(self.category, 1.0)
+        # Note: S'il y a un coeff à appliquer (+30% si remplacement), on l'applique dans la base, pas dans effective.
+        # Ce calcul est caché
 
     @override
     def effective_hours(self, context: Dict[str, Any]) -> float:
-        coeff_option = context["option_coeff_category"].get(self.category, 1.0)
-        final_hours = self.default_hours(context) * coeff_option
+        final_hours = self.default_hours(context)
         if self.is_selected:
             return self.manual_hours if self.manual_hours is not None else final_hours
         else:

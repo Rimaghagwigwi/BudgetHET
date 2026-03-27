@@ -459,6 +459,7 @@ class TabMachineSearch(QWidget):
         )
 
         main_layout.addWidget(self.table_results)
+        main_layout.addStretch()
 
         # ── Scrollbar horizontale externe (fixée en bas, hors scroll area) ──
         self.hscroll = QScrollBar(Qt.Orientation.Horizontal)
