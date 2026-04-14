@@ -8,11 +8,9 @@ from src.model import Model
 from src.view import MainWindow
 from src.tabs.TabGeneral import TabGeneral, TabGeneralController
 from src.utils.TabTasks import TabTasks
-from src.tabs.GeneralTaskTabController import GeneralTaskTabController
-from src.tabs.CalculsTabController import CalculsTabController
-from src.tabs.OptionsTabController import OptionsTabController
+from src.tabs.DefinitionTabController import DefinitionTabController
+from src.tabs.LaboOptionsTabController import LaboOptionsTabController
 from src.tabs.LPDCTabController import LPDCTabController
-from src.tabs.LaboTabController import LaboTabController
 from src.tabs.TabSummary import TabSummary, TabSummaryController
 
 
@@ -31,14 +29,12 @@ class Controller:
         self.view_summary = TabSummary()
 
         tab_configs = [
-            (self.view_general, TabGeneralController,     "Général"),
-            (TabTasks(),        GeneralTaskTabController, "Tâches"),
-            (TabTasks(),        CalculsTabController,     "Calculs"),
-            (TabTasks(),        OptionsTabController,     "Options"),
-            (TabTasks(),        LPDCTabController,        "LPDC"),
-            (TabTasks(),        LaboTabController,        "Labo"),
-            (self.view_summary, TabSummaryController,     "Résumé"),
-            (TabMachineSearch(), MachineSearchController, "Recherche Machines"),
+            (self.view_general, TabGeneralController,       "Général"),
+            (TabTasks(),        DefinitionTabController,     "Définition"),
+            (TabTasks(),        LaboOptionsTabController,    "Labo et Options"),
+            (TabTasks(),        LPDCTabController,           "LPDC"),
+            (self.view_summary, TabSummaryController,        "Résumé"),
+            (TabMachineSearch(), MachineSearchController,    "Recherche REX"),
         ]
 
         controllers = []

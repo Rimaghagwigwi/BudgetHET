@@ -81,7 +81,7 @@ class CollapsibleSection(QTreeWidget):
         elif isinstance(value, list):
             total_hours = sum(self._add_task_node(task, item, context) 
                             for task in value if isinstance(task, AbstractTask))
-            is_bold = False
+            is_bold = parent is None
         elif isinstance(value, AbstractTask):
             return self._add_task_node(value, parent, context)
         else:

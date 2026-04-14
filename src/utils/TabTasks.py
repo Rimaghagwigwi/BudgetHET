@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 from PyQt6.QtCore import Qt, QSize, pyqtSignal
 from PyQt6.QtGui import QColor, QBrush, QFont
 from PyQt6.QtWidgets import (QTableWidget, QTableWidgetItem, QHeaderView, QLabel,
@@ -8,42 +8,49 @@ from src.utils.Task import AbstractTask
 
 
 class TaskTableWidget(QTableWidget):
-    """Widget de tableau générique pour afficher les tâches (Tâches générales, Calculs, Options, LPDC)."""
+    """Widget de tableau unifié : chaque ligne a une checkbox (grisée si obligatoire, active si optionnelle)."""
     
     manual_value_modified = pyqtSignal(str, int)  # (text, ref)
     checkbox_toggled = pyqtSignal(bool, int)  # (is_checked, ref)
+    category_correction_modified = pyqtSignal(str, str)  # (category_name, text)
 
-    def __init__(self, label: str, task_type: str, is_optional: bool = False):
+    COL_OFFSET = 1  # La colonne 0 est toujours la checkbox "Choix"
+
+    def __init__(self, label: str, task_type: str):
         super().__init__()
         self.label = QLabel(label) if label else None
         if self.label:
             self.label.setObjectName("important")
         self.task_type = task_type
-        self.is_optional = is_optional
-        self.col_offset = 1 if is_optional else 0  # Décalage pour la colonne checkbox
 
         self.context: Dict[str, Any] = {}
-        self.categories: Dict[str, List[AbstractTask]] = {}  # category_name -> List[AbstractTask]
+        # category_name -> List[(task, mandatory)]
+        self.categories: Dict[str, List[Tuple[AbstractTask, bool]]] = {}
+        self.category_corrections: Dict[str, Optional[float]] = {}
+
+        # Collapsible state
+        self._collapsed: Dict[str, bool] = {}
+        self._category_header_rows: Dict[str, int] = {}
+        self._category_task_counts: Dict[str, int] = {}
 
         self._setup_table()
+        self.cellClicked.connect(self._on_cell_clicked)
         self.adjust_height_to_content()
 
     def _setup_table(self):
         """Configure les colonnes et le style du tableau."""
-        columns = (["Choix", "Ref", self.task_type, "Base", "Heures finales", "Correction"] if self.is_optional 
-                   else ["Ref", self.task_type, "Base", "Heures finales", "Correction"])
+        columns = ["Choix", "Ref", self.task_type, "Base", "Heures finales", "Correction"]
             
         self.setColumnCount(len(columns))
         self.setHorizontalHeaderLabels(columns)
         
         header = self.horizontalHeader()
-        if self.is_optional:
-            header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
-        header.setSectionResizeMode(self.col_offset + 0, QHeaderView.ResizeMode.ResizeToContents)  # Ref
-        header.setSectionResizeMode(self.col_offset + 1, QHeaderView.ResizeMode.Stretch)  # Label
-        header.setSectionResizeMode(self.col_offset + 2, QHeaderView.ResizeMode.ResizeToContents)  # Heures de base
-        header.setSectionResizeMode(self.col_offset + 3, QHeaderView.ResizeMode.ResizeToContents)  # Heures finales
-        header.setSectionResizeMode(self.col_offset + 4, QHeaderView.ResizeMode.ResizeToContents)  # Correction
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)   # Choix
+        header.setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)   # Ref
+        header.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)            # Label
+        header.setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)   # Base
+        header.setSectionResizeMode(4, QHeaderView.ResizeMode.ResizeToContents)   # Heures finales
+        header.setSectionResizeMode(5, QHeaderView.ResizeMode.ResizeToContents)   # Correction
 
         self.verticalHeader().setVisible(False)
         self.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
@@ -55,45 +62,77 @@ class TaskTableWidget(QTableWidget):
     def add_category(self, category_name: str):
         self.categories[category_name] = []
 
-    def add_task(self, category_name: str, task: AbstractTask):
-        """Ajoute une tâche (objet AbstractTask) à une catégorie."""
+    def collapse_all(self):
+        """Marque toutes les catégories comme repliées (à appeler avant show_table)."""
+        for cat_name in self.categories:
+            self._collapsed[cat_name] = True
+
+    def add_task(self, category_name: str, task: AbstractTask, mandatory: bool = True):
+        """Ajoute une tâche à une catégorie. mandatory=True → checkbox grisée, False → checkbox active."""
         if category_name not in self.categories:
             self.add_category(category_name)
-        self.categories[category_name].append(task)
+        self.categories[category_name].append((task, mandatory))
+
+    def _sorted_tasks(self, task_list: List[Tuple[AbstractTask, bool]]) -> List[Tuple[AbstractTask, bool]]:
+        """Trie les tâches : obligatoires d'abord, optionnelles ensuite."""
+        return sorted(task_list, key=lambda t: (not t[1], t[0].index))
 
     def _add_category_header_row(self, cat_name: str, total_hours: float):
-        """Ajoute une ligne d'en-tête pour une catégorie."""
+        """Ajoute une ligne d'en-tête pour une catégorie (cliquable pour replier/déplier)."""
         row = self.rowCount()
         self.insertRow(row)
 
         font = QFont()
         font.setBold(True)
+        bg = QBrush(QColor("#ecf0f1"))
 
-        # Nom de la catégorie (fusionné sur plusieurs colonnes)
-        cat_item = QTableWidgetItem(cat_name)
+        # Indicateur replié/déplié
+        is_collapsed = self._collapsed.get(cat_name, False)
+        indicator = "▶" if is_collapsed else "▼"
+
+        # Nom de la catégorie (colonnes 0..3 : Choix, Ref, Label, Base)
+        cat_item = QTableWidgetItem(f"{indicator} {cat_name}")
         cat_item.setFlags(Qt.ItemFlag.ItemIsEnabled)
-        cat_item.setBackground(QBrush(QColor("#ecf0f1")))
+        cat_item.setBackground(bg)
         cat_item.setFont(font)
         self.setItem(row, 0, cat_item)
-        self.setSpan(row, 0, 1, self.columnCount() - 1)
+        self.setSpan(row, 0, 1, self.COL_OFFSET + 3)  # colonnes 0-3
 
-        # Valeur du total
+        # Total dans "Heures finales" (colonne 4)
         total_hours_item = QTableWidgetItem(f"{total_hours:.2f}")
         total_hours_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
         total_hours_item.setFlags(Qt.ItemFlag.ItemIsEnabled)
-        total_hours_item.setBackground(QBrush(QColor("#ecf0f1")))
+        total_hours_item.setBackground(bg)
         total_hours_item.setFont(font)
-        self.setItem(row, self.columnCount() - 1, total_hours_item)
+        self.setItem(row, self.COL_OFFSET + 3, total_hours_item)
 
-    def _add_task_row(self, task: AbstractTask, row: int) -> float:
+        # Correction de catégorie (colonne 5)
+        line_edit = QLineEdit()
+        line_edit.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        correction = self.category_corrections.get(cat_name)
+        if correction is not None:
+            line_edit.setText(f"{correction:.2f}")
+        line_edit.editingFinished.connect(
+            lambda le=line_edit, cn=cat_name: self._on_category_correction_input(cn, le.text())
+        )
+        self.setCellWidget(row, self.COL_OFFSET + 4, line_edit)
+
+    def _add_task_row(self, task: AbstractTask, row: int, mandatory: bool) -> float:
         """Ajoute une ligne de tâche et retourne les heures effectives."""
         self.insertRow(row)
+        off = self.COL_OFFSET
 
-        # Checkbox (si optionnel)
-        checkbox = None
-        if self.is_optional:
+        if mandatory:
+            # Pas de checkbox, cellule grisée
+            empty_item = QTableWidgetItem()
+            empty_item.setFlags(Qt.ItemFlag.ItemIsEnabled)
+            empty_item.setBackground(QBrush(QColor("#ecf0f1")))
+            self.setItem(row, 0, empty_item)
+        else:
+            # Checkbox sur fond blanc
             checkbox = QCheckBox()
             chk_widget = QWidget()
+            chk_widget.setObjectName("optionalCheckboxCell")
             chk_layout = QHBoxLayout(chk_widget)
             chk_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
             chk_layout.setContentsMargins(0, 0, 0, 0)
@@ -108,11 +147,11 @@ class TaskTableWidget(QTableWidget):
         # Ref
         ref_item = QTableWidgetItem(str(task.index))
         ref_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.setItem(row, self.col_offset + 0, ref_item)
+        self.setItem(row, off + 0, ref_item)
 
         # Label
         label_item = QTableWidgetItem(task.label)
-        self.setItem(row, self.col_offset + 1, label_item)
+        self.setItem(row, off + 1, label_item)
 
         # Heures par défaut (lecture seule)
         default_h = task.default_hours(self.context)
@@ -120,14 +159,14 @@ class TaskTableWidget(QTableWidget):
         hours_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
         hours_item.setFlags(Qt.ItemFlag.ItemIsEnabled)
         hours_item.setForeground(QBrush(QColor("#0063AF")))
-        self.setItem(row, self.col_offset + 2, hours_item)
+        self.setItem(row, off + 2, hours_item)
 
         # Heures finales (lecture seule, mise à jour dynamique)
         final_h = task.effective_hours(self.context)
         final_hours_item = QTableWidgetItem(f"{final_h:.2f}".rstrip("0").rstrip("."))
         final_hours_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
         final_hours_item.setFlags(Qt.ItemFlag.ItemIsEnabled)
-        self.setItem(row, self.col_offset + 3, final_hours_item)
+        self.setItem(row, off + 3, final_hours_item)
 
         # Correction manuelle
         line_edit = QLineEdit()
@@ -137,33 +176,48 @@ class TaskTableWidget(QTableWidget):
         line_edit.editingFinished.connect(
             lambda le=line_edit, ref=task.index: self.manual_value_modified.emit(le.text(), ref)
         )
-        self.setCellWidget(row, self.col_offset + 4, line_edit)
+        self.setCellWidget(row, off + 4, line_edit)
 
         return task.effective_hours(self.context)
 
     def show_table(self):
-        """Affiche toutes les catégories et leurs tâches."""
+        """Affiche toutes les catégories et leurs tâches (obligatoires d'abord, puis optionnelles)."""
+        self._category_header_rows.clear()
+        self._category_task_counts.clear()
+
         for cat_name, task_list in self.categories.items():
+            sorted_tasks = self._sorted_tasks(task_list)
             total_hours = 0.0
             
-            # Ajouter l'en-tête de catégorie
             self._add_category_header_row(cat_name, total_hours)
+            header_row = self.rowCount() - 1
+            self._category_header_rows[cat_name] = header_row
+            self._category_task_counts[cat_name] = len(sorted_tasks)
             
-            # Ajouter chaque tâche
-            for task in task_list:
+            for task, mandatory in sorted_tasks:
                 row = self.rowCount()
-                total_hours += self._add_task_row(task, row)
-            
-            # Mettre à jour le total dans l'en-tête
-            header_row = self.rowCount() - len(task_list) - 1
-            total_item = self.item(header_row, self.columnCount() - 1)
-            total_item.setText(f"{total_hours:.2f}".rstrip("0").rstrip("."))
+                total_hours += self._add_task_row(task, row, mandatory)
+
+            correction = self.category_corrections.get(cat_name)
+            display = correction if correction is not None else total_hours
+            total_item = self.item(header_row, self.COL_OFFSET + 3)
+            total_item.setText(f"{display:.2f}".rstrip("0").rstrip("."))
+
+            if correction is not None:
+                self._set_task_corrections_enabled(header_row, len(sorted_tasks), False)
+
+            # Appliquer l'état replié
+            is_collapsed = self._collapsed.get(cat_name, False)
+            if is_collapsed:
+                for i in range(len(sorted_tasks)):
+                    self.setRowHidden(header_row + 1 + i, True)
 
     def _content_height(self) -> int:
         """Calcule la hauteur totale nécessaire pour afficher tout le contenu."""
         h = self.horizontalHeader().height() + 2
         for row in range(self.rowCount()):
-            h += self.rowHeight(row)
+            if not self.isRowHidden(row):
+                h += self.rowHeight(row)
         return h
 
     def sizeHint(self) -> QSize:
@@ -175,6 +229,35 @@ class TaskTableWidget(QTableWidget):
     def adjust_height_to_content(self):
         """Notifie le layout que la taille a changé."""
         self.updateGeometry()
+
+    def _on_cell_clicked(self, row: int, _col: int):
+        """Détecte un clic sur une ligne d'en-tête de catégorie pour replier/déplier."""
+        for cat_name, header_row in self._category_header_rows.items():
+            if row == header_row:
+                self._toggle_category(cat_name)
+                break
+
+    def _toggle_category(self, cat_name: str):
+        """Replie ou déplie une catégorie."""
+        is_collapsed = self._collapsed.get(cat_name, False)
+        self._collapsed[cat_name] = not is_collapsed
+        header_row = self._category_header_rows[cat_name]
+        task_count = self._category_task_counts[cat_name]
+
+        # Masquer/afficher les lignes de tâches
+        for i in range(task_count):
+            self.setRowHidden(header_row + 1 + i, not is_collapsed)
+
+        # Mettre à jour l'indicateur
+        indicator = "▶" if not is_collapsed else "▼"
+        item = self.item(header_row, 0)
+        if item:
+            text = item.text()
+            if text.startswith("▶ ") or text.startswith("▼ "):
+                text = text[2:]
+            item.setText(f"{indicator} {text}")
+
+        self.adjust_height_to_content()
 
     @property
     def is_empty(self) -> bool:
@@ -195,7 +278,7 @@ class TaskTableWidget(QTableWidget):
 
     def _sync_manual_hours(self, task: AbstractTask, task_row: int) -> None:
         """Lit le QLineEdit de correction et met à jour task.manual_hours."""
-        line_edit = self.cellWidget(task_row, self.col_offset + 4)
+        line_edit = self.cellWidget(task_row, self.COL_OFFSET + 4)
         if not isinstance(line_edit, QLineEdit):
             return
         text = line_edit.text().strip()
@@ -208,24 +291,57 @@ class TaskTableWidget(QTableWidget):
             task.manual_hours = None
 
     def _is_task_checked(self, task_row: int) -> bool:
-        """Retourne True si la tâche est active (toujours True pour les tâches non-optionnelles)."""
-        if not self.is_optional:
-            return True
+        """Retourne True si la checkbox est cochée, ou True si ligne obligatoire (pas de checkbox)."""
         checkbox_widget = self.cellWidget(task_row, 0)
         if not checkbox_widget:
-            return False
+            return True  # Ligne obligatoire, pas de checkbox → toujours active
         checkbox = checkbox_widget.findChild(QCheckBox)
         return checkbox.isChecked() if checkbox else False
 
+    def _on_category_correction_input(self, cat_name: str, text: str):
+        """Gère la saisie d'une correction de catégorie."""
+        text = text.strip()
+        if text:
+            try:
+                self.category_corrections[cat_name] = float(text)
+            except ValueError:
+                self.category_corrections[cat_name] = None
+        else:
+            self.category_corrections[cat_name] = None
+
+        # Émettre le signal pour que le contrôleur persiste et recalcule
+        self.category_correction_modified.emit(cat_name, text)
+
+    def _set_task_corrections_enabled(self, header_row: int, task_count: int, enabled: bool):
+        """Active/désactive les corrections individuelles des tâches d'une catégorie."""
+        col = self.COL_OFFSET + 4
+        for idx in range(task_count):
+            task_row = header_row + 1 + idx
+            if not enabled:
+                # Remplacer le QLineEdit par une cellule grisée
+                self.removeCellWidget(task_row, col)
+                gray_item = QTableWidgetItem()
+                gray_item.setFlags(Qt.ItemFlag.ItemIsEnabled)
+                gray_item.setBackground(QBrush(QColor("#ecf0f1")))
+                self.setItem(task_row, col, gray_item)
+            else:
+                # Restaurer le QLineEdit si absent
+                existing = self.cellWidget(task_row, col)
+                if not isinstance(existing, QLineEdit):
+                    line_edit = QLineEdit()
+                    line_edit.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                    self.setCellWidget(task_row, col, line_edit)
+
     def _update_task_row(self, task: AbstractTask, task_row: int) -> float:
         """Met à jour une ligne de tâche et retourne sa contribution au total."""
+        off = self.COL_OFFSET
         default_h = task.default_hours(self.context)
 
-        item_base = self.item(task_row, self.col_offset + 2)
+        item_base = self.item(task_row, off + 2)
         if item_base:
             item_base.setText(self._fmt(default_h))
 
-        item_final = self.item(task_row, self.col_offset + 3)
+        item_final = self.item(task_row, off + 3)
         if item_final:
             item_final.setText(self._fmt(task.effective_hours(self.context)))
 
@@ -233,21 +349,26 @@ class TaskTableWidget(QTableWidget):
 
         return task.effective_hours(self.context)
 
-    def _update_category(self, task_list: List[AbstractTask], header_row: int) -> None:
+    def _update_category(self, cat_name: str, task_list: List[Tuple[AbstractTask, bool]], header_row: int) -> None:
         """Met à jour toutes les lignes d'une catégorie et son total."""
+        sorted_tasks = self._sorted_tasks(task_list)
         total_hours = sum(
             self._update_task_row(task, header_row + 1 + idx)
-            for idx, task in enumerate(task_list)
+            for idx, (task, _mandatory) in enumerate(sorted_tasks)
         )
-        total_item = self.item(header_row, self.columnCount() - 1)
+
+        correction = self.category_corrections.get(cat_name)
+        display = correction if correction is not None else total_hours
+
+        total_item = self.item(header_row, self.COL_OFFSET + 3)
         if total_item:
-            total_item.setText(self._fmt(total_hours))
+            total_item.setText(self._fmt(display))
 
     def update_table(self):
         """Met à jour les heures par défaut et les totaux des catégories sans recréer les widgets."""
         current_row = 0
-        for task_list in self.categories.values():
-            self._update_category(task_list, current_row)
+        for cat_name, task_list in self.categories.items():
+            self._update_category(cat_name, task_list, current_row)
             current_row += 1 + len(task_list)
 
 

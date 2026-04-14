@@ -7,6 +7,7 @@ class AbstractTask:
     def __init__(self, label: str):
         self.label = label
         self.manual_hours: Optional[float] = None
+        self.category_override_hours: Optional[float] = None
 
     @abstractmethod
     def default_hours(self, context: Dict[str, Any]) -> float:
@@ -14,6 +15,8 @@ class AbstractTask:
 
     @abstractmethod
     def effective_hours(self, context: Dict[str, Any]) -> float:
+        if self.category_override_hours is not None:
+            return self.category_override_hours
         if self.manual_hours is not None:
             return self.manual_hours
         else:
@@ -82,6 +85,8 @@ class LPDCDocument(AbstractTask):
 
     @override
     def effective_hours(self, context: Dict[str, Any]) -> float:
+        if self.category_override_hours is not None:
+            return self.category_override_hours
         coeff_affaire = context["LPDC_affaire_coeff"]
         coeff_secteur = context["LPDC_secteur_coeff"]
         if not self.is_active(context):
@@ -112,6 +117,8 @@ class Option(AbstractTask):
 
     @override
     def effective_hours(self, context: Dict[str, Any]) -> float:
+        if self.category_override_hours is not None:
+            return self.category_override_hours
         final_hours = self.default_hours(context)
         if self.is_selected:
             return self.manual_hours if self.manual_hours is not None else final_hours
@@ -150,6 +157,8 @@ class Calcul(AbstractTask):
 
     @override
     def effective_hours(self, context: Dict[str, Any]) -> float:
+        if self.category_override_hours is not None:
+            return self.category_override_hours
         affaire_activity_coeff = context["calcul_coeff_type_affaire"].get(self.category, 1.0)
         if not self.is_active(context):
             return 0.0
@@ -184,6 +193,8 @@ class Labo(AbstractTask):
 
     @override
     def effective_hours(self, context: Dict[str, Any]) -> float:
+        if self.category_override_hours is not None:
+            return self.category_override_hours
         if not self.is_active(context):
             return 0.0
         elif self.manual_hours is not None:

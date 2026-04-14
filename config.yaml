@@ -9,6 +9,7 @@ project-save-dir: S:\COMMUN_OFFRES\SUIVI archive\Budget_HET_python\assets\Affair
 # Dossier d'export rapide pour les fichiers Excel générés
 quick-export-path: S:\COMMUN_OFFRES\SUIVI archive\Budget_HET_python\Chiffrages HET\
 
+
 # Chemins des fichiers de données
 datapaths:
   base_data: data/base_data.json
@@ -18,7 +19,7 @@ datapaths:
   calculs: data/calculs.json
   labo: data/labo.json
 
-rex-database-path: data/REX_HET.xlsx
+rex-database-path: S:\COMMUN_OFFRES\SUIVI archive\Budget_HET_python\data\REX_HET.xlsx
 
 # Emplacement des modèles excel pour Ortems et Rapport
 ortems-template-path: template/ortems_template.xlsx

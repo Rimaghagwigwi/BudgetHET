@@ -26,25 +26,25 @@ class ApplicationData:
 
         self.tasks: Dict[str, Dict[str, List[GeneralTask]]] = {} # Dict[category: Dict[sub-category: List[GeneralTask]]]
 
-        self.lpdc_docs: List[LPDCDocument] = []
-        self.lpdc_categories: Dict[str, str] = {} # Dict[code: label] - {"BASE": "PDC de base", ...}
-        self.lpdc_coeff_secteur: Dict[str, float] = {} # Dict[secteur: coeff]
-        self.lpdc_coeff_affaire: Dict[str, float] = {} # Dict[affaire: coeff]
-        self.lpdc_ortems: Dict[str, Dict[str, float]] = {} # Dict[category: Dict[code: coeff]]
-
         self.calculs: List[Calcul] = []
         self.calcul_categories: Dict[str, str] = {} # Dict[code: label]
         self.calcul_secteur_coeff: Dict[str, Dict[str, float]] = {} # Dict[type_affaire: Dict[activité: coeff]]
         self.calcul_ortems: Dict[str, Dict[str, float]] = {} # Dict[category: Dict[code: coeff]]
+        
+        self.labo: List[Labo] = []
+        self.labo_categories: Dict[str, str] = {} # Dict[code: label]
+        self.labo_ortems: Dict[str, Dict[str, float]] = {} # Dict[category: Dict[code: coeff]]
 
         self.options: List[Option] = []
         self.option_categories: Dict[str, str] = {} # Dict[code: label]
         self.option_category_coeff: Dict[str, Dict[str, float]] = {} # Dict[type_affaire: Dict[category: coeff]]
         self.option_ortems: Dict[str, Dict[str, float]] = {} # Dict[category: Dict[code: coeff]]
-        
-        self.labo: List[Labo] = []
-        self.labo_categories: Dict[str, str] = {} # Dict[code: label]
-        self.labo_ortems: Dict[str, Dict[str, float]] = {} # Dict[category: Dict[code: coeff]]
+
+        self.lpdc_docs: List[LPDCDocument] = []
+        self.lpdc_categories: Dict[str, str] = {} # Dict[code: label] - {"BASE": "PDC de base", ...}
+        self.lpdc_coeff_secteur: Dict[str, float] = {} # Dict[secteur: coeff]
+        self.lpdc_coeff_affaire: Dict[str, float] = {} # Dict[affaire: coeff]
+        self.lpdc_ortems: Dict[str, Dict[str, float]] = {} # Dict[category: Dict[code: coeff]]
 
     def load_config(self, config_path):
         with open(config_path, 'r', encoding='utf-8') as f:

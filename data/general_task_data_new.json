@@ -1,6 +1,6 @@
 {
     "tasks": {
-        "Enclenchement et Suivi": {
+        "Gestion de projet": {
             "Enclenchement": {
                 "Réunion": {
                     "base": {
@@ -231,7 +231,7 @@
                 }
             }
         },
-        "PLANS FAB / SPEC d'Achat / LDN": {
+        "Plans / Specs / LDN": {
             "Stator": {
                 "bobinage/connexions/sortie puissance": {
                     "base": {

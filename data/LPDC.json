@@ -9,7 +9,7 @@
   },
   "coeff_affaire": {
     "IDENTIQUE_JE": 0.2,
-    "REMPLACEMENT": 1.2
+    "REMPLACEMENT": 1.0
   },
   "categories": {
     "BASE": "PDC de base",

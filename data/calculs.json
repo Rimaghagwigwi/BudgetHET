@@ -48,7 +48,9 @@
         "index": 1,
         "label": "Total calculs électromagnétiques",
         "category": "ELECMAG",
-        "hours": {},
+        "hours": {
+            "MIL": 1
+        },
         "selection": {
             "MIL": "mandatory"
             }
@@ -57,7 +59,9 @@
         "index": 2,
         "label": "Total calculs bobinage",
         "category": "BOB",
-        "hours": {},
+        "hours": {
+            "MIL": 1
+        },
         "selection": {
             "MIL": "mandatory"
             }
@@ -66,7 +70,9 @@
         "index": 3,
         "label": "Total calculs conception mécanique",
         "category": "CONCEPT_MECA",
-        "hours": {},
+        "hours": {
+            "MIL": 1
+        },
         "selection": {
             "MIL": "mandatory"
             }
@@ -75,7 +81,9 @@
         "index": 4,
         "label": "Total calculs méca ANSYS",
         "category": "MECA_ANSYS",
-        "hours": {},
+        "hours": {
+            "MIL": 1
+        },
         "selection": {
             "MIL": "mandatory"
             }
@@ -84,7 +92,9 @@
         "index": 5,
         "label": "Total calculs aérauliques et thermiques",
         "category": "AERO_THERMIQUE",
-        "hours": {},
+        "hours": {
+            "MIL": 1
+        },
         "selection": {
             "MIL": "mandatory"
             }

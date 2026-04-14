@@ -37,6 +37,9 @@ class Project:
         self.first_machine_total: Optional[float] = None
         self.n_machines_total: Optional[float] = None
         self.total_with_rex: Optional[float] = None
+
+        # Corrections de catégorie : clé = "table_label/category_name" → valeur
+        self.category_corrections: Dict[str, float] = {}
         
         self.tasks: Dict[str, Dict[str, List[GeneralTask]]] = {}
         self.lpdc_docs: List[LPDCDocument] = []
@@ -76,6 +79,8 @@ class Project:
         self.first_machine_total = None
         self.n_machines_total = None
         self.total_with_rex = None
+
+        self.category_corrections = {}
         
         self.tasks = copy.deepcopy(self.app_data.tasks)
         self.lpdc_docs = copy.deepcopy([doc for doc in self.app_data.lpdc_docs if doc.is_active(ctx) or doc.option_possible])
@@ -97,11 +102,23 @@ class Project:
             grouped.setdefault(item.category, []).append(item)
         return grouped
 
+    @staticmethod
+    def _order_by_categories(grouped: Dict, category_order) -> Dict:
+        """Réordonne un dict groupé selon l'ordre des clés de category_order."""
+        ordered = {}
+        for cat in category_order:
+            if cat in grouped:
+                ordered[cat] = grouped[cat]
+        for cat in grouped:
+            if cat not in ordered:
+                ordered[cat] = grouped[cat]
+        return ordered
+
     def grouped_calculs(self) -> Dict[str, List[Calcul]]:
-        return self._group_by_category(self.calculs)
+        return self._order_by_categories(self._group_by_category(self.calculs), self.app_data.calcul_categories)
     
     def grouped_options(self) -> Dict[str, List[Option]]:
-        return self._group_by_category(self.options)
+        return self._order_by_categories(self._group_by_category(self.options), self.app_data.option_categories)
     
     def grouped_lpdc(self) -> Dict[str, List[LPDCDocument]]:
         """Retourne les documents LPDC regroupés en 'Base' et 'Particulières'."""
@@ -117,7 +134,25 @@ class Project:
         return grouped_lpdc
     
     def grouped_labo(self) -> Dict[str, List[Labo]]:
-        return self._group_by_category(self.labo)
+        return self._order_by_categories(self._group_by_category(self.labo), self.app_data.labo_categories)
+
+    def grouped_calculs_for_table(self) -> Dict[str, list]:
+        """Calculs groupés par catégorie avec (calcul, is_mandatory), ordonnés par définition."""
+        grouped = {}
+        for calc in self.calculs:
+            selection = calc.selection.get(self.machine_type, "")
+            if selection in ("mandatory", "optional"):
+                grouped.setdefault(calc.category, []).append((calc, selection == "mandatory"))
+        return self._order_by_categories(grouped, self.app_data.calcul_categories)
+
+    def grouped_labo_for_table(self) -> Dict[str, list]:
+        """Labo groupé par catégorie avec (tâche, is_mandatory), ordonné par définition."""
+        ctx = self.context()
+        grouped = {}
+        for task in self.labo:
+            mandatory = task.is_mandatory(ctx)
+            grouped.setdefault(task.category, []).append((task, mandatory))
+        return self._order_by_categories(grouped, self.app_data.labo_categories)
 
     def _change_group_label(self, grouped: Dict[str, List], label_map: Dict[str, str]) -> Dict[str, List]:
         """Change les labels des groupes selon un mapping fourni."""
@@ -128,12 +163,17 @@ class Project:
         return new_grouped
 
     def generate_summary_tree(self) -> Dict[str, Any]:
+        encl_et_suivi = self.tasks.get("Gestion de projet", {})
+        plans_fab = self.tasks.get("Plans / Specs / LDN", {})
+
         return {
-            "Tâches Générales": self.tasks,
+            "Enclenchement": encl_et_suivi.get("Enclenchement", []),
             "Calculs": self._change_group_label(self.grouped_calculs(), self.app_data.calcul_categories),
+            "Plans / Specs / LDN": plans_fab,
             "Options": self._change_group_label(self.grouped_options(), self.app_data.option_categories),
             "Plans et documents contractuels": self._change_group_label(self.grouped_lpdc(), self.app_data.lpdc_categories),
             "Laboratoire": self._change_group_label(self.grouped_labo(), self.app_data.labo_categories),
+            "Suivi": encl_et_suivi.get("Suivi", []),
         }
     
     def compute_tree_hours(self, node) -> float:
@@ -312,10 +352,11 @@ class Model(QObject):
                     if t.manual_hours is not None
                 ],
                 "labo": [
-                    {"index": l.index, "manual_hours": l.manual_hours}
+                    {"index": l.index, "is_selected": l.is_selected, "manual_hours": l.manual_hours}
                     for l in prj.labo
-                    if l.manual_hours is not None
+                    if l.is_selected or l.manual_hours is not None
                 ],
+                "category_corrections": prj.category_corrections,
             },
         }
 
@@ -379,4 +420,8 @@ class Model(QObject):
         labo_idx = {m["index"]: m for m in mods.get("labo", [])}
         for labo in prj.labo:
             if labo.index in labo_idx:
-                labo.manual_hours = labo_idx[labo.index].get("manual_hours")
+                m = labo_idx[labo.index]
+                labo.is_selected = m.get("is_selected", labo.is_selected)
+                labo.manual_hours = m.get("manual_hours")
+
+        prj.category_corrections = mods.get("category_corrections", {})

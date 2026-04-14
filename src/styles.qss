@@ -150,6 +150,11 @@ QTableCornerButton::section {
     border: none;
 }
 
+/* Fond blanc pour la cellule de checkbox optionnelle */
+#optionalCheckboxCell {
+    background-color: #ffffff;
+}
+
 /* ── Tree ────────────────────────────────────────────────── */
 QTreeWidget {
     alternate-background-color: #d8e0eb;

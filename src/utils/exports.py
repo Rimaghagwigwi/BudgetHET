@@ -226,7 +226,7 @@ def export_excel_report(project: "Project", path: str):
     # ── Sections ──
     row = 17
 
-    enclenchement = project.tasks.get('Enclenchement et Suivi', {}).get('Enclenchement', [])
+    enclenchement = project.tasks.get('Gestion de projet', {}).get('Enclenchement', [])
     row = _write_task_section(ws, row, enclenchement, "Enclenchement", ctx, rex, ref['enclenchement'])
 
     row = _write_grouped_section(
@@ -235,7 +235,7 @@ def export_excel_report(project: "Project", path: str):
         filter_fn=lambda items, c: [x for x in items if x.is_active(c)],
     )
 
-    plans_data = project.tasks.get("PLANS FAB / SPEC d'Achat / LDN", {})
+    plans_data = project.tasks.get("Plans / Specs / LDN", {})
     row = _write_plans_fab(ws, row, plans_data, ctx, rex, ref['plans_fab'])
 
     row = _write_options(ws, row, app.option_categories, project.grouped_options(), ctx, rex, ref['options'])
@@ -252,7 +252,7 @@ def export_excel_report(project: "Project", path: str):
         filter_fn=lambda items, c: [l for l in items if l.is_active(c)],
     )
 
-    suivi = project.tasks.get('Enclenchement et Suivi', {}).get('Suivi', [])
+    suivi = project.tasks.get('Gestion de projet', {}).get('Suivi', [])
     row = _write_task_section(ws, row, suivi, "Suivi", ctx, rex, ref['suivi'])
 
     # Divers
@@ -291,7 +291,7 @@ def export_excel_report(project: "Project", path: str):
 
 def quick_export(model: "Model") -> Dict[str, str]:
     prj = model.project
-    file_name = f"{prj.crm_number}_{prj.revision}_{prj.date}"
+    file_name = f"{prj.crm_number}{prj.revision}"
     excel_path = prj.app_data.quick_export_path
     rapport_path = excel_path + file_name + "_rapport.xlsx"
     ortems_path = excel_path + file_name + "_ortems.xlsx"

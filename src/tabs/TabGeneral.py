@@ -23,74 +23,74 @@ class TabGeneral(QWidget):
         
         # 1. N° CRM
         self.input_crm = QLineEdit()
-        self.input_crm.setPlaceholderText("Ex: 2023.12.0001")
-        form.addRow("N° CRM :", self.input_crm)
+        self.input_crm.setPlaceholderText("Ex: 2023.12.0001-1")
+        form.addRow("N° CRM Produit :", self.input_crm)
         self.input_crm.textChanged.connect(lambda: self.field_changed.emit(0))
         
-        # 2. Client
-        self.input_client = QLineEdit()
-        form.addRow("Client :", self.input_client)
-        self.input_client.textChanged.connect(lambda: self.field_changed.emit(0))
-        
-        # 3. Type d'affaire
-        self.combo_type_affaire = QComboBox()
-        form.addRow("Type d'affaire :", self.combo_type_affaire)
-        self.combo_type_affaire.currentIndexChanged.connect(lambda: self.field_changed.emit(1))
-        
-        # 4. DAS
-        self.combo_das = QComboBox()
-        form.addRow("DAS * :", self.combo_das)
-        self.combo_das.currentIndexChanged.connect(lambda: self.field_changed.emit(2))
-
-        # 5. Secteur
-        self.combo_secteur = QComboBox()
-        form.addRow("Secteur * :", self.combo_secteur)
-        self.combo_secteur.currentIndexChanged.connect(lambda: self.field_changed.emit(2))
-        
-        # 6. Categorie produit
-        self.combo_category = QComboBox()
-        form.addRow("Catégorie produit * :", self.combo_category)
-        self.combo_category.currentIndexChanged.connect(lambda: self.field_changed.emit(2))
-        
-        # 7. Produit
-        self.combo_product = QComboBox()
-        form.addRow("Produit * :", self.combo_product)
-        self.combo_product.currentIndexChanged.connect(lambda: self.field_changed.emit(2))
-        
-        # 8. Désignation produit
-        self.input_designation = QLineEdit()
-        form.addRow("Désignation produit :", self.input_designation)
-        self.input_designation.editingFinished.connect(lambda: self.field_changed.emit(0))
-        
-        # 9. Nombre de machines
-        self.spin_qty = NoWheelSpinBox() # Use NoWheelSpinBox
-        self.spin_qty.setRange(1, 1000)
-        self.spin_qty.setValue(1)
-        form.addRow("Nombre de machines :", self.spin_qty)
-        self.spin_qty.editingFinished.connect(lambda: self.field_changed.emit(1))
-        
-        # 10. Révision du chiffrage
+        # 2. Révision du chiffrage
         self.combo_revision = QComboBox()
         self.combo_revision.addItems(["A", "B", "C", "D", "E", "F", "G"])
-        form.addRow("Révision :", self.combo_revision)
+        form.addRow("Révision chiffrage :", self.combo_revision)
         self.combo_revision.currentIndexChanged.connect(lambda: self.field_changed.emit(0))
         
-        # 11. Date
+        # 3. Date
         self.date_edit = QDateEdit()
         self.date_edit.setDate(QDate.currentDate())
         self.date_edit.setCalendarPopup(True)
         form.addRow("Date :", self.date_edit)
         self.date_edit.dateChanged.connect(lambda: self.field_changed.emit(0))
         
-        # 12. Réalisé par
+        # 4. Réalisé par
         self.combo_realise_par = QComboBox()
         form.addRow("Réalisé par :", self.combo_realise_par)
         self.combo_realise_par.currentIndexChanged.connect(lambda: self.field_changed.emit(0))
         
-        # 13. Validé par
+        # 5. Validé par
         self.combo_valide_par = QComboBox()
         form.addRow("Validé par :", self.combo_valide_par)
         self.combo_valide_par.currentIndexChanged.connect(lambda: self.field_changed.emit(0))
+        
+        # 6. Type d'affaire
+        self.combo_type_affaire = QComboBox()
+        form.addRow("Type d'affaire :", self.combo_type_affaire)
+        self.combo_type_affaire.currentIndexChanged.connect(lambda: self.field_changed.emit(1))
+        
+        # 7. Client
+        self.input_client = QLineEdit()
+        form.addRow("Client :", self.input_client)
+        self.input_client.textChanged.connect(lambda: self.field_changed.emit(0))
+        
+        # 8. DAS
+        self.combo_das = QComboBox()
+        form.addRow("DAS * :", self.combo_das)
+        self.combo_das.currentIndexChanged.connect(lambda: self.field_changed.emit(2))
+
+        # 9. Secteur
+        self.combo_secteur = QComboBox()
+        form.addRow("Secteur * :", self.combo_secteur)
+        self.combo_secteur.currentIndexChanged.connect(lambda: self.field_changed.emit(2))
+        
+        # 10. Categorie produit
+        self.combo_category = QComboBox()
+        form.addRow("Catégorie produit * :", self.combo_category)
+        self.combo_category.currentIndexChanged.connect(lambda: self.field_changed.emit(2))
+        
+        # 11. Produit
+        self.combo_product = QComboBox()
+        form.addRow("Produit * :", self.combo_product)
+        self.combo_product.currentIndexChanged.connect(lambda: self.field_changed.emit(2))
+        
+        # 12. Désignation produit
+        self.input_designation = QLineEdit()
+        form.addRow("Désignation produit :", self.input_designation)
+        self.input_designation.editingFinished.connect(lambda: self.field_changed.emit(0))
+        
+        # 13. Nombre de machines
+        self.spin_qty = NoWheelSpinBox() # Use NoWheelSpinBox
+        self.spin_qty.setRange(1, 1000)
+        self.spin_qty.setValue(1)
+        form.addRow("Nombre de machines :", self.spin_qty)
+        self.spin_qty.editingFinished.connect(lambda: self.field_changed.emit(1))
         
         # 14. Description
         self.text_description = QTextEdit()

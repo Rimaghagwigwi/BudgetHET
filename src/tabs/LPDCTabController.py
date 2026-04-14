@@ -1,38 +1,31 @@
 from typing import List
 from src.utils.BaseTaskTabController import BaseTaskTabController
 from src.utils.TabTasks import TaskTableWidget
-from src.utils.Task import AbstractTask, LPDCDocument
+from src.utils.Task import LPDCDocument
 
 
 class LPDCTabController(BaseTaskTabController):
-    """Contrôleur pour l'onglet LPDC (obligatoires et optionnels)."""
-
-    def _get_all_tasks(self) -> List[AbstractTask]:
-        return self.model.project.lpdc_docs
+    """Contrôleur pour l'onglet LPDC."""
 
     def _build_tables(self) -> List[TaskTableWidget]:
         grouped = self.model.project.grouped_lpdc()
+        base_docs: List[LPDCDocument] = grouped["BASE"]
+        part_docs: List[LPDCDocument] = grouped["PART"]
 
-        return [
-            self._create_table(grouped["BASE"], "Documents LPDC obligatoires", is_optional=False),
-            self._create_table(grouped["PART"], "Documents LPDC optionnels", is_optional=True),
-        ]
-
-    def _create_table(self, docs: List[LPDCDocument], label: str,
-                      is_optional: bool) -> TaskTableWidget:
-        """Crée et remplit une table de documents LPDC."""
-        table = TaskTableWidget(label=label, task_type="Document", is_optional=is_optional)
+        table = TaskTableWidget(label="Documents LPDC", task_type="Document")
         table.context = self.model.project.context()
         self._connect_table(table)
 
-        if docs:
+        if base_docs or part_docs:
             table.add_category("Documents")
-            for doc in docs:
-                table.add_task("Documents", doc)
+            for doc in base_docs:
+                table.add_task("Documents", doc, mandatory=True)
+            for doc in part_docs:
+                table.add_task("Documents", doc, mandatory=False)
             table.show_table()
             table.adjust_height_to_content()
 
-        return table
+        return [table]
     
     def _on_project_changed(self):
         """Reconstruit les tables quand le projet change."""
