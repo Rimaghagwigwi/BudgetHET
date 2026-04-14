@@ -3,6 +3,10 @@
         "LAB_METAL": "Labo métallurgie",
         "LAB_ISOL": "Labo isolant"
     },
+    "coeff_affaire": {
+        "IDENTIQUE_JE": 0.2,
+        "REMPLACEMENT": 1.0
+    },
 
     "ortems_repartition": {
         "LAB_METAL": {

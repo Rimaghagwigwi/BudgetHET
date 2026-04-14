@@ -1,7 +1,7 @@
 {
   "coeff_secteur": {
     "INDUS": 1.0,
-    "OIL_GAS": 1.2,
+    "OIL_GAS": 1.5,
     "NUC_QUALIFIE": 1.8,
     "NUC_NON_QUALIFIE": 1.5,
     "MARINE_CIVILE": 1.0,

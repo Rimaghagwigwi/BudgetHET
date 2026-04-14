@@ -24,10 +24,11 @@ class Project:
         self.validated_by = ""
         self.description = ""
 
-        self.lpdc_secteur_coeff: float = 1.0
-        self.lpdc_affaire_coeff: float = 1.0
-        self.calcul_coeff_type_affaire: Dict[str, float] = {} # Dict[activité: coeff] appliqué aux calculs selon le type d'affaire
-        self.option_coeff_category: Dict[str, float] = {} # Dict[category: coeff] appliqué aux options selon le type d'affaire
+        self.lpdc_coeff_secteur: float = 1.0
+        self.lpdc_coeff_affaire: float = 1.0
+        self.calcul_coeff: Dict[str, float] = {}
+        self.option_coeff: Dict[str, float] = {}
+        self.labo_coeff_affaire: float = 1.0
         
         self.divers_percent: float = 0.05
         self.manual_rex_coeff: float = 1.0
@@ -54,11 +55,19 @@ class Project:
             "affaire": self.affaire,
             "secteur": self.secteur,
 
-            "LPDC_secteur_coeff": self.lpdc_secteur_coeff,
-            "LPDC_affaire_coeff": self.lpdc_affaire_coeff,
-            "calcul_coeff_type_affaire": self.calcul_coeff_type_affaire,
-            "option_coeff_category": self.option_coeff_category
+            "calcul_coeff": self.calcul_coeff,
+            "labo_coeff_affaire": self.labo_coeff_affaire,
+            "option_coeff": self.option_coeff,
+            "lpdc_coeff_secteur": self.lpdc_coeff_secteur,
+            "lpdc_coeff_affaire": self.lpdc_coeff_affaire
         }
+
+    def apply_affaire_coefficients(self):
+        """Met à jour uniquement les coefficients dépendant du type d'affaire, sans réinitialiser le projet."""
+        self.lpdc_coeff_affaire = self.app_data.lpdc_coeff_affaire.get(self.affaire, 1.0)
+        self.labo_coeff_affaire = self.app_data.labo_coeff_affaire.get(self.affaire, 1.0)
+        self.calcul_coeff = self.app_data.calcul_coeff_affaire.get(self.affaire, {})
+        self.option_coeff = self.app_data.option_coeff_affaire.get(self.affaire, {})
 
     def apply_defaults(self):
         """Applique les valeurs par défaut après avoir choisi le type de machine, le secteur et le type d'affaire."""
@@ -66,10 +75,11 @@ class Project:
         ctx = self.context()
 
         # Récupérer les coefficients dépendant du contexte depuis app_data
-        self.lpdc_secteur_coeff = self.app_data.lpdc_coeff_secteur.get(self.secteur, 1.0)
-        self.lpdc_affaire_coeff = self.app_data.lpdc_coeff_affaire.get(self.affaire, 1.0)
-        self.calcul_coeff_type_affaire = self.app_data.calcul_coeff_type_affaire.get(self.affaire, {})
-        self.option_coeff_category = self.app_data.option_category_coeff.get(self.affaire, {})
+        self.lpdc_coeff_secteur = self.app_data.lpdc_coeff_secteur.get(self.secteur, 1.0)
+        self.lpdc_coeff_affaire = self.app_data.lpdc_coeff_affaire.get(self.affaire, 1.0)
+        self.labo_coeff_affaire = self.app_data.labo_coeff_affaire.get(self.affaire, 1.0)
+        self.calcul_coeff = self.app_data.calcul_coeff_affaire.get(self.affaire, {})
+        self.option_coeff = self.app_data.option_coeff_affaire.get(self.affaire, {})
         
         self.divers_percent = 0.05
         self.manual_rex_coeff = 1.0
@@ -332,29 +342,29 @@ class Model(QObject):
             },
             "modifications": {
                 "lpdc_docs": [
-                    {"index": d.index, "is_selected": d.is_selected, "manual_hours": d.manual_hours}
+                    {"index": d.index, "is_selected": d.is_selected, "manual_base_hours": d.manual_base_hours}
                     for d in prj.lpdc_docs
-                    if d.is_selected or d.manual_hours is not None
+                    if d.is_selected or d.manual_base_hours is not None
                 ],
                 "options": [
-                    {"index": o.index, "is_selected": o.is_selected, "manual_hours": o.manual_hours}
+                    {"index": o.index, "is_selected": o.is_selected, "manual_base_hours": o.manual_base_hours}
                     for o in prj.options
-                    if o.is_selected or o.manual_hours is not None
+                    if o.is_selected or o.manual_base_hours is not None
                 ],
                 "calculs": [
-                    {"index": c.index, "is_selected": c.is_selected, "manual_hours": c.manual_hours}
+                    {"index": c.index, "is_selected": c.is_selected, "manual_base_hours": c.manual_base_hours}
                     for c in prj.calculs
-                    if c.is_selected or c.manual_hours is not None
+                    if c.is_selected or c.manual_base_hours is not None
                 ],
                 "tasks": [
-                    {"index": t.index, "manual_hours": t.manual_hours}
+                    {"index": t.index, "manual_base_hours": t.manual_base_hours}
                     for t in prj.get_all_tasks()
-                    if t.manual_hours is not None
+                    if t.manual_base_hours is not None
                 ],
                 "labo": [
-                    {"index": l.index, "is_selected": l.is_selected, "manual_hours": l.manual_hours}
+                    {"index": l.index, "is_selected": l.is_selected, "manual_base_hours": l.manual_base_hours}
                     for l in prj.labo
-                    if l.is_selected or l.manual_hours is not None
+                    if l.is_selected or l.manual_base_hours is not None
                 ],
                 "category_corrections": prj.category_corrections,
             },
@@ -396,32 +406,32 @@ class Model(QObject):
             if doc.index in lpdc_idx:
                 m = lpdc_idx[doc.index]
                 doc.is_selected  = m.get("is_selected", doc.is_selected)
-                doc.manual_hours = m.get("manual_hours")
+                doc.manual_base_hours = m.get("manual_base_hours")
 
         opt_idx = {m["index"]: m for m in mods.get("options", [])}
         for opt in prj.options:
             if opt.index in opt_idx:
                 m = opt_idx[opt.index]
                 opt.is_selected  = m.get("is_selected", opt.is_selected)
-                opt.manual_hours = m.get("manual_hours")
+                opt.manual_base_hours = m.get("manual_base_hours")
 
         calc_idx = {m["index"]: m for m in mods.get("calculs", [])}
         for calc in prj.calculs:
             if calc.index in calc_idx:
                 m = calc_idx[calc.index]
                 calc.is_selected  = m.get("is_selected", calc.is_selected)
-                calc.manual_hours = m.get("manual_hours")
+                calc.manual_base_hours = m.get("manual_base_hours")
 
         task_idx = {m["index"]: m for m in mods.get("tasks", [])}
         for task in prj.get_all_tasks():
             if task.index in task_idx:
-                task.manual_hours = task_idx[task.index].get("manual_hours")
+                task.manual_base_hours = task_idx[task.index].get("manual_base_hours")
 
         labo_idx = {m["index"]: m for m in mods.get("labo", [])}
         for labo in prj.labo:
             if labo.index in labo_idx:
                 m = labo_idx[labo.index]
                 labo.is_selected = m.get("is_selected", labo.is_selected)
-                labo.manual_hours = m.get("manual_hours")
+                labo.manual_base_hours = m.get("manual_base_hours")
 
         prj.category_corrections = mods.get("category_corrections", {})

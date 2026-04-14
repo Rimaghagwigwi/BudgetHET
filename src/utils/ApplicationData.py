@@ -28,16 +28,16 @@ class ApplicationData:
 
         self.calculs: List[Calcul] = []
         self.calcul_categories: Dict[str, str] = {} # Dict[code: label]
-        self.calcul_secteur_coeff: Dict[str, Dict[str, float]] = {} # Dict[type_affaire: Dict[activité: coeff]]
         self.calcul_ortems: Dict[str, Dict[str, float]] = {} # Dict[category: Dict[code: coeff]]
         
         self.labo: List[Labo] = []
         self.labo_categories: Dict[str, str] = {} # Dict[code: label]
+        self.labo_coeff_affaire: Dict[str, float] = {} # Dict[affaire: coeff]
         self.labo_ortems: Dict[str, Dict[str, float]] = {} # Dict[category: Dict[code: coeff]]
 
         self.options: List[Option] = []
         self.option_categories: Dict[str, str] = {} # Dict[code: label]
-        self.option_category_coeff: Dict[str, Dict[str, float]] = {} # Dict[type_affaire: Dict[category: coeff]]
+        self.option_coeff_affaire: Dict[str, Dict[str, float]] = {} # Dict[type_affaire: Dict[category: coeff]]
         self.option_ortems: Dict[str, Dict[str, float]] = {} # Dict[category: Dict[code: coeff]]
 
         self.lpdc_docs: List[LPDCDocument] = []
@@ -158,7 +158,7 @@ class ApplicationData:
         
         # 4. Calculs
         self.calcul_categories: Dict[str, str] = self.raw_data["calculs"]["categories"] # Dict[code: label]
-        self.calcul_coeff_type_affaire = self.raw_data["calculs"]["coeff_type_affaire"]
+        self.calcul_coeff_affaire = self.raw_data["calculs"]["coeff_type_affaire"]
         self.calcul_ortems = self.raw_data["calculs"].get("ortems_repartition", {}) # Dict[category: Dict[code: coeff]]
 
         calc_list: List[dict] = self.raw_data['calculs'].get("calculs", [])
@@ -174,7 +174,7 @@ class ApplicationData:
         
         # 5. Options
         self.option_categories: Dict[str, str] = self.raw_data["options"]["categories"] # Dict[code: label]
-        self.option_category_coeff: Dict[str, Dict[str, float]] = self.raw_data["options"]["category_coeff"]
+        self.option_coeff_affaire: Dict[str, Dict[str, float]] = self.raw_data["options"]["category_coeff"]
         self.option_ortems = self.raw_data["options"].get("ortems_repartition", {}) # Dict[category: Dict[code: coeff]]
 
         options_list: Dict[str, List[dict]] = self.raw_data["options"].get("options", {}) # Dict[category: List[Option]]
@@ -190,6 +190,7 @@ class ApplicationData:
 
         # 6. Labo
         self.labo_categories: Dict[str, str] = self.raw_data["labo"]["categories"] # Dict[code: label]
+        self.labo_coeff_affaire = self.raw_data["labo"]["coeff_affaire"] # Dict[affaire: coeff]
         self.labo_ortems = self.raw_data["labo"].get("ortems_repartition", {}) # Dict[category: Dict[code: coeff]]
 
         labo_list: List[dict] = self.raw_data['labo']["labo"]

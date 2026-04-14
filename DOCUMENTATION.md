@@ -213,10 +213,11 @@ Centre névralgique de l'application. Stocke toutes les données du projet et ef
 
 | Attribut | Type | Description |
 |----------|------|-------------|
-| `lpdc_secteur_coeff` | `dict` | Coeff LPDC par secteur |
-| `lpdc_affaire_coeff` | `dict` | Coeff LPDC par type d'affaire |
-| `calcul_coeff_type_affaire` | `dict` | Coeff calculs par catégorie |
-| `option_coeff_category` | `dict` | Coeff options par catégorie |
+| `lpdc_coeff_secteur` | `float` | Coeff LPDC résolu pour le secteur courant |
+| `lpdc_coeff_affaire` | `float` | Coeff LPDC résolu pour le type d'affaire courant |
+| `calcul_coeff` | `dict` | Coeff calculs par catégorie (résolu pour l'affaire courante) |
+| `option_coeff` | `dict` | Coeff options par catégorie (résolu pour l'affaire courante) |
+| `labo_coeff_affaire` | `float` | Coeff labo résolu pour le type d'affaire courant |
 
 ### Classe `Model` (`src/model.py`)
 
@@ -282,7 +283,7 @@ Représente les analyses techniques (électromagnétique, bobinage, mécanique, 
 | `hours` | `dict` | Heures par type de machine |
 | `selection` | `dict` | Mode de sélection par machine (`mandatory` / `optional`) |
 
-**Formule** : `effective_hours = hours[machine_type] × calcul_coeff_type_affaire[category]` (si actif)
+**Formule** : `effective_hours = hours[machine_type] × calcul_coeff[category]` (si actif)
 
 Méthodes :
 - `is_mandatory(context)` — vérifie si `selection[machine_type] == "mandatory"`
@@ -300,7 +301,7 @@ Représente les options sélectionnables (bagues, ATEX, instrumentation, etc.).
 | `hours` | `float` | Heures fixes |
 | `is_selected` | `bool` | État de sélection (défaut : `False`) |
 
-**Formule** : `effective_hours = hours × option_coeff_category[category]` (si sélectionné)
+**Formule** : `effective_hours = hours × option_coeff[category]` (si sélectionné)
 
 ### `LPDCDocument` — Documents plans et spécifications
 
@@ -315,7 +316,7 @@ Représente les documents contractuels (plans, spécifications d'achat, etc.).
 | `secteur_obligatoire` | `list` | Secteurs rendant le document obligatoire |
 | `option_possible` | `bool` | Sélectionnable en option |
 
-**Formule** : `effective_hours = hours × LPDC_affaire_coeff × LPDC_secteur_coeff` (si actif)
+**Formule** : `effective_hours = hours × lpdc_coeff_affaire × lpdc_coeff_secteur` (si actif)
 
 Méthode `is_active(context)` : actif si le type de machine est applicable ET (secteur obligatoire OU sélectionné manuellement).
 
@@ -489,9 +490,10 @@ Sinon :
 
 Le `context` est un dictionnaire fourni par `Project.context()` contenant :
 - `product`, `machine_type`, `affaire`, `secteur`
-- `LPDC_secteur_coeff`, `LPDC_affaire_coeff`
-- `calcul_coeff_type_affaire`
-- `option_coeff_category`
+- `lpdc_coeff_secteur`, `lpdc_coeff_affaire`
+- `calcul_coeff`
+- `option_coeff`
+- `labo_coeff_affaire`
 
 ### 8.2 Calcul du sous-total 1ère machine
 
@@ -555,10 +557,10 @@ Modifier l'un met à jour l'autre automatiquement.
 | Type | Coefficients appliqués | Source |
 |------|----------------------|--------|
 | **Tâches générales** | `coeff_type_affaire[affaire]` × `coeff_secteur[secteur]` | `general_task_data_new.json` |
-| **Calculs** | `calcul_coeff_type_affaire[category]` | `calculs.json` |
-| **Options** | `option_coeff_category[category]` | `options.json` |
-| **LPDC** | `LPDC_affaire_coeff` × `LPDC_secteur_coeff` | `LPDC.json` |
-| **Labo** | `coeff_secteur[secteur]` | `labo.json` |
+| **Calculs** | `calcul_coeff[category]` | `calculs.json` |
+| **Options** | `option_coeff[category]` | `options.json` |
+| **LPDC** | `lpdc_coeff_affaire` × `lpdc_coeff_secteur` | `LPDC.json` |
+| **Labo** | `coeff_secteur[secteur]` × `labo_coeff_affaire` | `labo.json` |
 
 ### 9.2 Coefficients LPDC par secteur
 

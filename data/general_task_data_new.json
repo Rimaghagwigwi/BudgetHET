@@ -107,7 +107,7 @@
                         "MARINE_CIVILE": 1,
                         "NUC_QUALIFIE": 3,
                         "NUC_NON_QUALIFIE": 2,
-                        "MIL": 0
+                        "MIL": 1
                     },
                     "is_multiplicative": true,
                     "ortems_repartition": {
@@ -132,7 +132,7 @@
                         "MARINE_CIVILE": 1,
                         "NUC_QUALIFIE": 3,
                         "NUC_NON_QUALIFIE": 2,
-                        "MIL": 0
+                        "MIL": 1
                     },
                     "is_multiplicative": true,
                     "ortems_repartition": {
@@ -157,7 +157,7 @@
                         "MARINE_CIVILE": 1,
                         "NUC_QUALIFIE": 3,
                         "NUC_NON_QUALIFIE": 2,
-                        "MIL": 0
+                        "MIL": 1
                     },
                     "is_multiplicative": true,
                     "ortems_repartition": {
@@ -219,7 +219,7 @@
                         "MARINE_CIVILE": 1,
                         "NUC_QUALIFIE": 3,
                         "NUC_NON_QUALIFIE": 2,
-                        "MIL": 0
+                        "MIL": 1
                     },
                     "is_multiplicative": true,
                     "ortems_repartition": {
@@ -528,8 +528,8 @@
                         "ASYNCH_CAGE": 40,
                         "ASYNCH_BAGUES": 40,
                         "MEP": 91,
-                        "ANR/DAR": 18.2,
-                        "TAR": 18.2
+                        "ANR/DAR": 18.182,
+                        "TAR": 18.182
                     },
                     "coeff_type_affaire": {
                         "NEUF": 1,
@@ -609,8 +609,8 @@
                         "ASYNCH_CAGE": 0,
                         "ASYNCH_BAGUES": 0,
                         "MEP": 0,
-                        "ANR/DAR": 364,
-                        "TAR": 545.5
+                        "ANR/DAR": 363.63,
+                        "TAR": 545.45
                     },
                     "coeff_type_affaire": {
                         "NEUF": 1,

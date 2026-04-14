@@ -1,26 +1,37 @@
 from abc import abstractmethod
-from dataclasses import dataclass
 from typing import Dict, List, Optional, Any, override
 
 
 class AbstractTask:
     def __init__(self, label: str):
         self.label = label
-        self.manual_hours: Optional[float] = None
+        self.manual_base_hours: Optional[float] = None
         self.category_override_hours: Optional[float] = None
 
     @abstractmethod
-    def default_hours(self, context: Dict[str, Any]) -> float:
+    def base_hours(self, context: Dict[str, Any]) -> float:
+        """Heures brutes avant application des coefficients de contexte."""
         pass
 
-    @abstractmethod
+    def context_coefficients(self, context: Dict[str, Any]) -> float:
+        """Produit des coefficients de contexte. Vaut 1.0 par défaut."""
+        return 1.0
+
+    def is_active(self, context: Dict[str, Any]) -> bool:
+        """Indique si la tâche doit contribuer au total. Toujours True par défaut."""
+        return True
+
+    def default_hours(self, context: Dict[str, Any]) -> float:
+        return self.base_hours(context) * self.context_coefficients(context)
+
     def effective_hours(self, context: Dict[str, Any]) -> float:
         if self.category_override_hours is not None:
             return self.category_override_hours
-        if self.manual_hours is not None:
-            return self.manual_hours
-        else:
-            return self.default_hours(context)
+        if not self.is_active(context):
+            return 0.0
+        if self.manual_base_hours is not None:
+            return self.manual_base_hours * self.context_coefficients(context)
+        return self.default_hours(context)
 
 
 class GeneralTask(AbstractTask):
@@ -38,17 +49,15 @@ class GeneralTask(AbstractTask):
         self.multiplicative = multiplicative
         self.ortems_repartition = ortems_repartition if ortems_repartition is not None else {}
 
-    @override
-    def default_hours(self, context: Dict[str, Any]) -> float:
-        product = context.get("product", "")
+    def context_coefficients(self, context: Dict[str, Any]) -> float:
         affaire = context.get("affaire", "")
         secteur = context.get("secteur", "")
-        
-        base = self.base_hours_machine.get(product, 0.0)
-        coeff_affaire = self.coeff_type_affaire.get(affaire, 1.0)
-        coeff_secteur = self.coeff_secteur.get(secteur, 1.0)
-        
-        return base * coeff_affaire * coeff_secteur
+        return self.coeff_type_affaire.get(affaire, 1.0) * self.coeff_secteur.get(secteur, 1.0)
+
+    @override
+    def base_hours(self, context: Dict[str, Any]) -> float:
+        product = context.get("product", "")
+        return self.base_hours_machine.get(product, 0.0)
         
 class LPDCDocument(AbstractTask):
     def __init__(self, label: str,
@@ -65,36 +74,22 @@ class LPDCDocument(AbstractTask):
         self.option_possible = option_possible
 
         self.is_selected: bool = False
-        self.manual_hours: Optional[float] = None
 
     def is_active(self, context: Dict[str, Any]) -> bool:
-        """Détermine si le document est sélectionné en fonction du secteur."""
         machine_type = context.get("machine_type", "")
         if machine_type not in self.applicable_pour:
             return False
         secteur = context.get("secteur", "")
         if secteur in self.secteur_obligatoire:
             return True
-        if self.option_possible:
-            return self.is_selected
-        return False
+        return self.option_possible and self.is_selected
+
+    def context_coefficients(self, context: Dict[str, Any]) -> float:
+        return context["lpdc_coeff_affaire"] * context["lpdc_coeff_secteur"]
 
     @override
-    def default_hours(self, context: Dict[str, Any]) -> float:
+    def base_hours(self, context: Dict[str, Any]) -> float:
         return self.hours
-
-    @override
-    def effective_hours(self, context: Dict[str, Any]) -> float:
-        if self.category_override_hours is not None:
-            return self.category_override_hours
-        coeff_affaire = context["LPDC_affaire_coeff"]
-        coeff_secteur = context["LPDC_secteur_coeff"]
-        if not self.is_active(context):
-            return 0.0
-        if self.manual_hours is not None:
-            return self.manual_hours
-        else:
-            return self.default_hours(context) * coeff_affaire * coeff_secteur
 
 class Option(AbstractTask):
     def __init__(self, label: str,
@@ -107,23 +102,16 @@ class Option(AbstractTask):
         self.hours = hours
 
         self.is_selected: bool = False
-        self.manual_hours: Optional[float] = None
+
+    def context_coefficients(self, context: Dict[str, Any]) -> float:
+        return context["option_coeff"].get(self.category, 1.0)
+
+    def is_active(self, context: Dict[str, Any]) -> bool:
+        return self.is_selected
 
     @override
-    def default_hours(self, context: Dict[str, Any]) -> float:
-        return self.hours * context["option_coeff_category"].get(self.category, 1.0)
-        # Note: S'il y a un coeff à appliquer (+30% si remplacement), on l'applique dans la base, pas dans effective.
-        # Ce calcul est caché
-
-    @override
-    def effective_hours(self, context: Dict[str, Any]) -> float:
-        if self.category_override_hours is not None:
-            return self.category_override_hours
-        final_hours = self.default_hours(context)
-        if self.is_selected:
-            return self.manual_hours if self.manual_hours is not None else final_hours
-        else:
-            return 0.0
+    def base_hours(self, context: Dict[str, Any]) -> float:
+        return self.hours
         
 class Calcul(AbstractTask):
     def __init__(self, label: str,
@@ -137,7 +125,6 @@ class Calcul(AbstractTask):
         self.hours = hours
         self.selection = selection
         self.is_selected: bool = False
-        # manual_hours is set in AbstractTask.__init__
 
     def is_mandatory(self, context: Dict[str, Any]) -> bool:
         machine_type = context.get("machine_type", "")
@@ -150,22 +137,13 @@ class Calcul(AbstractTask):
     def is_active(self, context: Dict[str, Any]) -> bool:
         return self.is_mandatory(context) or (self.is_available_as_option(context) and self.is_selected)
 
-    @override
-    def default_hours(self, context: Dict[str, Any]) -> float:
-        machine_type = context.get("machine_type", "")
-        return self.hours.get(machine_type, 0.0)
+    def context_coefficients(self, context: Dict[str, Any]) -> float:
+        return context["calcul_coeff"].get(self.category, 1.0)
 
     @override
-    def effective_hours(self, context: Dict[str, Any]) -> float:
-        if self.category_override_hours is not None:
-            return self.category_override_hours
-        affaire_activity_coeff = context["calcul_coeff_type_affaire"].get(self.category, 1.0)
-        if not self.is_active(context):
-            return 0.0
-        elif self.manual_hours is not None:
-            return self.manual_hours
-        else:
-            return self.default_hours(context) * affaire_activity_coeff
+    def base_hours(self, context: Dict[str, Any]) -> float:
+        machine_type = context.get("machine_type", "")
+        return self.hours.get(machine_type, 0.0)
         
 class Labo(AbstractTask):
     def __init__(self, index: int, label: str, hours: float, category: str, coeff_secteur: Dict[str, float]):
@@ -183,21 +161,11 @@ class Labo(AbstractTask):
     def is_active(self, context: Dict[str, Any]) -> bool:
         return self.is_mandatory(context) or self.is_selected
 
-    @override
-    def default_hours(self, context: Dict[str, Any]) -> float:
+    def context_coefficients(self, context: Dict[str, Any]) -> float:
         secteur = context.get("secteur", "")
-        if secteur in self.coeff_secteur:
-            return self.hours * self.coeff_secteur[secteur]
-        else:
-            return self.hours
+        coeff_affaire = context.get("labo_coeff_affaire", 1.0)
+        return self.coeff_secteur.get(secteur, 1.0) * coeff_affaire
 
     @override
-    def effective_hours(self, context: Dict[str, Any]) -> float:
-        if self.category_override_hours is not None:
-            return self.category_override_hours
-        if not self.is_active(context):
-            return 0.0
-        elif self.manual_hours is not None:
-            return self.manual_hours
-        else:
-            return self.default_hours(context)
+    def base_hours(self, context: Dict[str, Any]) -> float:
+        return self.hours

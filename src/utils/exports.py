@@ -57,10 +57,10 @@ def _merge_col_b(ws, start: int, end: int, label: str):
 
 
 def _auto_hours(task, ctx: dict) -> float:
-    saved = task.manual_hours
-    task.manual_hours = None
+    saved = task.manual_base_hours
+    task.manual_base_hours = None
     h = task.effective_hours(ctx)
-    task.manual_hours = saved
+    task.manual_base_hours = saved
     return h
 
 

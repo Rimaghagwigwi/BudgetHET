@@ -73,16 +73,21 @@ class BaseTaskTabController:
 
     def _on_manual_change_in_table(self, table: TaskTableWidget, text: str, ref: int):
         """Gère la modification manuelle d'une valeur d'heures dans une table spécifique."""
-        try:
-            manual_value = float(text) if text else None
-        except ValueError:
-            manual_value = None
-
         task = self._find_task_in_table(table, ref)
-        if task:
-            task.manual_hours = manual_value
-            self._update_all_tables()
-            self.model.data_updated.emit()
+        if not task:
+            return
+        try:
+            target_hours = float(text) if text else None
+        except ValueError:
+            target_hours = None
+
+        if target_hours is not None:
+            coeff = task.context_coefficients(table.context)
+            task.manual_base_hours = target_hours / coeff if coeff else None
+        else:
+            task.manual_base_hours = None
+        self._update_all_tables()
+        self.model.data_updated.emit()
 
     def _on_checkbox_toggle_in_table(self, table: TaskTableWidget, checked: bool, ref: int):
         """Gère le changement d'état d'une checkbox dans une table spécifique."""
@@ -131,12 +136,12 @@ class BaseTaskTabController:
             # Calculer les heures naturelles (sans corrections manuelles ni override)
             natural = {}
             for task, _ in sorted_tasks:
-                saved_manual = task.manual_hours
+                saved_manual = task.manual_base_hours
                 saved_override = task.category_override_hours
-                task.manual_hours = None
+                task.manual_base_hours = None
                 task.category_override_hours = None
                 natural[task] = task.effective_hours(table.context)
-                task.manual_hours = saved_manual
+                task.manual_base_hours = saved_manual
                 task.category_override_hours = saved_override
 
             total = sum(natural.values())

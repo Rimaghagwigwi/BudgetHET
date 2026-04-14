@@ -835,14 +835,14 @@
       {
         "index": 147,
         "label": "Options FDMS",
-        "hours": 0
+        "hours": 1
       }
     ],
     "SLI": [
       {
         "index": 148,
         "label": "Options SLI",
-        "hours": 0
+        "hours": 1
       }
     ]
   }

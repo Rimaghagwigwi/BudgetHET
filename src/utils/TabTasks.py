@@ -171,8 +171,8 @@ class TaskTableWidget(QTableWidget):
         # Correction manuelle
         line_edit = QLineEdit()
         line_edit.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        if task.manual_hours is not None:
-            line_edit.setText(f"{task.manual_hours:.2f}")
+        if task.manual_base_hours is not None:
+            line_edit.setText(f"{task.effective_hours(self.context):.2f}")
         line_edit.editingFinished.connect(
             lambda le=line_edit, ref=task.index: self.manual_value_modified.emit(le.text(), ref)
         )
@@ -277,18 +277,20 @@ class TaskTableWidget(QTableWidget):
         return f"{hours:.1f}".rstrip("0").rstrip(".")
 
     def _sync_manual_hours(self, task: AbstractTask, task_row: int) -> None:
-        """Lit le QLineEdit de correction et met à jour task.manual_hours."""
+        """Lit le QLineEdit de correction et met à jour task.manual_base_hours."""
         line_edit = self.cellWidget(task_row, self.COL_OFFSET + 4)
         if not isinstance(line_edit, QLineEdit):
             return
         text = line_edit.text().strip()
         if not text:
-            task.manual_hours = None
+            task.manual_base_hours = None
             return
         try:
-            task.manual_hours = float(text)
+            target_hours = float(text)
+            coeff = task.context_coefficients(self.context)
+            task.manual_base_hours = target_hours / coeff if coeff else None
         except ValueError:
-            task.manual_hours = None
+            task.manual_base_hours = None
 
     def _is_task_checked(self, task_row: int) -> bool:
         """Retourne True si la checkbox est cochée, ou True si ligne obligatoire (pas de checkbox)."""

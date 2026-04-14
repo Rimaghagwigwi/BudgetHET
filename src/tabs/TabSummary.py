@@ -111,9 +111,9 @@ class CollapsibleSection(QTreeWidget):
         item.setFlags(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable)
         
         # Style pour les tâches modifiées manuellement
-        if task.manual_hours is not None:
+        if task.manual_base_hours is not None:
             item.setFont(1, QFont("Arial", 11, QFont.Weight.Bold))
-            item.setToolTip(1, f"Valeur manuelle: {task.manual_hours:.2f}h")
+            item.setToolTip(1, f"Valeur manuelle: {task.manual_base_hours:.2f}h (base)")
         
         if parent:
             parent.addChild(item)

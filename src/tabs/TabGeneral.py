@@ -223,6 +223,8 @@ class TabGeneralController:
         self._pending_max_criticity = 0
         if criticity >= 2:
             self.model.project.apply_defaults()
+        elif criticity >= 1:
+            self.model.project.apply_affaire_coefficients()
         self.model.project_changed.emit()
 
     def _set_combo_by_data(self, combo: QComboBox, data):
