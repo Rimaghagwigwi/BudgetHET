@@ -230,7 +230,8 @@ def export_excel_report(project: "Project", path: str):
     row = _write_task_section(ws, row, enclenchement, "Enclenchement", ctx, rex, ref['enclenchement'])
 
     row = _write_grouped_section(
-        ws, row, app.calcul_categories, project.grouped_calculs(),
+        ws, row, app.calcul_categories,
+        project.items_by_category(project.calculs, app.calcul_categories),
         "Calculs de définition de la machine", ctx, rex, ref['calculs'],
         filter_fn=lambda items, c: [x for x in items if x.is_active(c)],
     )
@@ -238,7 +239,8 @@ def export_excel_report(project: "Project", path: str):
     plans_data = project.tasks.get("Plans / Specs / LDN", {})
     row = _write_plans_fab(ws, row, plans_data, ctx, rex, ref['plans_fab'])
 
-    row = _write_options(ws, row, app.option_categories, project.grouped_options(), ctx, rex, ref['options'])
+    row = _write_options(ws, row, app.option_categories,
+        project.items_by_category(project.options, app.option_categories), ctx, rex, ref['options'])
 
     row = _write_grouped_section(
         ws, row, app.lpdc_categories, project.grouped_lpdc(),
@@ -247,7 +249,8 @@ def export_excel_report(project: "Project", path: str):
     )
 
     row = _write_grouped_section(
-        ws, row, app.labo_categories, project.grouped_labo(),
+        ws, row, app.labo_categories,
+        project.items_by_category(project.labo, app.labo_categories),
         "LABO", ctx, rex, ref['labo'],
         filter_fn=lambda items, c: [l for l in items if l.is_active(c)],
     )

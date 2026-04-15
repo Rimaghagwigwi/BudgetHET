@@ -12,22 +12,22 @@ class LaboOptionsTabController(BaseTaskTabController):
         tables = []
 
         # 1. Labo
-        grouped_labo = project.grouped_labo_for_table()
+        grouped_labo = project.items_by_category(project.labo, project.app_data.labo_categories)
         if grouped_labo:
             table = TaskTableWidget(label="Laboratoire", task_type="Labo")
             table.context = ctx
             self._connect_table(table)
-            for category, task_pairs in grouped_labo.items():
+            for category, labo_tasks in grouped_labo.items():
                 cat_label = project.app_data.labo_categories.get(category, category)
                 table.add_category(cat_label)
-                for task, mandatory in task_pairs:
-                    table.add_task(cat_label, task, mandatory=mandatory)
+                for task in labo_tasks:
+                    table.add_task(cat_label, task, mandatory=task.is_mandatory(ctx))
             table.show_table()
             table.adjust_height_to_content()
             tables.append(table)
 
         # 2. Options (ordonnées par catégorie, repliées par défaut)
-        grouped_options = project.grouped_options()
+        grouped_options = project.items_by_category(project.options, project.app_data.option_categories)
         if grouped_options:
             table = TaskTableWidget(label="Options", task_type="Option")
             table.context = ctx

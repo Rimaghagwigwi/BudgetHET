@@ -105,18 +105,13 @@ class Project:
         """Retourne la liste plate de toutes les tâches générales."""
         return [task for subcats in self.tasks.values() for tasks in subcats.values() for task in tasks]
     
-    @staticmethod
-    def _group_by_category(items) -> Dict[str, list]:
-        grouped = {}
+    def items_by_category(self, items, categories) -> Dict[str, list]:
+        """Regroupe des items (attribut .category) ordonnés selon categories."""
+        grouped: Dict[str, list] = {}
         for item in items:
             grouped.setdefault(item.category, []).append(item)
-        return grouped
-
-    @staticmethod
-    def _order_by_categories(grouped: Dict, category_order) -> Dict:
-        """Réordonne un dict groupé selon l'ordre des clés de category_order."""
-        ordered = {}
-        for cat in category_order:
+        ordered: Dict[str, list] = {}
+        for cat in categories:
             if cat in grouped:
                 ordered[cat] = grouped[cat]
         for cat in grouped:
@@ -124,53 +119,22 @@ class Project:
                 ordered[cat] = grouped[cat]
         return ordered
 
-    def grouped_calculs(self) -> Dict[str, List[Calcul]]:
-        return self._order_by_categories(self._group_by_category(self.calculs), self.app_data.calcul_categories)
-    
-    def grouped_options(self) -> Dict[str, List[Option]]:
-        return self._order_by_categories(self._group_by_category(self.options), self.app_data.option_categories)
-    
     def grouped_lpdc(self) -> Dict[str, List[LPDCDocument]]:
-        """Retourne les documents LPDC regroupés en 'Base' et 'Particulières'."""
-        grouped_lpdc = {"BASE": [], "PART": []} # ! Utiliser les codes catégories ("BASE", "PART")
-
+        """Retourne les documents LPDC regroupés en 'BASE' et 'PART'."""
+        result: Dict[str, List[LPDCDocument]] = {"BASE": [], "PART": []}
         for doc in self.lpdc_docs:
             if self.machine_type not in doc.applicable_pour:
                 continue
             if self.secteur in doc.secteur_obligatoire:
-                grouped_lpdc["BASE"].append(doc)
+                result["BASE"].append(doc)
             elif doc.option_possible:
-                grouped_lpdc["PART"].append(doc)
-        return grouped_lpdc
-    
-    def grouped_labo(self) -> Dict[str, List[Labo]]:
-        return self._order_by_categories(self._group_by_category(self.labo), self.app_data.labo_categories)
+                result["PART"].append(doc)
+        return result
 
-    def grouped_calculs_for_table(self) -> Dict[str, list]:
-        """Calculs groupés par catégorie avec (calcul, is_mandatory), ordonnés par définition."""
-        grouped = {}
-        for calc in self.calculs:
-            selection = calc.selection.get(self.machine_type, "")
-            if selection in ("mandatory", "optional"):
-                grouped.setdefault(calc.category, []).append((calc, selection == "mandatory"))
-        return self._order_by_categories(grouped, self.app_data.calcul_categories)
-
-    def grouped_labo_for_table(self) -> Dict[str, list]:
-        """Labo groupé par catégorie avec (tâche, is_mandatory), ordonné par définition."""
-        ctx = self.context()
-        grouped = {}
-        for task in self.labo:
-            mandatory = task.is_mandatory(ctx)
-            grouped.setdefault(task.category, []).append((task, mandatory))
-        return self._order_by_categories(grouped, self.app_data.labo_categories)
-
-    def _change_group_label(self, grouped: Dict[str, List], label_map: Dict[str, str]) -> Dict[str, List]:
+    @staticmethod
+    def _change_group_label(grouped: Dict[str, List], label_map: Dict[str, str]) -> Dict[str, List]:
         """Change les labels des groupes selon un mapping fourni."""
-        new_grouped = {}
-        for old_label, items in grouped.items():
-            new_label = label_map.get(old_label, old_label)
-            new_grouped[new_label] = items
-        return new_grouped
+        return {label_map.get(k, k): v for k, v in grouped.items()}
 
     def generate_summary_tree(self) -> Dict[str, Any]:
         encl_et_suivi = self.tasks.get("Gestion de projet", {})
@@ -178,11 +142,18 @@ class Project:
 
         return {
             "Enclenchement": encl_et_suivi.get("Enclenchement", []),
-            "Calculs": self._change_group_label(self.grouped_calculs(), self.app_data.calcul_categories),
+            "Calculs": self._change_group_label(
+                self.items_by_category(self.calculs, self.app_data.calcul_categories),
+                self.app_data.calcul_categories),
             "Plans / Specs / LDN": plans_fab,
-            "Options": self._change_group_label(self.grouped_options(), self.app_data.option_categories),
-            "Plans et documents contractuels": self._change_group_label(self.grouped_lpdc(), self.app_data.lpdc_categories),
-            "Laboratoire": self._change_group_label(self.grouped_labo(), self.app_data.labo_categories),
+            "Options": self._change_group_label(
+                self.items_by_category(self.options, self.app_data.option_categories),
+                self.app_data.option_categories),
+            "Plans et documents contractuels": self._change_group_label(
+                self.grouped_lpdc(), self.app_data.lpdc_categories),
+            "Laboratoire": self._change_group_label(
+                self.items_by_category(self.labo, self.app_data.labo_categories),
+                self.app_data.labo_categories),
             "Suivi": encl_et_suivi.get("Suivi", []),
         }
     
@@ -235,43 +206,60 @@ class Project:
             self.total_with_rex = self.n_machines_total * self.manual_rex_coeff
         return self.total_with_rex
     
-    def _apply_group_repartition(
-        self,
-        repartition: Dict[str, float],
-        grouped: Dict[str, List],
-        ortems_map: Dict[str, Dict[str, float]],
-    ) -> None:
-        """Accumule les heures d'un groupe catégorisé dans repartition."""
-        for category, items in grouped.items():
-            rep = ortems_map.get(category, {})
-            cat_sum = sum(item.effective_hours(self.context()) for item in items)
-            for job_code, coeff in rep.items():
-                repartition[job_code] += cat_sum * coeff
+    def _lpdc_category(self, doc: LPDCDocument) -> Optional[str]:
+        """Détermine la catégorie ORTEMS d'un document LPDC."""
+        if self.machine_type not in doc.applicable_pour:
+            return None
+        if self.secteur in doc.secteur_obligatoire:
+            return "BASE"
+        if doc.option_possible:
+            return "PART"
+        return None
 
     def make_ortems_repartition(self) -> Dict[str, float]:
-        """Crée la répartition ortems finale en combinant les différentes sources."""
-        repartition = dict.fromkeys(self.app_data.jobs.keys(), 0.0)
+        """Crée la répartition ORTEMS.
 
-        # Tâches générales (répartition définie par tâche)
+        Itère les mêmes listes que compute_first_machine_subtotal()
+        pour garantir la cohérence entre le total et la répartition.
+        """
+        repartition = dict.fromkeys(self.app_data.jobs.keys(), 0.0)
+        ctx = self.context()
+
+        # 1. Tâches générales (répartition per-task)
         for task in self.get_all_tasks():
-            hours = task.effective_hours(self.context())
+            hours = task.effective_hours(ctx)
             if hours > 0 and task.ortems_repartition:
                 for job_code, coeff in task.ortems_repartition.items():
                     repartition[job_code] += hours * coeff
 
-        # Sources catégorisées
-        for grouped, ortems_map in [
-            (self.grouped_calculs(), self.app_data.calcul_ortems),
-            (self.grouped_options(), self.app_data.option_ortems),
-            (self.grouped_lpdc(),    self.app_data.lpdc_ortems),
-            (self.grouped_labo(),    self.app_data.labo_ortems),
+        # 2. Sources catégorisées (itération directe sur les listes)
+        for items, ortems_map in [
+            (self.calculs, self.app_data.calcul_ortems),
+            (self.options, self.app_data.option_ortems),
+            (self.labo,    self.app_data.labo_ortems),
         ]:
-            self._apply_group_repartition(repartition, grouped, ortems_map)
+            cat_sums: Dict[str, float] = {}
+            for item in items:
+                cat_sums[item.category] = cat_sums.get(item.category, 0.0) + item.effective_hours(ctx)
+            for cat, total in cat_sums.items():
+                for job_code, coeff in ortems_map.get(cat, {}).items():
+                    repartition[job_code] += total * coeff
+
+        # 3. LPDC (catégorie déterminée par le contexte)
+        lpdc_sums: Dict[str, float] = {}
+        for doc in self.lpdc_docs:
+            hours = doc.effective_hours(ctx)
+            if hours > 0:
+                cat = self._lpdc_category(doc)
+                if cat:
+                    lpdc_sums[cat] = lpdc_sums.get(cat, 0.0) + hours
+        for cat, total in lpdc_sums.items():
+            for job_code, coeff in self.app_data.lpdc_ortems.get(cat, {}).items():
+                repartition[job_code] += total * coeff
 
         # Application du divers et du REX
         for job_code in repartition:
             repartition[job_code] *= (1 + self.divers_percent) * self.manual_rex_coeff
-
 
         return repartition
     

@@ -25,16 +25,16 @@ class DefinitionTabController(BaseTaskTabController):
             tables.append(table)
 
         # 2. Calculs (ordonnés par catégorie, repliés par défaut)
-        grouped_calculs = project.grouped_calculs_for_table()
+        grouped_calculs = project.items_by_category(project.calculs, project.app_data.calcul_categories)
         if grouped_calculs:
             table = TaskTableWidget(label="Calculs", task_type="Calcul")
             table.context = ctx
             self._connect_table(table)
-            for category, calc_pairs in grouped_calculs.items():
+            for category, calcs in grouped_calculs.items():
                 cat_label = project.app_data.calcul_categories.get(category, category)
                 table.add_category(cat_label)
-                for calc, mandatory in calc_pairs:
-                    table.add_task(cat_label, calc, mandatory=mandatory)
+                for calc in calcs:
+                    table.add_task(cat_label, calc, mandatory=calc.is_mandatory(ctx))
             table.collapse_all()
             table.show_table()
             table.adjust_height_to_content()

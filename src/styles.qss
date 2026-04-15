@@ -150,9 +150,9 @@ QTableCornerButton::section {
     border: none;
 }
 
-/* Fond blanc pour la cellule de checkbox optionnelle */
+/* Fond transparent pour hériter la couleur de la ligne (alternée ou non) */
 #optionalCheckboxCell {
-    background-color: #ffffff;
+    background-color: transparent;
 }
 
 /* ── Tree ────────────────────────────────────────────────── */
@@ -232,4 +232,28 @@ QFrame#rowSeparator {
 #collapsibleHeader QToolButton#collapseToggle {
     border: none;
     background: transparent;
+}
+
+/* ── Checkboxes ──────────────────────────────────────────── */
+QCheckBox {
+    spacing: 0px;
+    background: transparent;
+}
+
+QCheckBox::indicator {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #aaaaaa;
+    border-radius: 4px;
+    background-color: #ffffff;
+}
+
+QCheckBox::indicator:hover {
+    border-color: #0063AF;
+}
+
+QCheckBox::indicator:checked {
+    background-color: #0063AF;
+    border: 2px solid #0063AF;
+    border-radius: 4px;
 }

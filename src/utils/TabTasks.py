@@ -45,7 +45,8 @@ class TaskTableWidget(QTableWidget):
         self.setHorizontalHeaderLabels(columns)
         
         header = self.horizontalHeader()
-        header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)   # Choix
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)              # Choix
+        self.setColumnWidth(0, 60)
         header.setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)   # Ref
         header.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)            # Label
         header.setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)   # Base
