@@ -40,7 +40,7 @@ COL_SECTEUR      = "Secteur"
 STRING_FIELDS   = [COL_NUM_PROJET, COL_NOM_PROJET, COL_CLIENT, COL_CLIENT_FINAL, COL_DESIGNATION]
 NUMERIC_FIELDS  = [COL_NBR_MACHINES, COL_MW, COL_KV, COL_COS_PHI, COL_HZ,
                    COL_TR_MIN, COL_DAL, COL_LFER, COL_NB_ENCOCHES]
-DROPDOWN_FIELDS = [COL_IM, COL_EEX, COL_TYPE_PRODUIT, COL_PRODUIT,
+DROPDOWN_FIELDS = [COL_IC, COL_IM, COL_EEX, COL_TYPE_PRODUIT, COL_PRODUIT,
                    COL_TYPE_AFFAIRE, COL_DAS, COL_SECTEUR]
 PREFILL_FIELDS  = [COL_TYPE_PRODUIT, COL_PRODUIT, COL_TYPE_AFFAIRE, COL_DAS, COL_SECTEUR]
 
@@ -75,6 +75,7 @@ class MachineDatabase:
             return False
         try:
             self.df = pd.read_excel(self.filepath, sheet_name="Machines")
+            self._rename_columns()
             self._load_projets_sheet()
             self._normalize_ip()
             self._extract_unique_values()
@@ -102,6 +103,19 @@ class MachineDatabase:
         except Exception as e:
             print(f"Erreur lors du chargement de la feuille Projets : {e}")
             self.df_projets = pd.DataFrame()
+
+    # Correspondance Excel → noms internes (COL_*)
+    _EXCEL_TO_COL = {
+        "DATE": COL_DATE, "PROJET": COL_NOM_PROJET,
+        "NUMERO": COL_NUM_MACHINE, "CLIENT": COL_CLIENT,
+        "CLIENT FINAL": COL_CLIENT_FINAL, "DESCRIPTION": COL_DESIGNATION,
+        "REFERENCE": COL_REFERENCE, "NB MACHINES": COL_NBR_MACHINES,
+        "CPHI": COL_COS_PHI,
+    }
+
+    def _rename_columns(self):
+        """Renomme les colonnes Excel vers les noms COL_* utilisés dans le code."""
+        self.df.rename(columns=self._EXCEL_TO_COL, inplace=True)
 
     def _normalize_ip(self):
         """Convertit la colonne IP en chaînes propres ('23', '55', …)."""
@@ -272,20 +286,8 @@ class MachineDatabase:
             # Trouver l'index de la colonne dans le fichier (1-based, row 1 = header)
             header_row = [cell.value for cell in ws[1]]
             # La colonne Excel peut avoir un nom légèrement différent — correspondance exacte
-            excel_col_map = {
-                COL_NUM_PROJET: "N° Projet", COL_DATE: "DATE",
-                "Nom projet": "PROJET", COL_NUM_MACHINE: "NUMERO",
-                COL_CLIENT: "CLIENT", COL_CLIENT_FINAL: "CLIENT FINAL",
-                COL_DESIGNATION: "DESCRIPTION", COL_REFERENCE: "REFERENCE",
-                COL_NBR_MACHINES: "NB MACHINES", COL_MW: "MW", COL_KV: "KV",
-                COL_COS_PHI: "CPHI", COL_HZ: "HZ", COL_TR_MIN: "TR/MIN",
-                COL_DAL: "DAL", COL_LFER: "LFER", COL_NB_POLES: "NB POLES",
-                COL_NB_ENCOCHES: "NB ENCOCHES", COL_IC: "IC", COL_IM: "IM",
-                COL_IP: "IP", COL_EEX: "EEX", COL_TYPE_PRODUIT: "Type produit",
-                COL_PRODUIT: "Produit", COL_TYPE_AFFAIRE: "Type affaire",
-                COL_DAS: "DAS", COL_SECTEUR: "Secteur",
-            }
-            excel_col_name = excel_col_map.get(column, column)
+            _COL_TO_EXCEL = {v: k for k, v in self._EXCEL_TO_COL.items()}
+            excel_col_name = _COL_TO_EXCEL.get(column, column)
             if excel_col_name not in header_row:
                 wb.close()
                 return False

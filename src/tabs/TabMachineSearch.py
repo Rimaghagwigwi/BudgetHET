@@ -16,7 +16,7 @@ from src.utils.MachineDatabase import (
     LABEL_MAP_COLUMNS, HIDDEN_COLUMNS, PROJET_HOURS_COLUMNS,
     COL_DATE, COL_NB_POLES, COL_IP, COL_NUM_PROJET,
     COL_TYPE_PRODUIT, COL_PRODUIT, COL_TYPE_AFFAIRE, COL_DAS, COL_SECTEUR,
-    COL_IM, COL_EEX,
+    COL_IC, COL_IM, COL_EEX,
 )
 from src.utils.widgets import NoWheelSpinBox, NoWheelComboBox
 
@@ -280,7 +280,7 @@ class ProjectDetailDialog(QDialog):
             if das_code and das_code in ad.secteurs:
                 return list(ad.secteurs[das_code].items())
             return [(c, l) for sects in ad.secteurs.values() for c, l in sects.items()]
-        if col_name in (COL_IM, COL_EEX) and self.db:
+        if col_name in (COL_IC, COL_IM, COL_EEX) and self.db:
             vals = self.db.unique_values.get(col_name, [])
             return [(v, v) for v in vals]
         return None
@@ -293,7 +293,7 @@ class ProjectDetailDialog(QDialog):
         df_index = self.original_indices[row]
         # Convertir en numérique si possible
         save_value = value
-        if col_name not in LABEL_MAP_COLUMNS and col_name not in (COL_IM, COL_EEX):
+        if col_name not in LABEL_MAP_COLUMNS and col_name not in (COL_IC, COL_IM, COL_EEX):
             try:
                 save_value = float(value)
                 if save_value == int(save_value):
@@ -685,10 +685,11 @@ class MachineSearchController:
                 self.db.unique_values.get("IP_first", []),
                 self.db.unique_values.get("IP_second", []),
             )
-            # IM, EEX : valeurs brutes de la base
-            for field in (COL_IM, COL_EEX):
-                combo = self.view.dropdown_inputs.get(field)
-                if combo:
+            # IC, IM, EEX : valeurs brutes de la base
+            for field in (COL_IC, COL_IM, COL_EEX):
+                combo: QComboBox = self.view.dropdown_inputs.get(field)
+                if combo is not None:
+                    combo.setMaxVisibleItems(10)
                     self.view.populate_combo(combo, self.db.unique_values.get(field, []))
 
         # Champs avec labels (depuis app_data)
