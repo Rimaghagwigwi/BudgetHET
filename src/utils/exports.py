@@ -1,9 +1,11 @@
 from __future__ import annotations
-from copy import copy as ccopy
+from copy import copy
 from typing import TYPE_CHECKING, Dict, List, Any
 
 import openpyxl
-from openpyxl.styles import Font, PatternFill, Border, Alignment
+from openpyxl.styles import Font
+
+from src.utils.Task import GeneralTask
 
 if TYPE_CHECKING:
     from src.model import Model, Project
@@ -11,136 +13,34 @@ if TYPE_CHECKING:
 
 # ── Helpers bas-niveau pour la feuille Excel ────────────────────────
 
-def _save_row_style(ws, row_num: int) -> Dict[int, dict]:
-    styles = {}
-    for col in range(2, 7):
-        cell = ws.cell(row=row_num, column=col)
-        styles[col] = {
-            'font': ccopy(cell.font),
-            'fill': ccopy(cell.fill),
-            'border': ccopy(cell.border),
-            'alignment': ccopy(cell.alignment),
-            'number_format': cell.number_format,
-        }
-    return styles
-
-
-def _apply_style(ws, row_num: int, style: Dict[int, dict]):
-    for col, s in style.items():
-        cell = ws.cell(row=row_num, column=col)
-        cell.font = s['font']
-        cell.fill = s['fill']
-        cell.border = s['border']
-        cell.alignment = s['alignment']
-        cell.number_format = s['number_format']
-
-
-def _clear_dynamic_zone(ws, start_row: int):
-    merges_to_remove = [mc for mc in ws.merged_cells.ranges if mc.min_row >= start_row]
-    for mc in merges_to_remove:
-        ws.unmerge_cells(str(mc))
-
-    for r in range(start_row, ws.max_row + 1):
-        for c in range(1, ws.max_column + 1):
-            cell = ws.cell(row=r, column=c)
-            cell.value = None
-            cell.font = Font()
-            cell.fill = PatternFill()
-            cell.border = Border()
-            cell.alignment = Alignment()
+def _auto_hours(task, ctx: dict) -> float:
+    """Heures de base sans aucune correction manuelle (ni manuelle ni par catégorie)."""
+    saved_manual = task.manual_base_hours
+    saved_override = task.category_override_hours
+    task.manual_base_hours = None
+    task.category_override_hours = None
+    h = task.effective_hours(ctx)
+    task.manual_base_hours = saved_manual
+    task.category_override_hours = saved_override
+    return h
 
 
 def _merge_col_b(ws, start: int, end: int, label: str):
-    ws.cell(row=start, column=2).value = label
+    cell = ws.cell(row=start, column=2)
+    cell.value = label
+    cell.font = Font(bold=True)
     if end > start:
         ws.merge_cells(start_row=start, start_column=2, end_row=end, end_column=2)
 
 
-def _auto_hours(task, ctx: dict) -> float:
-    saved = task.manual_base_hours
-    task.manual_base_hours = None
-    h = task.effective_hours(ctx)
-    task.manual_base_hours = saved
-    return h
-
-
-# ── Écriture d'une ligne ────────────────────────────────────────────
-
-def _write_hours_cells(ws, row_num: int, auto: float, effective: float, rex: float):
-    ws.cell(row=row_num, column=4).value = auto
+def _write_d_e_f(ws, row: int, auto: float, effective: float, rex: float):
+    """Écrit D = heures de base, E = heures finales (gras si corrigées), F = E × REX."""
+    ws.cell(row=row, column=4).value = auto
+    cell_e = ws.cell(row=row, column=5)
+    cell_e.value = effective
     if effective != auto:
-        ws.cell(row=row_num, column=5).value = effective - auto
-    ws.cell(row=row_num, column=6).value = effective * rex
-
-
-def _write_task_row(ws, row_num: int, task, ctx: dict, rex: float, style):
-    _apply_style(ws, row_num, style)
-    auto = _auto_hours(task, ctx)
-    effective = task.effective_hours(ctx)
-    ws.cell(row=row_num, column=3).value = task.label
-    _write_hours_cells(ws, row_num, auto, effective, rex)
-
-
-def _write_group_row(ws, row_num: int, label: str, tasks: list, ctx: dict, rex: float, style):
-    _apply_style(ws, row_num, style)
-    total_auto = sum(_auto_hours(t, ctx) for t in tasks)
-    total_eff = sum(t.effective_hours(ctx) for t in tasks)
-    ws.cell(row=row_num, column=3).value = label
-    _write_hours_cells(ws, row_num, total_auto, total_eff, rex)
-
-
-# ── Sections individuelles ──────────────────────────────────────────
-
-def _write_task_section(ws, row: int, tasks: list, section_label: str, ctx: dict, rex: float, style) -> int:
-    start = row
-    for task in tasks:
-        _write_task_row(ws, row, task, ctx, rex, style)
-        row += 1
-    if row > start:
-        _merge_col_b(ws, start, row - 1, section_label)
-    return row
-
-
-def _write_grouped_section(ws, row: int, categories: Dict[str, str], grouped: dict,
-                           section_label: str, ctx: dict, rex: float, style,
-                           filter_fn=None) -> int:
-    start = row
-    for cat_code, cat_label in categories.items():
-        items = grouped.get(cat_code, [])
-        if filter_fn:
-            items = filter_fn(items, ctx)
-        _write_group_row(ws, row, cat_label, items, ctx, rex, style)
-        row += 1
-    if row > start:
-        _merge_col_b(ws, start, row - 1, section_label)
-    return row
-
-
-def _write_plans_fab(ws, row: int, plans_data: dict, ctx: dict, rex: float, style) -> int:
-    for subcat_name, task_list in plans_data.items():
-        non_zero = [t for t in task_list if t.effective_hours(ctx) > 0]
-        if not non_zero:
-            continue
-        cat_start = row
-        for task in non_zero:
-            _write_task_row(ws, row, task, ctx, rex, style)
-            row += 1
-        _merge_col_b(ws, cat_start, row - 1, f"Plans FAB: {subcat_name}")
-    return row
-
-
-def _write_options(ws, row: int, categories: Dict[str, str], grouped: dict,
-                   ctx: dict, rex: float, style) -> int:
-    start = row
-    for cat_code, cat_label in categories.items():
-        selected = [o for o in grouped.get(cat_code, []) if o.is_selected]
-        if not selected:
-            continue
-        _write_group_row(ws, row, cat_label, selected, ctx, rex, style)
-        row += 1
-    if row > start:
-        _merge_col_b(ws, start, row - 1, "Options")
-    return row
+        cell_e.font = Font(bold=True)
+    ws.cell(row=row, column=6).value = effective * rex
 
 
 # ── En-tête projet ──────────────────────────────────────────────────
@@ -204,7 +104,6 @@ def export_excel_report(project: "Project", path: str):
     ws = wb['chiffrage']
     ctx = project.context()
     rex = project.manual_rex_coeff
-    app = project.app_data
 
     # Recalcul des totaux
     project.compute_first_machine_subtotal()
@@ -214,80 +113,116 @@ def export_excel_report(project: "Project", path: str):
 
     _write_header(ws, project)
 
-    # Sauvegarde des styles de référence du template
-    ref = {k: _save_row_style(ws, r) for k, r in [
-        ('enclenchement', 17), ('calculs', 21), ('plans_fab', 26),
-        ('options', 27), ('lpdc', 28), ('labo', 30), ('suivi', 32),
-        ('divers', 38), ('machine1', 39), ('total', 40), ('ref_affaire', 41),
-    ]}
+    summary_tree = project.generate_summary_tree()
 
-    _clear_dynamic_zone(ws, start_row=17)
+    # Enclenchement (rows 17-20, ordre des données = ordre template)
+    for r, task in zip(range(17, 21), summary_tree['Enclenchement']):
+        ws.cell(row=r, column=4).value = task.default_hours(ctx)
+        ws.cell(row=r, column=5).value = task.effective_hours(ctx)
+        ws.cell(row=r, column=6).value = task.effective_hours(ctx) * rex
 
-    # ── Sections ──
-    row = 17
+    # Calculs (rows 21-25, 1 ligne par catégorie)
+    for r, (cat_label, calcul_list) in zip(range(21, 26), summary_tree['Calculs'].items()):
+        active = [c for c in calcul_list if c.is_active(ctx)]
+        ws.cell(row=r, column=3).value = cat_label
+        ws.cell(row=r, column=4).value = sum(c.default_hours(ctx) for c in active)
+        ws.cell(row=r, column=5).value = sum(c.effective_hours(ctx) for c in active)
+        ws.cell(row=r, column=6).value = sum(c.effective_hours(ctx) for c in active) * rex
 
-    enclenchement = project.tasks.get('Gestion de projet', {}).get('Enclenchement', [])
-    row = _write_task_section(ws, row, enclenchement, "Enclenchement", ctx, rex, ref['enclenchement'])
+    # Plans fab
+    row = 26
+    fonts = [copy(ws.cell(row=21, column=c).font) for c in range(2, 7)]
+    borders = [copy(ws.cell(row=21, column=c).border) for c in range(2, 7)]
+    allignments = [copy(ws.cell(row=21, column=c).alignment) for c in range(2, 7)]
+    number_formats = [copy(ws.cell(row=21, column=c).number_format) for c in range(2, 7)]
+    fills = [copy(ws.cell(row=row, column=c).fill) for c in range(2, 7)]
+    ws.delete_rows(row)
 
-    row = _write_grouped_section(
-        ws, row, app.calcul_categories,
-        project.items_by_category(project.calculs, app.calcul_categories),
-        "Calculs de définition de la machine", ctx, rex, ref['calculs'],
-        filter_fn=lambda items, c: [x for x in items if x.is_active(c)],
-    )
+    tasks: Dict[str, List[GeneralTask]] = summary_tree['Plans / Specs / LDN']
+    for subcat, tlist in tasks.items():
+        # Ne pas afficher les catégories à 0h
+        if sum(t.effective_hours(ctx) for t in tlist) == 0:
+            continue
+        first_row = row
+        for t in tlist:
+            ws.insert_rows(row)
+            ws.cell(row=row, column=3).value = t.label
+            ws.cell(row=row, column=4).value = t.default_hours(ctx)
+            ws.cell(row=row, column=5).value = t.effective_hours(ctx)
+            ws.cell(row=row, column=6).value = t.effective_hours(ctx) * rex
+            for c in range(2, 7):
+                ws.cell(row=row, column=c).font = fonts[c-2]
+                ws.cell(row=row, column=c).border = borders[c-2]
+                ws.cell(row=row, column=c).fill = fills[c-2]
+                ws.cell(row=row, column=c).alignment = allignments[c-2]
+                ws.cell(row=row, column=c).number_format = number_formats[c-2]
+            row += 1
+        ws.cell(row=first_row, column=2).value = f"Plans FAB: {subcat}"
+        ws.merge_cells(start_row=first_row, start_column=2, end_row=row-1, end_column=2)
 
-    plans_data = project.tasks.get("Plans / Specs / LDN", {})
-    row = _write_plans_fab(ws, row, plans_data, ctx, rex, ref['plans_fab'])
+    # Options
+    fills = [copy(ws.cell(row=row, column=c).fill) for c in range(2, 7)]
+    ws.delete_rows(row)
+    options: Dict[str, List[GeneralTask]] = summary_tree['Options']
 
-    row = _write_options(ws, row, app.option_categories,
-        project.items_by_category(project.options, app.option_categories), ctx, rex, ref['options'])
+    first_row = row
+    for cat_label, option_list in options.items():
+        if sum(o.effective_hours(ctx) for o in option_list) == 0:
+            continue
+        ws.insert_rows(row)
+        ws.cell(row=row, column=3).value = cat_label
+        ws.cell(row=row, column=4).value = sum(o.default_hours(ctx) for o in option_list if o.is_active(ctx))
+        ws.cell(row=row, column=5).value = sum(o.effective_hours(ctx) for o in option_list)
+        ws.cell(row=row, column=6).value = sum(o.effective_hours(ctx) for o in option_list) * rex
+        for c in range(2, 7):
+            ws.cell(row=row, column=c).font = fonts[c-2]
+            ws.cell(row=row, column=c).border = borders[c-2]
+            ws.cell(row=row, column=c).fill = fills[c-2]
+            ws.cell(row=row, column=c).alignment = allignments[c-2]
+            ws.cell(row=row, column=c).number_format = number_formats[c-2]
+        row += 1
+    if row > first_row:
+        ws.cell(row=first_row, column=2).value = "Options"
+        ws.merge_cells(start_row=first_row, start_column=2, end_row=row-1, end_column=2)
 
-    row = _write_grouped_section(
-        ws, row, app.lpdc_categories, project.grouped_lpdc(),
-        "LPDC", ctx, rex, ref['lpdc'],
-        filter_fn=lambda items, c: [d for d in items if d.is_active(c)],
-    )
+    # LPDC (2 lignes, labels déjà dans le template)
+    for cat_label, lpdc_list in summary_tree['Plans et documents contractuels'].items():
+        active = [d for d in lpdc_list if d.is_active(ctx)]
+        ws.cell(row=row, column=4).value = sum(d.default_hours(ctx) for d in active)
+        ws.cell(row=row, column=5).value = sum(d.effective_hours(ctx) for d in active)
+        ws.cell(row=row, column=6).value = sum(d.effective_hours(ctx) for d in active) * rex
+        row += 1
 
-    row = _write_grouped_section(
-        ws, row, app.labo_categories,
-        project.items_by_category(project.labo, app.labo_categories),
-        "LABO", ctx, rex, ref['labo'],
-        filter_fn=lambda items, c: [l for l in items if l.is_active(c)],
-    )
+    # LABO (2 lignes, labels déjà dans le template)
+    for cat_label, labo_list in summary_tree['Laboratoire'].items():
+        active = [l for l in labo_list if l.is_active(ctx)]
+        ws.cell(row=row, column=4).value = sum(l.default_hours(ctx) for l in active)
+        ws.cell(row=row, column=5).value = sum(l.effective_hours(ctx) for l in active)
+        ws.cell(row=row, column=6).value = sum(l.effective_hours(ctx) for l in active) * rex
+        row += 1
 
-    suivi = project.tasks.get('Gestion de projet', {}).get('Suivi', [])
-    row = _write_task_section(ws, row, suivi, "Suivi", ctx, rex, ref['suivi'])
+    # Suivi (6 lignes, labels déjà dans le template, ordre données = ordre template)
+    for task in summary_tree['Suivi']:
+        ws.cell(row=row, column=4).value = task.default_hours(ctx)
+        ws.cell(row=row, column=5).value = task.effective_hours(ctx)
+        ws.cell(row=row, column=6).value = task.effective_hours(ctx) * rex
+        row += 1
 
-    # Divers
-    _apply_style(ws, row, ref['divers'])
-    ws.cell(row=row, column=2).value = "DIVERS"
-    ws.cell(row=row, column=3).value = "Risques techniques"
+    # DIVERS
     divers_hours = (project.first_machine_subtotal or 0) * project.divers_percent
     ws.cell(row=row, column=4).value = divers_hours
+    ws.cell(row=row, column=5).value = divers_hours
     ws.cell(row=row, column=6).value = divers_hours * rex
     row += 1
 
-    # Machine N°1
-    _apply_style(ws, row, ref['machine1'])
-    ws.merge_cells(start_row=row, start_column=2, end_row=row, end_column=3)
-    ws.cell(row=row, column=2).value = "Machine N°1"
-    if project.first_machine_total is not None:
-        ws.cell(row=row, column=6).value = project.first_machine_total * rex
+    # Machine N°1 : E = avant REX, F = après REX
+    ws.cell(row=row, column=5).value = project.first_machine_total
+    ws.cell(row=row, column=6).value = (project.first_machine_total or 0) * rex
     row += 1
 
-    # Total N machines
-    _apply_style(ws, row, ref['total'])
-    ws.merge_cells(start_row=row, start_column=2, end_row=row, end_column=3)
-    ws.cell(row=row, column=2).value = "TOTAL pour N machines"
-    if project.total_with_rex is not None:
-        ws.cell(row=row, column=6).value = project.total_with_rex
-    row += 1
-
-    # Pied de page
-    _apply_style(ws, row, ref['ref_affaire'])
-    ws.cell(row=row, column=2).value = "Affaire de référence:"
-    ws.merge_cells(start_row=row, start_column=4, end_row=row, end_column=5)
-    ws.cell(row=row, column=4).value = "Heures REX"
+    # TOTAL pour N machines : E = avant REX, F = après REX
+    ws.cell(row=row, column=5).value = project.n_machines_total
+    ws.cell(row=row, column=6).value = project.total_with_rex
 
     wb.save(path)
 
