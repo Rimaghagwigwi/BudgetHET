@@ -224,10 +224,14 @@ class Project:
         """
         repartition = dict.fromkeys(self.app_data.jobs.keys(), 0.0)
         ctx = self.context()
+        self.quantity_mult = self._compute_multi_machine_coeff(self.quantity) + 1  # Coeff total incluant la machine de base
 
         # 1. Tâches générales (répartition per-task)
         for task in self.get_all_tasks():
             hours = task.effective_hours(ctx)
+            is_recurrent = task.multiplicative 
+            if is_recurrent: # Pour les tâches "Suivi"
+                hours *= self.quantity_mult
             if hours > 0 and task.ortems_repartition:
                 for job_code, coeff in task.ortems_repartition.items():
                     repartition[job_code] += hours * coeff
