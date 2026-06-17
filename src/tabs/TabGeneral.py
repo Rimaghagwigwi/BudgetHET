@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import pyqtSignal, QDate, QTimer
 from src.model import Model
-from src.utils.widgets import NoWheelSpinBox
+from src.utils.widgets import NoWheelSpinBox, NoWheelComboBox
 
 class TabGeneral(QWidget):
     field_changed = pyqtSignal(int) # Signal pour les champs non essentiels
@@ -28,7 +28,7 @@ class TabGeneral(QWidget):
         self.input_crm.textChanged.connect(lambda: self.field_changed.emit(0))
         
         # 2. Révision du chiffrage
-        self.combo_revision = QComboBox()
+        self.combo_revision = NoWheelComboBox()
         self.combo_revision.addItems(["A", "B", "C", "D", "E", "F", "G"])
         form.addRow("Révision chiffrage :", self.combo_revision)
         self.combo_revision.currentIndexChanged.connect(lambda: self.field_changed.emit(0))
@@ -41,17 +41,17 @@ class TabGeneral(QWidget):
         self.date_edit.dateChanged.connect(lambda: self.field_changed.emit(0))
         
         # 4. Réalisé par
-        self.combo_realise_par = QComboBox()
+        self.combo_realise_par = NoWheelComboBox()
         form.addRow("Réalisé par :", self.combo_realise_par)
         self.combo_realise_par.currentIndexChanged.connect(lambda: self.field_changed.emit(0))
         
         # 5. Validé par
-        self.combo_valide_par = QComboBox()
+        self.combo_valide_par = NoWheelComboBox()
         form.addRow("Validé par :", self.combo_valide_par)
         self.combo_valide_par.currentIndexChanged.connect(lambda: self.field_changed.emit(0))
         
         # 6. Type d'affaire
-        self.combo_type_affaire = QComboBox()
+        self.combo_type_affaire = NoWheelComboBox()
         form.addRow("Type d'affaire :", self.combo_type_affaire)
         self.combo_type_affaire.currentIndexChanged.connect(lambda: self.field_changed.emit(1))
         
@@ -61,22 +61,22 @@ class TabGeneral(QWidget):
         self.input_client.textChanged.connect(lambda: self.field_changed.emit(0))
         
         # 8. DAS
-        self.combo_das = QComboBox()
+        self.combo_das = NoWheelComboBox()
         form.addRow("DAS * :", self.combo_das)
         self.combo_das.currentIndexChanged.connect(lambda: self.field_changed.emit(2))
 
         # 9. Secteur
-        self.combo_secteur = QComboBox()
+        self.combo_secteur = NoWheelComboBox()
         form.addRow("Secteur * :", self.combo_secteur)
         self.combo_secteur.currentIndexChanged.connect(lambda: self.field_changed.emit(2))
         
         # 10. Categorie produit
-        self.combo_category = QComboBox()
+        self.combo_category = NoWheelComboBox()
         form.addRow("Catégorie produit * :", self.combo_category)
         self.combo_category.currentIndexChanged.connect(lambda: self.field_changed.emit(2))
         
         # 11. Produit
-        self.combo_product = QComboBox()
+        self.combo_product = NoWheelComboBox()
         form.addRow("Produit * :", self.combo_product)
         self.combo_product.currentIndexChanged.connect(lambda: self.field_changed.emit(2))
         

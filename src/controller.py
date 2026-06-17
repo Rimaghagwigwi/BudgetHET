@@ -64,7 +64,10 @@ class Controller:
     def _on_import_project(self):
         default_dir = self.model.app_data.asset_dir
         path, _ = QFileDialog.getOpenFileName(
-            self.window, "Importer un projet", default_dir, "Projets JSON (*.json)"
+            self.window,
+            "Importer un projet",
+            default_dir,
+            "Projets HET (*.het *.json);;Tous les fichiers (*.*)",
         )
         if not path:
             return
@@ -94,7 +97,7 @@ class Controller:
             paths = quick_export(self.model)
             
             data = self.model.save_project()
-            file_name = f"{self.model.project.crm_number}_{self.model.project.revision}_{self.model.project.date}.json"
+            file_name = f"{self.model.project.crm_number}_{self.model.project.revision}_{self.model.project.date}.het"
             save_dir = self.model.app_data.project_save_dir
             os.makedirs(save_dir, exist_ok=True)
             json_path = os.path.join(save_dir, file_name)
@@ -102,7 +105,7 @@ class Controller:
                 json.dump(data, f, indent=2, ensure_ascii=False)
 
             all_paths = [
-                ("Sauvegarde JSON", json_path),
+                ("Sauvegarde projet", json_path),
                 ("Prepa ORTEMS", paths["ortems"]),
                 ("Rapport chiffrage", paths["rapport"]),
             ]
@@ -142,9 +145,12 @@ class Controller:
         default_dir = self.model.app_data.project_save_dir
         crm = self.model.project.crm_number or "projet"
         rev = self.model.project.revision or "rev"
-        default_path = os.path.join(default_dir, f"{crm}_{rev}.json")
+        default_path = os.path.join(default_dir, f"{crm}_{rev}.het")
         path, _ = QFileDialog.getSaveFileName(
-            self.window, "Exporter le projet", default_path, "Projets JSON (*.json)"
+            self.window,
+            "Exporter le projet",
+            default_path,
+            "Projets HET (*.het);;Projets JSON (*.json)",
         )
         if not path:
             return

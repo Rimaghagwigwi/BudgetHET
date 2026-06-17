@@ -171,7 +171,7 @@ L'onglet Resume affiche :
 Le menu d'export permet :
 
 - export rapide : cree une sauvegarde, un rapport Excel et un chiffrage par metier `prepa_ORTEMS`, puis les place dans les dossiers par defaut avec les noms par defaut en un clic ;
-- sauvegarde JSON ;
+- sauvegarde projet (`.het`, contenu JSON) ;
 - export Excel ORTEMS ;
 - export Excel rapport de chiffrage.
 
