@@ -1,4 +1,7 @@
 import json
+import os
+import sys
+from pathlib import Path
 import yaml
 from typing import Dict, List, Optional, Any
 from src.utils.Task import GeneralTask, LPDCDocument, Option, Calcul, Labo
@@ -46,12 +49,31 @@ class ApplicationData:
         self.lpdc_coeff_affaire: Dict[str, float] = {} # Dict[affaire: coeff]
         self.lpdc_ortems: Dict[str, Dict[str, float]] = {} # Dict[category: Dict[code: coeff]]
 
+    def _runtime_base_dir(self) -> Path:
+        """Retourne le dossier de base de l'application (source ou exécutable)."""
+        if getattr(sys, "frozen", False):
+            return Path(sys.executable).resolve().parent
+        return Path(__file__).resolve().parents[2]
+
+    @staticmethod
+    def _resolve_path(path_value: Any, base_dir: Path):
+        """Résout un chemin relatif vers un chemin absolu. Laisse inchangées les valeurs non string."""
+        if not isinstance(path_value, str) or not path_value:
+            return path_value
+        return str(Path(path_value) if os.path.isabs(path_value) else (base_dir / path_value).resolve())
+
     def load_config(self, config_path):
-        with open(config_path, 'r', encoding='utf-8') as f:
+        base_dir = self._runtime_base_dir()
+        resolved_config_path = self._resolve_path(config_path, base_dir)
+
+        with open(resolved_config_path, 'r', encoding='utf-8') as f:
             config = yaml.safe_load(f)
 
         # Paths
-        self.paths = config.get("datapaths", {})
+        self.paths = {
+            key: self._resolve_path(path, base_dir)
+            for key, path in config.get("datapaths", {}).items()
+        }
 
         # UI
         ui = config.get("ui", {})
@@ -66,15 +88,15 @@ class ApplicationData:
             self.window_height = 720
 
         # Dossier projets
-        self.asset_dir = config.get("asset-dir")
-        self.project_save_dir = config.get("project-save-dir")
-        self.ortems_template_path = config.get("ortems-template-path")
-        self.excel_report_template_path = config.get("excel-report-template-path")
-        self.rex_database_path = config.get("rex-database-path")
-        self.quick_export_path = config.get("quick-export-path")
+        self.asset_dir = self._resolve_path(config.get("asset-dir"), base_dir)
+        self.project_save_dir = self._resolve_path(config.get("project-save-dir"), base_dir)
+        self.ortems_template_path = self._resolve_path(config.get("ortems-template-path"), base_dir)
+        self.excel_report_template_path = self._resolve_path(config.get("excel-report-template-path"), base_dir)
+        self.rex_database_path = self._resolve_path(config.get("rex-database-path"), base_dir)
+        self.quick_export_path = self._resolve_path(config.get("quick-export-path"), base_dir)
 
         # Stylesheet
-        stylesheet_path = ui.get("stylesheet", "")
+        stylesheet_path = self._resolve_path(ui.get("stylesheet", ""), base_dir)
         self.stylesheet = ""
         if stylesheet_path:
             try:

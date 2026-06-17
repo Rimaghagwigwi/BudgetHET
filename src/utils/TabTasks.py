@@ -254,7 +254,7 @@ class TaskTableWidget(QTableWidget):
         item = self.item(header_row, 0)
         if item:
             text = item.text()
-            if text.startswith("▶ ") or text.startswith("▼ "):
+            if text.startswith(("▶ ", "▼ ")):
                 text = text[2:]
             item.setText(f"{indicator} {text}")
 

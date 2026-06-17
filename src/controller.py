@@ -15,12 +15,15 @@ from src.tabs.TabSummary import TabSummary, TabSummaryController
 
 
 class Controller:
-    def __init__(self, application_data):
+    def __init__(self, application_data, startup_project_path: str | None = None):
         self.model = Model(app_data=application_data)
         self.window = MainWindow(application_data)
         self.controllers = self._create_tabs()
         self._connect_io_signals()
         self.window.show()
+
+        if startup_project_path:
+            self._import_project_from_path(startup_project_path)
 
     def _create_tabs(self):
         """Crée tous les onglets et leurs contrôleurs."""
@@ -65,14 +68,21 @@ class Controller:
         )
         if not path:
             return
+        self._import_project_from_path(path)
+
+    def _import_project_from_path(self, path: str):
+        """Charge un projet JSON depuis un chemin disque et met à jour l'UI."""
         try:
             with open(path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
             self.model.load_project(data)
             self.ctrl_general.load_project_to_ui()
-            self.model.project_changed.emit()
         except Exception as e:
-            print(f"Erreur lors de l'import du projet : {e}")
+            QMessageBox.critical(
+                self.window,
+                "Erreur import projet",
+                f"Impossible de charger le projet JSON :\n{path}\n\nDétail : {e}",
+            )
 
     # ------------------------------------------------------------------
     # Export

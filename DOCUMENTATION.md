@@ -1,1009 +1,536 @@
-# Chiffrage HET — Documentation complète
+# Chiffrage HET - Documentation projet
 
-## Table des matières
+## Sommaire
 
-1. [Présentation générale](#1-présentation-générale)
-2. [Installation et lancement](#2-installation-et-lancement)
-3. [Architecture logicielle](#3-architecture-logicielle)
-4. [Structure des fichiers](#4-structure-des-fichiers)
-5. [Modèle de données](#5-modèle-de-données)
-6. [Classes de tâches](#6-classes-de-tâches)
-7. [Interface utilisateur — Onglets](#7-interface-utilisateur--onglets)
-   - 7.8 [Onglet « Recherche machine »](#78-onglet--recherche-machine--tabmachinesearch)
-8. [Logique de calcul](#8-logique-de-calcul)
-9. [Gestion des coefficients](#9-gestion-des-coefficients)
-10. [Flux de données et signaux](#10-flux-de-données-et-signaux)
-11. [Sérialisation et format des projets](#11-sérialisation-et-format-des-projets)
-12. [Exports Excel](#12-exports-excel)
-13. [Fichiers de configuration et de données](#13-fichiers-de-configuration-et-de-données)
-14. [Compilation et déploiement](#14-compilation-et-déploiement)
-15. [Référence API — Classes et méthodes](#15-référence-api--classes-et-méthodes)
-16. [Problèmes connus](#16-problèmes-connus)
+- [1. Objectif](#1-objectif)
+- [2. Installation](#2-installation)
+- [3. Vue d'ensemble fonctionnelle](#3-vue-densemble-fonctionnelle)
+- [4. Architecture logicielle](#4-architecture-logicielle)
+- [5. Modele metier et regles de calcul](#5-modele-metier-et-regles-de-calcul)
+- [6. Configuration et donnees](#6-configuration-et-donnees)
+- [7. Format des projets sauvegardes](#7-format-des-projets-sauvegardes)
+- [8. Exports](#8-exports)
+- [9. Structure du depot](#9-structure-du-depot)
+- [10. Guide de maintenance](#10-guide-de-maintenance)
+- [11. Resume](#11-resume)
 
----
+## 1. Objectif
 
-## 1. Présentation générale
+Chiffrage HET est une application de bureau PyQt6 destinee au chiffrage des heures d'ingenierie pour les affaires HET.
 
-**Chiffrage HET** (Budget HET) est une application de bureau développée en Python avec PyQt6, conçue pour **Jeumont Électrique**. Elle remplace le fichier Excel « BUDGET_HET » et permet d'estimer les heures d'ingénierie nécessaires à la réalisation de projets de machines électriques tournantes (alternateurs, moteurs synchrones/asynchrones, équipements marins militaires).
+Elle remplace un classeur Excel par une application qui :
 
-### Fonctionnalités principales
+- centralise la definition du projet ;
+- calcule les heures automatiquement a partir de regles metier et de coefficients ;
+- permet des corrections manuelles a la tache ou a la categorie ;
+- produit des exports de rapports Excel et Heures d'études par métier ;
+- permet la sauvegarde et l'importation de projet de chiffrage ;
+- interroge une base REX de machines historiques.
 
-- **Saisie des métadonnées projet** : numéro CRM, client, type d'affaire, DAS, secteur, type de machine, produit, quantité, etc.
-- **Calcul automatique des heures** selon le produit, le type d'affaire et le secteur, avec application de coefficients contextuels.
-- **Gestion de 5 types de tâches** : tâches générales, calculs, options, documents LPDC, travaux de laboratoire.
-- **Correction manuelle** des heures par tâche avec traçabilité.
-- **Calcul multi-machines** avec dégressivité automatique selon la quantité.
-- **Coefficient REX** (Retour d'Expérience) applicable au total.
-- **Export Excel** au format ORTEMS (distribution sur postes de travail) et au format rapport de chiffrage détaillé.
-- **Sauvegarde/chargement de projets** au format JSON (sérialisation par delta).
-- **Recherche dans la base REX** : interrogation de la base de machines historiques (fichier Excel `REX_HET.xlsx`) avec filtres textuels, numériques (± tolérance) et par listes déroulantes. Double-clic sur un résultat pour consulter et éditer les machines du projet.
+Le projet est orienté vers une application desktop Windows et s'appuie sur des fichiers JSON contenant des donnees metiers, des templates Excel et une base REX Excel.
 
 ---
 
-## 2. Installation et lancement
+## 2. Installation
 
-### Prérequis
+### Pré-requis
 
-- Python 3.10+
-- Dépendances :
-  - `PyQt6` — framework d'interface graphique
-  - `openpyxl` — lecture/écriture de fichiers Excel
-  - `pandas` — manipulation de données (usage mineur)
+- Python 3.10 ou plus recent
+- Windows recommandé
+- acces aux dossiers et fichiers references dans `config.yaml`
 
-### Installation des dépendances
-
+### Dépendances
 ```bash
-pip install PyQt6 openpyxl pandas
+pip install -r requirements.txt
 ```
 
+- `PyQt6` pour l'interface graphique ;
+- `openpyxl` pour les templates et exports Excel ;
+- `pandas` pour la base REX ;
+- `PyYAML` pour la configuration.
+
+### Données
+Avant le premier lancement, verifier `config.yaml`.
+
+Par defaut, plusieurs chemins pointent vers un lecteur reseau `S:\`.
+Sans accès réseau, les fonctionnalites liees au partage seront inaccessibles :
+- `project-save-dir`: dossier de sauvegarde par défaut
+- `asset-dir` : dossier racine pour l'importation de projet
+- `quick-export-path`: Exportation rapide sur le réseau
+- `rex-database-path`: Base de données commune
+
+Les chemins peuvent etre modifies pour atteindre des fichiers locaux si besoin.
+
+Les chemins des donnees JSON et des templates Excel sont egalement definis dans ce fichier et n'ont pas besoin d'etre modifies.
+Si vous copiez le programme sur votre machine, emportez les dossiers `data\`, `assets\` et `src\`.
+
 ### Lancement
+
+Lancer depuis la racine du projet :
 
 ```bash
 python main.py
 ```
 
-Le point d'entrée (`main.py`) effectue les opérations suivantes :
-1. Chargement des données applicatives via `ApplicationData`
-2. Création de l'application PyQt6 avec le thème configuré (Fusion)
-3. Instanciation du `Controller` qui orchestre l'ensemble MVC
-4. Application de la feuille de style QSS
-5. Affichage de la fenêtre principale
+Il est aussi possible d'ouvrir directement un projet JSON au demarrage :
+
+```bash
+python main.py "C:\\chemin\\vers\\mon_projet.json"
+```
+
+Avec l'executable compile, Windows peut passer automatiquement le chemin du fichier JSON a l'application (double-clic ou clic-droit -> Ouvrir avec). Le programme charge alors le projet au lancement.
+
+### Compilation
+
+Apres mise a jour du code, vous voudrez mettre a jour l'executable et les fichiers presents dans le dossier de partage, ou il sera utilise.
+
+Sur le réseau JE, lancer le fichier `build.bat` pour compiler le programme.
+
+```bash
+start build.bat
+```
+
+Ce programme va :
+- garder en memoire la derniere version de la base de donnees commune (attention : il va ecraser la base que vous avez en local si vous en avez une) ;
+- nettoyer le dossier du programme dans le lecteur reseau de partage ;
+- compiler le programme en un executable et le copier, ainsi que tous ses fichiers, dans le dossier de partage ;
+- supprimer les fichiers inutiles issus de la compilation.
+
+## 3. Vue d'ensemble fonctionnelle
+
+L'application est organisee en 6 onglets.
+Onglet 1 : informations generales
+Onglets 2, 3 et 4 : modification manuelle des heures d'etude.
+  - Base : heures calculees en fonction des informations generales
+  - Heures finales : heures reelles prises en compte dans le total
+  - L'onglet 4.LPDC contient des coefficients qui dependent des informations generales mais qui peuvent etre modifies.
+  - Il est possible d'apporter des corrections par categorie. Dans ce cas, les heures supplementaires seront reparties sur chacune des taches de la categorie proportionnellement aux heures de base.
+
+### 3.1 General
+
+Onglet de saisie du contexte projet :
+
+- numero CRM ;
+- revision ;
+- date ;
+- realise par / valide par ;
+- type d'affaire ;
+- client ;
+- DAS ;
+- secteur ;
+- categorie produit ;
+- produit ;
+- designation ;
+- nombre de machines ;
+- description.
+
+Il est également possible d'importer un projet JSON existant.
+
+Points importants :
+
+- les champs marques d'un `*` dans l'interface reconstruisent le projet a partir des donnees de reference (attention : les modifications manuelles ne seront pas sauvegardees. Verifiez bien les informations entrees ici avant de passer a la suite) ;
+- le type d'affaire met a jour les coefficients dependants de l'affaire ;
+- les mises a jour lourdes sont debouncees a 300 ms pour eviter les reconstructions inutiles.
+
+### 3.2 Definition
+
+Cet onglet regroupe :
+
+- `Enclenchement` ;
+- `Calculs` ;
+- `Plans / Specs / LDN` ;
+- `Suivi`.
+
+Les calculs optionnels apparaissent avec des cases a cocher. Les categories de calculs sont repliees par defaut.
+
+### 3.3 Labo et Options
+
+Cet onglet regroupe :
+
+- les taches de laboratoire ;
+- les options techniques.
+
+### 3.4 LPDC
+
+Cet onglet affiche les documents LPDC applicables au contexte courant.
+- deux coefficients globaux sont modifiables dans l'onglet : coefficient secteur et coefficient affaire.
+
+### 3.5 Resume
+
+L'onglet Resume affiche :
+
+- un arbre de synthèse des heures par famille ;
+- le sous-total de la premiere machine ;
+- le pourcentage `Divers risques techniques` ;
+- le total premiere machine ;
+- le total pour `n` machines ;
+- le coefficient REX ou les heures REX equivalentes ;
+- le total final ;
+- le delai d'etude estime en mois.
+
+Le menu d'export permet :
+
+- export rapide : cree une sauvegarde, un rapport Excel et un chiffrage par metier `prepa_ORTEMS`, puis les place dans les dossiers par defaut avec les noms par defaut en un clic ;
+- sauvegarde JSON ;
+- export Excel ORTEMS ;
+- export Excel rapport de chiffrage.
+
+Un bouton d'engrenage ouvre une boite de dialogue de parametrage des valeurs qui entrent dans le calcul du delai d'etude. Les valeurs modifiees sont sauvegardees dans `data/base_data.json` et seront utilisees dans les prochains chiffrages.
+
+### 3.6 Recherche REX
+
+Cet onglet charge une base Excel de machines historiques et permet une recherche par :
+
+- texte libre ;
+- listes deroulantes ;
+- valeurs numeriques avec tolerance ;
+- filtres dedies a l'IP et au nombre de poles.
+
+Fonctionnalites notables :
+
+- la recherche conserve les lignes dont certaines colonnes filtrees sont vides ;
+- le double-clic sur un resultat ouvre le detail du projet ;
+- le detail permet l'edition directe de certaines cellules ;
+- les modifications sont ecrites dans le fichier Excel source de la base REX.
 
 ---
 
-## 3. Architecture logicielle
+## 4. Architecture logicielle
 
-L'application suit le patron **Modèle-Vue-Contrôleur (MVC)** avec une communication par **signaux PyQt** :
+L'application suit une architecture MVC simple avec signaux Qt.
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        Controller                               │
-│  (src/controller.py)                                            │
-│  Orchestre tous les onglets, import/export, signaux globaux     │
-├────────────┬────────────┬───────────┬───────────┬───────────────┤
-│ TabGeneral │ GeneralTask│  Calculs  │  Options  │  LPDC  │ Labo│
-│ Controller │ TabCtrl    │  TabCtrl  │  TabCtrl  │  TabCtrl│TabC│
-│            │            │           │           │        │     │
-│ (TabSummary│ Controller)│ (MachineSearchController)│     │     │
-└─────┬──────┴─────┬──────┴─────┬─────┴─────┬─────┴────┬───┴─────┘
-      │            │            │           │          │
-      ▼            ▼            ▼           ▼          ▼
-┌───────────────────────────────────────────────────────────────┐
-│                         Model                                  │
-│  (src/model.py)                                                │
-│  Project : données, calculs, totaux, sérialisation             │
-│  Signaux : project_changed, data_updated                       │
-└───────────────────────────────────────────────────────────────┘
-      │
-      ▼
-┌───────────────────────────────────────────────────────────────┐
-│                          View                                  │
-│  (src/view.py — MainWindow)                                    │
-│  Fenêtre principale avec QTabWidget                            │
-│  Chaque onglet est un widget autonome                          │
-└───────────────────────────────────────────────────────────────┘
-```
+### 4.1 Point d'entree
 
-### Principes de conception
+`main.py` :
 
-- **Séparation stricte** : le Model ne connaît pas la View, la communication passe par les signaux.
-- **Polymorphisme des tâches** : tous les types de tâches partagent l'interface `effective_hours(context)`.
-- **Sérialisation par delta** : seules les modifications utilisateur sont sauvegardées (pas de duplication des données de référence).
-- **Debouncing** : les opérations lourdes (`apply_defaults`) sont différées de 300 ms via `QTimer`.
+- cree `ApplicationData` ;
+- appelle `sort_raw_data()` ;
+- cree `QApplication` ;
+- instancie `Controller`.
 
----
+### 4.2 Controller principal
 
-## 4. Structure des fichiers
+`src/controller.py` :
 
-```
-HET_3/
-├── main.py                          # Point d'entrée
-├── config.xml                       # Configuration de l'application
-├── build.bat                        # Script de compilation PyInstaller
-├── requirements.txt                 # Dépendances Python
-├── notes.txt                        # Notes et problèmes connus
-│
-├── src/
-│   ├── controller.py                # Contrôleur principal
-│   ├── model.py                     # Modèle (Project + Model)
-│   ├── view.py                      # Vue principale (MainWindow)
-│   ├── styles.qss                   # Feuille de style Qt
-│   │
-│   ├── tabs/                        # Contrôleurs d'onglets
-│   │   ├── TabGeneral.py            # Onglet Général (formulaire projet)
-│   │   ├── GeneralTaskTabController.py  # Onglet Tâches
-│   │   ├── CalculsTabController.py  # Onglet Calculs
-│   │   ├── OptionsTabController.py  # Onglet Options
-│   │   ├── LPDCTabController.py     # Onglet LPDC
-│   │   ├── LaboTabController.py     # Onglet Labo
-│   │   ├── TabMachineSearch.py      # Onglet Recherche machine (vue + contrôleur + dialogue)
-│   │   └── TabSummary.py            # Onglet Résumé
-│   │
-│   └── utils/                       # Utilitaires et classes de base
-│       ├── ApplicationData.py       # Chargement config + données JSON
-│       ├── BaseTaskTabController.py # Contrôleur de base pour onglets
-│       ├── Task.py                  # Hiérarchie des classes de tâches
-│       ├── TabTasks.py              # Widget tableau de tâches
-│       ├── MachineDatabase.py       # Chargement et interrogation de la base REX
-│       ├── widgets.py               # Widgets personnalisés (spinbox)
-│       └── exports.py               # Fonctions d'export Excel
-│
-├── data/                            # Données de référence (JSON)
-│   ├── base_data.json               # Personnes, produits, postes
-│   ├── general_task_data_new.json   # Tâches générales hiérarchiques
-│   ├── calculs.json                 # Définitions de calculs
-│   ├── options.json                 # Options techniques
-│   ├── LPDC.json                    # Documents plans/spécifications
-│   └── labo.json                    # Travaux de laboratoire
-│
-├── assets/
-│   ├── Affaire/                     # Projets sauvegardés
-│   │   └── 2025.01.0001_A.json
-│   └── Marine ref/                  # Projets de référence marine
-│       ├── ANR_Malaisie_crit1.json
-│       ├── MEP_Fremm_crit2.json
-│       └── ...
-│
-└── template/                        # Templates Excel
-    ├── ortems_template.xlsx          # Template ORTEMS
-    └── chiffrage_template.xlsx       # Template rapport de chiffrage
-```
+- cree `Model` et `MainWindow` ;
+- instancie les 6 onglets ;
+- connecte l'import et les exports ;
+- affiche la fenetre principale.
+
+Onglets instancies :
+
+- `TabGeneral` ;
+- `DefinitionTabController` ;
+- `LaboOptionsTabController` ;
+- `LPDCTabController` ;
+- `TabSummaryController` ;
+- `MachineSearchController`.
+
+### 4.3 Modele
+
+`src/model.py` contient deux classes principales :
+
+- `Project` : etat metier courant, calculs, regroupements, exports ;
+- `Model` : enveloppe `QObject` qui expose les signaux Qt et la serialisation.
+
+Signaux principaux :
+
+- `project_changed` : reconstruction des onglets apres changement structurant ;
+- `data_updated` : simple rafraichissement des affichages et totaux.
+
+### 4.4 Chargement des donnees
+
+`src/utils/ApplicationData.py` :
+
+- lit `config.yaml` ;
+- charge tous les fichiers JSON de reference ;
+- transforme ces donnees en objets Python utilisables par l'application ;
+- charge egalement la feuille de style QSS.
+
+### 4.5 Vue principale
+
+`src/view.py` fournit `MainWindow`, une fenetre Qt qui contient simplement un `QTabWidget`.
+
+### 4.6 Composants transverses
+
+- `src/utils/BaseTaskTabController.py` : logique commune des onglets de taches ;
+- `src/utils/TabTasks.py` : tableau de taches, categories repliables, corrections ;
+- `src/utils/widgets.py` : widgets Qt personnalises ;
+- `src/utils/exports.py` : exports Excel et export rapide ;
+- `src/utils/MachineDatabase.py` : chargement, recherche et ecriture dans la base REX.
 
 ---
 
-## 5. Modèle de données
+## 5. Modele metier et regles de calcul
 
-### Classe `Project` (`src/model.py`)
+### 5.1 Contexte de calcul
 
-Centre névralgique de l'application. Stocke toutes les données du projet et effectue les calculs.
+Le calcul d'heures repose sur le contexte courant du projet :
 
-#### Attributs principaux
+- `product`
+- `machine_type`
+- `affaire`
+- `secteur`
+- coefficients calculs
+- coefficients options
+- coefficients LPDC
+- coefficient labo par affaire
 
-| Attribut | Type | Description |
-|----------|------|-------------|
-| `crm_number` | `str` | Numéro CRM du projet |
-| `client` | `str` | Nom du client |
-| `affaire` | `str` | Type d'affaire (`NEUF`, `IDENTIQUE_JE`, `REMPLACEMENT`) |
-| `das` | `str` | Division d'activité stratégique (`MS`, `NUC`, `MIL`) |
-| `secteur` | `str` | Secteur (`INDUS`, `OIL_GAS`, `NUC_QUALIFIE`, etc.) |
-| `machine_type` | `str` | Catégorie machine (`SYNCH`, `ASYNCH`, `MIL`) |
-| `product` | `str` | Produit spécifique (`ALT_2P`, `ALT_4P_L`, `MEP`, etc.) |
-| `designation` | `str` | Désignation libre |
-| `quantity` | `int` | Nombre de machines |
-| `revision` | `str` | Lettre de révision |
-| `date` | `str` | Date du chiffrage |
-| `created_by` | `str` | Auteur du chiffrage |
-| `validated_by` | `str` | Validateur |
-| `description` | `str` | Description libre |
-| `divers_percent` | `float` | Pourcentage divers (défaut : 0.05 = 5%) |
-| `manual_rex_coeff` | `float` | Coefficient REX (défaut : 1.0) |
-| `manual_rex_hours` | `float` | Heures REX manuelles (optionnel, remplace le coeff) |
+### 5.2 Types de taches
 
-#### Structures de tâches
+Toutes les taches heritent de `AbstractTask` dans `src/utils/Task.py`.
 
-| Attribut | Type | Description |
-|----------|------|-------------|
-| `tasks` | `dict[catégorie][sous-catégorie][list[GeneralTask]]` | Tâches générales hiérarchiques |
-| `calculs` | `list[Calcul]` | Liste des calculs |
-| `options` | `list[Option]` | Liste des options |
-| `lpdc_docs` | `list[LPDCDocument]` | Documents LPDC |
-| `labo` | `list[Labo]` | Travaux de laboratoire |
+#### GeneralTask
 
-#### Coefficients LPDC et calculs
+Represente les taches generales d'ingenierie.
 
-| Attribut | Type | Description |
-|----------|------|-------------|
-| `lpdc_coeff_secteur` | `float` | Coeff LPDC résolu pour le secteur courant |
-| `lpdc_coeff_affaire` | `float` | Coeff LPDC résolu pour le type d'affaire courant |
-| `calcul_coeff` | `dict` | Coeff calculs par catégorie (résolu pour l'affaire courante) |
-| `option_coeff` | `dict` | Coeff options par catégorie (résolu pour l'affaire courante) |
-| `labo_coeff_affaire` | `float` | Coeff labo résolu pour le type d'affaire courant |
+- base dependante du produit ;
+- coefficient affaire ;
+- coefficient secteur ;
+- indicateur `multiplicative` pour les affaires multi-machines ;
+- repartition ORTEMS par code job.
 
-### Classe `Model` (`src/model.py`)
+#### Calcul
 
-Enveloppe `QObject` autour de `Project` pour l'intégration des signaux PyQt.
+Represente un calcul technique.
 
-#### Signaux
+- heures par type de machine ;
+- statut `mandatory` ou `optional` selon la machine ;
+- coefficient par categorie dependant du type d'affaire.
 
-| Signal | Émission | Usage |
-|--------|----------|-------|
-| `project_changed` | Après `apply_defaults()` | Reconstruction complète des onglets |
-| `data_updated` | Après modification mineure | Rafraîchissement léger des affichages |
+#### Option
 
----
+Represente une option technique selectionnable.
 
-## 6. Classes de tâches
+- active uniquement si cochee ;
+- coefficient par categorie dependant du type d'affaire.
 
-Toutes les classes de tâches résident dans `src/utils/Task.py` et héritent de `AbstractTask`.
+#### LPDCDocument
 
-### Hiérarchie
+Represente un document contractuel ou technique.
 
-```
-AbstractTask
-├── GeneralTask      (Tâches d'ingénierie générales)
-├── Calcul           (Calculs/analyses techniques)
-├── Option           (Options techniques sélectionnables)
-├── LPDCDocument     (Documents plans/spécifications)
-└── Labo             (Travaux de laboratoire)
-```
+- actif si la machine est applicable ;
+- obligatoire pour certains secteurs ;
+- optionnel sinon selon `option_possible` ;
+- coefficient secteur x coefficient affaire.
 
-### `AbstractTask` — Classe de base
+#### Labo
 
-| Méthode | Description |
-|---------|-------------|
-| `__init__(label)` | Initialise avec un label et `manual_hours = None` |
-| `default_hours(context)` | **Abstraite** — retourne les heures de base calculées |
-| `effective_hours(context)` | Retourne `manual_hours` si défini, sinon `default_hours(context)` |
+Represente une tache de laboratoire.
 
-### `GeneralTask` — Tâches générales
+- peut etre obligatoire selon le secteur ;
+- sinon selectable ;
+- coefficient secteur x coefficient affaire.
 
-Représente les tâches d'ingénierie (réunions, conception, suivi, etc.).
+### 5.3 Totaux
 
-| Attribut | Type | Description |
-|----------|------|-------------|
-| `index` | `int` | Identifiant unique |
-| `label` | `str` | Libellé de la tâche |
-| `base_hours_machine` | `dict` | Heures de base par produit |
-| `coeff_type_affaire` | `dict` | Coefficients par type d'affaire |
-| `coeff_secteur` | `dict` | Coefficients par secteur |
-| `is_multiplicative` | `bool` | Applicable au calcul multi-machines |
-| `ortems_repartition` | `dict` | Distribution sur postes ORTEMS |
+Le cycle de calcul est le suivant :
 
-**Formule** : `default_hours = base_hours_machine[product] × coeff_type_affaire[affaire] × coeff_secteur[secteur]`
+1. somme des heures effectives de toutes les familles ;
+2. application du pourcentage `Divers risques techniques` ;
+3. ajout du supplement multi-machines sur les seules taches generales multiplicatives ;
+4. application du REX par coefficient ou par valeur finale saisie.
 
-### `Calcul` — Calculs techniques
+Regle multi-machines :
 
-Représente les analyses techniques (électromagnétique, bobinage, mécanique, etc.).
+- 1 machine : pas de supplement ;
+- 2 machines : 100 % sur la machine supplementaire ;
+- 3 a 5 machines : 75 % par machine supplementaire ;
+- 6 a 25 machines : 35 % par machine supplementaire ;
+- plus de 25 machines : 15 % par machine supplementaire.
 
-| Attribut | Type | Description |
-|----------|------|-------------|
-| `index` | `int` | Identifiant unique |
-| `label` | `str` | Libellé du calcul |
-| `category` | `str` | Catégorie (`ELECMAG`, `BOB`, `CONCEPT_MECA`, `MECA_ANSYS`, `AERO_THERMIQUE`) |
-| `hours` | `dict` | Heures par type de machine |
-| `selection` | `dict` | Mode de sélection par machine (`mandatory` / `optional`) |
+### 5.4 Delai d'etude
 
-**Formule** : `effective_hours = hours[machine_type] × calcul_coeff[category]` (si actif)
+Le delai d'etude est derive de la repartition ORTEMS, en particulier des heures affectees a `PROJ_MACHINE_DEF`.
 
-Méthodes :
-- `is_mandatory(context)` — vérifie si `selection[machine_type] == "mandatory"`
-- `is_active(context)` — actif si obligatoire OU (optionnel ET sélectionné)
+Les parametres utilises sont stockes dans `data/base_data.json` :
 
-### `Option` — Options techniques
-
-Représente les options sélectionnables (bagues, ATEX, instrumentation, etc.).
-
-| Attribut | Type | Description |
-|----------|------|-------------|
-| `index` | `int` | Identifiant unique |
-| `label` | `str` | Libellé de l'option |
-| `category` | `str` | Catégorie (12 types possibles) |
-| `hours` | `float` | Heures fixes |
-| `is_selected` | `bool` | État de sélection (défaut : `False`) |
-
-**Formule** : `effective_hours = hours × option_coeff[category]` (si sélectionné)
-
-### `LPDCDocument` — Documents plans et spécifications
-
-Représente les documents contractuels (plans, spécifications d'achat, etc.).
-
-| Attribut | Type | Description |
-|----------|------|-------------|
-| `index` | `int` | Identifiant unique |
-| `label` | `str` | Libellé du document |
-| `hours` | `float` | Heures fixes |
-| `applicable_pour` | `list` | Types de machine applicables |
-| `secteur_obligatoire` | `list` | Secteurs rendant le document obligatoire |
-| `option_possible` | `bool` | Sélectionnable en option |
-
-**Formule** : `effective_hours = hours × lpdc_coeff_affaire × lpdc_coeff_secteur` (si actif)
-
-Méthode `is_active(context)` : actif si le type de machine est applicable ET (secteur obligatoire OU sélectionné manuellement).
-
-### `Labo` — Travaux de laboratoire
-
-Représente les travaux de test en laboratoire (métallurgie, isolant).
-
-| Attribut | Type | Description |
-|----------|------|-------------|
-| `index` | `int` | Identifiant unique |
-| `label` | `str` | Libellé |
-| `hours` | `float` | Heures de base |
-| `category` | `str` | Catégorie (`LAB_METAL`, `LAB_ISOL`) |
-| `coeff_secteur` | `dict` | Coefficients par secteur |
-
-**Formule** : `effective_hours = hours × coeff_secteur[secteur]` (si actif)
+- `n_projeteurs` par secteur ;
+- `taux_productivite` ;
+- `pct_conges` ;
+- `demarrage_mois`.
 
 ---
 
-## 7. Interface utilisateur — Onglets
+## 6. Configuration et donnees
 
-L'interface est composée de 8 onglets dans un `QTabWidget` :
+### 6.1 Fichier de configuration
 
-### 7.1 Onglet « Général » (`TabGeneral`)
+`config.yaml` contient :
 
-Formulaire de saisie des métadonnées du projet :
+- les chemins des donnees JSON ;
+- le chemin de la base REX Excel ;
+- les chemins des templates Excel ;
+- les dossiers d'import, de sauvegarde et d'export rapide ;
+- les parametres d'interface : theme, stylesheet, titre, taille de fenetre.
 
-| Champ | Type | Criticité* |
-|-------|------|-----------|
-| Numéro CRM | Texte | 0 |
-| Client | Texte | 0 |
-| Type d'affaire | ComboBox | 1 |
-| DAS | ComboBox | 2 |
-| Secteur | ComboBox | 2 |
-| Catégorie produit | ComboBox | 2 |
-| Produit | ComboBox | 2 |
-| Désignation | Texte | 0 |
-| Quantité | SpinBox | 1 |
-| Révision | Texte | 0 |
-| Date | DateEdit | 0 |
-| Créé par | ComboBox | 0 |
-| Validé par | ComboBox | 0 |
-| Description | TextEdit | 0 |
+### 6.2 Fichiers de donnees
 
-*Criticité des modifications :*
-- **0** : simple mise à jour (pas de recalcul)
-- **1** : mise à jour des coefficients
-- **2** : reconstruction complète (`apply_defaults`)
+Le dossier `data/` contient les regles metier.
 
-Contient également un bouton d'import de projet.
+- `base_data.json` : personnes, types produit, produits, DAS, secteurs, jobs, parametres de delai ;
+- `general_task_data_new.json` : taches generales hierarchiques ;
+- `calculs.json` : categories, coefficients affaire, liste des calculs ;
+- `options.json` : categories, coefficients affaire, liste des options ;
+- `LPDC.json` : categories, coefficients LPDC, documents ;
+- `labo.json` : categories et coefficients du laboratoire.
 
-### 7.2 Onglet « Tâches » (`GeneralTaskTabController`)
+Dans la plupart des cas, une evolution metier se fait d'abord dans ces JSON, pas dans le code Python.
 
-Affiche les tâches d'ingénierie générales dans un ou plusieurs tableaux, organisés par catégorie et sous-catégorie.
+### 6.3 Assets et templates
 
-**Colonnes** : Référence | Tâche | Heures de base | Heures finales | Correction manuelle
-
-Les tâches sont toujours affichées (pas de case à cocher) — elles sont obligatoires.
-
-### 7.3 Onglet « Calculs » (`CalculsTabController`)
-
-Deux tableaux :
-- **Calculs obligatoires** : déterminés automatiquement par le type de machine
-- **Calculs optionnels** : sélectionnables avec case à cocher
-
-**Colonnes** : ☑ Choix | Référence | Calcul | Heures de base | Heures finales | Correction
-
-### 7.4 Onglet « Options » (`OptionsTabController`)
-
-Un tableau avec toutes les options techniques, regroupées par catégorie (BAGUES, ATEX, ENV, INSTRUM, ESSAIS, NORME, etc.).
-
-**Colonnes** : ☑ Choix | Référence | Option | Heures de base | Heures finales | Correction
-
-### 7.5 Onglet « LPDC » (`LPDCTabController`)
-
-Deux tableaux :
-- **PDC de base** (BASE) : documents obligatoires selon le secteur
-- **PDC particuliers** (PART) : documents optionnels sélectionnables
-
-Contrôles supplémentaires : champs de saisie pour les coefficients LPDC secteur et affaire.
-
-**Colonnes** : ☑ Choix (si applicable) | Référence | Document | Heures de base | Heures finales | Correction
-
-### 7.6 Onglet « Labo » (`LaboTabController`)
-
-Deux tableaux :
-- **Travaux obligatoires** : déterminés par le secteur
-- **Travaux optionnels** : sélectionnables avec case à cocher
-
-**Catégories** : Labo métallurgie (`LAB_METAL`), Labo isolant (`LAB_ISOL`)
-
-### 7.8 Onglet « Recherche machine » (`TabMachineSearch`)
-
-Onglet permettant d'interroger la base de données REX (Retour d'Expérience) contenue dans le fichier Excel `data/REX_HET.xlsx`. L'objectif est de retrouver des machines similaires réalisées par le passé pour aider au chiffrage.
-
-#### Source de données
-
-Le fichier Excel contient deux feuilles exploitées :
-- **Machines** : une ligne par machine, avec ~28 colonnes (projet, client, désignation, caractéristiques électriques, type produit, DAS, secteur, etc.)
-- **Projets** : heures réalisées par projet, ventilées sur 8 codes job (`230ETELEC`, `230ETMECA`, `230ETMECNC`, `230ETNQ`, `230ETREGU`, `240RD`, `240RDNC`, `Total général`)
-
-Le chemin du fichier est configuré dans `config.xml` via la balise `<rex-database-path>`.
-
-#### Interface de recherche
-
-L'interface est organisée en sections repliables :
-
-1. **Recherche par texte** (contient) : N° Projet, Nom projet, Client, Client final, Désignation
-2. **Filtres de sélection** : Année, NB POLES (`2`, `4`, `>4`), IP (deux chiffres séparés), IM, EEX, Type produit, Produit, Type affaire, DAS, Secteur
-3. **Valeurs numériques** (± tolérance) : Nbr machines, MW, KV, Cos(phi), Hz, TR/MIN, DAL, LFER, NB ENCOCHES — avec tolérance configurable (5–100%, défaut 10%)
-
-**Comportement des filtres** :
-- Les filtres sont combinés en « ET » logique
-- Les lignes dont la cellule est vide/NaN pour un champ filtré ne sont **pas** exclues (inclusion par défaut des données manquantes)
-- Les combos Type produit → Produit et DAS → Secteur sont filtrés dynamiquement (comme dans l'onglet Général)
-- Les champs Type produit, Produit et DAS sont pré-remplis depuis le projet courant
-- La touche Entrée dans un champ texte/numérique lance la recherche
-
-#### Tableau de résultats
-
-Les résultats s'affichent dans un `QTableWidget` triable par colonnes. Les colonnes à codes (Type produit, Produit, Type affaire, DAS, Secteur) sont affichées avec leurs libellés lisibles. La colonne « Heures projet » est masquée.
-
-Une scrollbar horizontale externe est synchronisée avec la scrollbar interne du tableau pour un défilement fluide même quand le tableau est intégré dans la scroll area principale.
-
-#### Dialogue détail projet (double-clic)
-
-Un double-clic sur une ligne ouvre un `ProjectDetailDialog` (1400×700) affichant :
-
-1. **Heures du projet** : grille des 8 codes job avec les heures réalisées (issues de la feuille « Projets »)
-2. **Machines du projet** : tableau de toutes les machines partageant le même N° Projet
-
-**Édition directe** : chaque cellule du tableau est éditable par double-clic :
-- Les colonnes **Type produit, Produit, Type affaire, DAS, Secteur** présentent un `QComboBox` avec les labels de l'application. Le filtrage dynamique est appliqué (Produit dépend du Type produit, Secteur dépend du DAS). Une option vide est toujours disponible.
-- Les colonnes **IM, EEX** présentent un `QComboBox` avec les valeurs existantes dans la base
-- Les autres colonnes présentent un champ texte libre (`QLineEdit`)
-
-**Sauvegarde** : toute modification est immédiatement persistée dans le fichier Excel source via `openpyxl` (écriture cellule par cellule). Le DataFrame en mémoire est mis à jour simultanément.
-
-### 7.9 Onglet « Résumé » (`TabSummary`)
-
-Panneau gauche : **arbre récapitulatif** (`CollapsibleSection`) affichant la hiérarchie complète du projet avec les heures par section.
-
-Panneau droit : **panneau des totaux** avec :
-
-| Élément | Description |
-|---------|-------------|
-| Sous-total 1ère machine | Somme de toutes les heures effectives |
-| Divers % | Pourcentage divers (modifiable, défaut 5%) |
-| Total 1ère machine | Sous-total × (1 + divers%) |
-| Total N machines | Inclut la dégressivité multi-machines |
-| Coeff REX % | Coefficient REX (modifiable) |
-| Heures REX | Heures REX manuelles (alternative au coeff) |
-| **Total final** | Résultat final du chiffrage |
-
-**Menu d'export** : JSON, Excel ORTEMS, Rapport Excel détaillé.
+- `assets/Affaires/` : projets sauvegardes ou imports de travail ;
+- `assets/Marine ref/` : references marine au format JSON ;
+- `template/ortems_template.xlsx` : template ORTEMS ;
+- `template/chiffrage_template.xlsx` : template du rapport Excel.
 
 ---
 
-## 8. Logique de calcul
+## 7. Format des projets sauvegardes
 
-### 8.1 Calcul des heures par tâche
+La sauvegarde JSON enregistre :
 
-Chaque tâche possède une méthode `effective_hours(context)` :
+- les champs scalaires du projet ;
+- uniquement les modifications par rapport aux donnees de reference ;
+- les corrections de categorie.
 
-```
-Si manual_hours est défini :
-    effective_hours = manual_hours
-Sinon :
-    effective_hours = default_hours(context)
-```
-
-Le `context` est un dictionnaire fourni par `Project.context()` contenant :
-- `product`, `machine_type`, `affaire`, `secteur`
-- `lpdc_coeff_secteur`, `lpdc_coeff_affaire`
-- `calcul_coeff`
-- `option_coeff`
-- `labo_coeff_affaire`
-
-### 8.2 Calcul du sous-total 1ère machine
-
-```
-first_machine_subtotal = Σ effective_hours(tâches générales)
-                       + Σ effective_hours(calculs actifs)
-                       + Σ effective_hours(options sélectionnées)
-                       + Σ effective_hours(documents LPDC actifs)
-                       + Σ effective_hours(travaux labo actifs)
-```
-
-### 8.3 Calcul du total 1ère machine
-
-```
-first_machine_total = first_machine_subtotal × (1 + divers_percent)
-```
-
-### 8.4 Calcul multi-machines
-
-Seules les tâches marquées `is_multiplicative` contribuent aux machines supplémentaires.
-
-**Dégressivité par quantité :**
-
-| Quantité | Coefficient par machine supplémentaire |
-|----------|---------------------------------------|
-| 2 | 100% (×1.0) |
-| 3 à 5 | 75% (×0.75) |
-| 6 à 25 | 35% (×0.35) |
-| > 25 | 15% (×0.15) |
-
-```
-multiplicative_subtotal = Σ effective_hours(tâches multiplicatives uniquement)
-
-Coefficient multi-machines = Σ des contributions par tranche
-  Exemple pour qty=4 : 1.0 + 0.75 + 0.75 = 2.5
-
-n_machines_total = first_machine_total + multiplicative_subtotal × multi_machine_coeff
-```
-
-### 8.5 Calcul avec REX
-
-```
-Si manual_rex_hours est défini :
-    total_with_rex = manual_rex_hours
-Sinon :
-    total_with_rex = n_machines_total × manual_rex_coeff
-```
-
-Le coefficient REX et les heures REX sont liés par la relation :
-```
-manual_rex_hours = n_machines_total × manual_rex_coeff
-```
-Modifier l'un met à jour l'autre automatiquement.
-
----
-
-## 9. Gestion des coefficients
-
-### 9.1 Coefficients par type de tâche
-
-| Type | Coefficients appliqués | Source |
-|------|----------------------|--------|
-| **Tâches générales** | `coeff_type_affaire[affaire]` × `coeff_secteur[secteur]` | `general_task_data_new.json` |
-| **Calculs** | `calcul_coeff[category]` | `calculs.json` |
-| **Options** | `option_coeff[category]` | `options.json` |
-| **LPDC** | `lpdc_coeff_affaire` × `lpdc_coeff_secteur` | `LPDC.json` |
-| **Labo** | `coeff_secteur[secteur]` × `labo_coeff_affaire` | `labo.json` |
-
-### 9.2 Coefficients LPDC par secteur
-
-| Secteur | Coefficient |
-|---------|-------------|
-| INDUS | 1.0 |
-| OIL_GAS | 1.2 |
-| NUC_QUALIFIE | 1.8 |
-| NUC_NON_QUALIFIE | 1.0 |
-| MARINE_CIVILE | 1.0 |
-| MIL | 0 |
-
-### 9.3 Coefficients LPDC par type d'affaire
-
-| Type d'affaire | Coefficient |
-|---------------|-------------|
-| NEUF | 1.0 |
-| IDENTIQUE_JE | 0.2 |
-| REMPLACEMENT | 1.2 |
-
-### 9.4 Coefficient divers
-
-Pourcentage appliqué au sous-total pour couvrir les imprévus. Défaut : **5%**.
-
-### 9.5 Coefficient REX (Retour d'Expérience)
-
-Multiplicateur final tenant compte de l'expérience acquise. Défaut : **1.0** (100%).
-
----
-
-## 10. Flux de données et signaux
-
-### Architecture des signaux
-
-```
-Entrée utilisateur (TabGeneral / Tableaux / Résumé)
-    │
-    ▼
-Signal Vue émis :
-    field_changed(criticité)          → TabGeneral
-    manual_value_modified(index, val) → TaskTableWidget
-    checkbox_toggled(index, state)    → TaskTableWidget
-    divers_changed(val)               → TabSummary
-    rex_coeff_changed(val)            → TabSummary
-    rex_hours_changed(val)            → TabSummary
-    │
-    ▼
-Contrôleur traite le signal :
-    - Met à jour Model.project
-    - Appelle apply_defaults() si criticité = 2
-    │
-    ▼
-Model émet :
-    project_changed  → reconstruction complète des onglets
-    data_updated     → rafraîchissement léger
-    │
-    ▼
-Tous les Tab Controllers écoutent → reconstruction/rafraîchissement
-    │
-    ▼
-TabSummaryController → met à jour l'arbre + les totaux
-```
-
-### Debouncing
-
-Les modifications de criticité 2 (changement de produit, secteur, DAS) déclenchent un `QTimer` de 300 ms dans le `TabGeneralController`. Si un nouveau changement arrive dans ce délai, le timer est réinitialisé. Cela évite les recalculs intempestifs lors de changements en rafale.
-
----
-
-## 11. Sérialisation et format des projets
-
-### Sauvegarde (`save_project()`)
-
-Le projet est sauvegardé au format JSON avec un système de **delta** : seuls les éléments modifiés par l'utilisateur sont persistés.
+Structure generale :
 
 ```json
 {
   "version": 1,
   "project": {
-    "crm_number": "2025.01.0001",
-    "client": "Nom du client",
-    "affaire": "NEUF",
-    "das": "MS",
-    "secteur": "INDUS",
-    "machine_type": "SYNCH",
-    "product": "ALT_2P",
-    "designation": "",
-    "quantity": 1,
-    "revision": "A",
-    "date": "2026-02-26",
-    "created_by": "Walid BOUGHANMI",
-    "validated_by": "Walid BOUGHANMI",
-    "description": "",
-    "divers_percent": 0.05,
-    "manual_rex_coeff": 1.0
+    "crm_number": "...",
+    "client": "...",
+    "affaire": "...",
+    "das": "...",
+    "secteur": "...",
+    "machine_type": "...",
+    "product": "..."
   },
   "modifications": {
-    "tasks": [
-      {"index": 5, "manual_hours": 360.0}
-    ],
-    "calculs": [
-      {"index": 1, "is_selected": false, "manual_hours": 400.0}
-    ],
-    "options": [
-      {"index": 147, "is_selected": true, "manual_hours": 925.0}
-    ],
-    "lpdc_docs": [
-      {"index": 1, "is_selected": true, "manual_hours": 3041.7}
-    ],
-    "labo": []
+    "lpdc_docs": [],
+    "options": [],
+    "calculs": [],
+    "tasks": [],
+    "labo": [],
+    "category_corrections": {}
   }
 }
 ```
 
-### Chargement (`load_project()`)
+Points a noter :
 
-1. Les scalaires du projet sont restaurés
-2. `apply_defaults()` reconstruit toutes les tâches depuis les données de référence
-3. Les modifications sauvegardées sont appliquées en delta (par index) sur les tâches reconstruites
-
-Ce mécanisme garantit que les projets restent compatibles même si les données de référence évoluent.
+- les objets sont identifies par leur `index` ;
+- les selections et corrections manuelles sont restaurees au chargement ;
+- la valeur finale `manual_rex_hours` n'est pas serialisee comme champ distinct : la sauvegarde conserve le coefficient REX equivalent.
 
 ---
 
-## 12. Exports Excel
+## 8. Exports
 
-### 12.1 Export ORTEMS (`export_ortems_excel()`)
+### 8.1 Export JSON
 
-L'export ORTEMS distribue les heures sur les différents postes de travail (job codes) selon des pondérations définies par catégorie.
+Sauvegarde du projet courant pour reprise ulterieure dans l'application.
 
-**Processus** :
-1. Chargement du template `ortems_template.xlsx`
-2. Appel de `project.make_ortems_repartition()` :
-   - Pour chaque tâche active, les heures sont réparties sur les job codes selon les mappings `ortems_repartition`
-   - Le coefficient divers est appliqué
-   - Le coefficient REX est appliqué
-3. Écriture des résultats dans la feuille « prepa ORTEMS »
-4. Le nombre de projeteurs (`n_projeteurs`) est défini selon le secteur
+### 8.2 Export ORTEMS
 
-**Job codes utilisés** (23 postes) : `ADM_COA`, `ING_ELECTROTECH`, `PROJ_MACHINE`, `ING_MECANIQUE`, etc., chacun décliné en suffixes `DEF` (Définition) et `PROD` (Production).
+Produit un fichier Excel a partir de `template/ortems_template.xlsx`.
 
-### 12.2 Export Rapport de Chiffrage (`export_excel_report()`)
+Le calcul s'appuie sur la repartition ORTEMS generee par `Project.make_ortems_repartition()`.
 
-Génère un rapport détaillé du chiffrage dans un format structuré.
+### 8.3 Rapport Excel
 
-**Processus** :
-1. Chargement du template `chiffrage_template.xlsx`
-2. Écriture de l'en-tête projet (CRM, client, dates, etc.)
-3. Recalcul de tous les totaux
-4. Nettoyage de la zone dynamique (à partir de la ligne 17)
-5. Écriture séquentielle des sections :
-   - Tâches d'Enclenchement
-   - Calculs actifs (par catégorie)
-   - Plans FAB (heures non nulles)
-   - Options sélectionnées
-   - Documents LPDC actifs
-   - Travaux Labo actifs
-   - Tâches de Suivi
-   - Ligne Divers (sous-total × %)
-   - Total Machine N°1
-   - Total N machines et REX
+Produit un rapport de chiffrage detaille a partir de `template/chiffrage_template.xlsx`.
 
-Chaque ligne affiche : heures de base | correction manuelle | heures corrigées finales (× REX).
+Le rapport :
+
+- injecte l'en-tete projet ;
+- ecrit les heures par famille ;
+- insere dynamiquement des lignes pour certaines sections ;
+- applique le coefficient REX courant dans la colonne finale.
+
+### 8.4 Export rapide
+
+L'export rapide genere en une seule action :
+
+- le JSON du projet ;
+- le rapport Excel ;
+- le fichier ORTEMS.
+
+Les fichiers sont ecrits dans `quick-export-path` et `project-save-dir`.
 
 ---
 
-## 13. Fichiers de configuration et de données
+## 9. Structure du depot
 
-### 13.1 `config.xml`
+Structure logique principale :
 
-Configuration générale de l'application :
-
-```xml
-<config>
-    <data>
-        <base_data>data/base_data.json</base_data>
-        <options>data/options.json</options>
-        <tasks>data/general_task_data_new.json</tasks>
-        <LPDC>data/LPDC.json</LPDC>
-        <calculs>data/calculs.json</calculs>
-        <labo>data/labo.json</labo>
-    </data>
-    <assets>assets/</assets>
-    <templates>
-        <ortems>template/ortems_template.xlsx</ortems>
-        <chiffrage>template/chiffrage_template.xlsx</chiffrage>
-    </templates>
-    <ui>
-        <theme>Fusion</theme>
-        <width>1080</width>
-        <height>720</height>
-        <stylesheet>src/styles.qss</stylesheet>
-    </ui>
-</config>
+```text
+HET_3/
+|-- main.py
+|-- config.yaml
+|-- build.bat
+|-- requirements.txt
+|-- data/
+|-- assets/
+|-- template/
+`-- src/
+    |-- controller.py
+    |-- model.py
+    |-- view.py
+    |-- styles.qss
+    |-- tabs/
+    `-- utils/
 ```
 
-### 13.2 `data/base_data.json`
+Fichiers Python les plus importants :
 
-Données de référence de l'entreprise :
-
-| Clé | Contenu |
-|-----|---------|
-| `people` | Liste des collaborateurs |
-| `product_types` | Types de machines (`SYNCH`, `ASYNCH`, `MIL`) |
-| `products` | Produits par type (ex : `SYNCH` → `ALT_2P`, `ALT_4P_L`, etc.) |
-| `types_affaire` | Types d'affaire (`NEUF`, `IDENTIQUE_JE`, `REMPLACEMENT`) |
-| `DAS` | Divisions d'activité (`MS`, `NUC`, `MIL`) |
-| `sectors` | Secteurs par DAS |
-| `jobs` | 23 codes postes de travail |
-| `job_suffixes` | `DEF` (Définition), `PROD` (Production) |
-| `n_projeteurs` | Nombre de projeteurs par secteur |
-
-### 13.3 `data/general_task_data_new.json`
-
-Structure hiérarchique à 3 niveaux :
-
-```
-Catégorie (ex: "Enclenchement et Suivi")
-└── Sous-catégorie (ex: "Enclenchement")
-    └── Tâche (ex: "Réunion")
-        ├── base: {ALT_2P: 4, ALT_4P_L: 4, ...}
-        ├── coeff_secteur: {INDUS: 1, OIL_GAS: 1.2, ...}
-        ├── coeff_type_affaire: {IDENTIQUE_JE: 0, ...}
-        ├── is_multiplicative: false
-        └── ortems_repartition: {ING_ELECTROTECH_DEF: 0.5, ...}
-```
-
-### 13.4 `data/calculs.json`
-
-| Clé | Contenu |
-|-----|---------|
-| `categories` | 5 catégories de calculs |
-| `coeff_type_affaire` | Coefficients par type d'affaire et catégorie |
-| `ortems_repartition` | Distribution ORTEMS par catégorie de calcul |
-| `calculs` | Liste des calculs avec heures par machine et mode de sélection |
-
-### 13.5 `data/options.json`
-
-| Clé | Contenu |
-|-----|---------|
-| `categories` | 12 types d'options |
-| `category_coeff` | Coefficients par catégorie et type d'affaire |
-| `ortems_repartition` | Distribution ORTEMS par catégorie d'option |
-| `options` | Options groupées par catégorie avec index, label, heures |
-
-### 13.6 `data/LPDC.json`
-
-| Clé | Contenu |
-|-----|---------|
-| `coeff_secteur` | Coefficients LPDC par secteur |
-| `coeff_affaire` | Coefficients LPDC par type d'affaire |
-| `categories` | `BASE` (obligatoire), `PART` (optionnel) |
-| `ortems_repartition` | Distribution ORTEMS |
-| `documents` | Documents avec applicabilité et règles de sélection |
-
-### 13.7 `data/labo.json`
-
-| Clé | Contenu |
-|-----|---------|
-| `categories` | `LAB_METAL`, `LAB_ISOL` |
-| `ortems_repartition` | Distribution ORTEMS |
-| `labo` | Travaux de labo avec heures et coefficients secteur |
+- `src/controller.py` : orchestration generale ;
+- `src/model.py` : etat projet, calculs, serialisation ;
+- `src/utils/ApplicationData.py` : chargement de la configuration et des JSON ;
+- `src/utils/Task.py` : hierarchie metier des taches ;
+- `src/utils/exports.py` : exports Excel ;
+- `src/utils/MachineDatabase.py` : moteur de recherche REX.
 
 ---
 
-## 14. Compilation et déploiement
+## 10. Guide de maintenance
 
-### Script `build.bat`
+Pour faire evoluer l'application proprement :
 
-Le fichier `build.bat` compile l'application en exécutable Windows via **PyInstaller** :
+### Ajouter ou modifier une regle metier
 
-1. **Nettoyage** du répertoire cible sur le lecteur réseau (`\\SRV-JE-005\public_ji$\...`)
-2. **Compilation PyInstaller** :
-   - Mode `--onedir` (dossier unique)
-   - Mode `--noconsole` (pas de fenêtre console)
-   - Inclusion des ressources : `config.xml`, `data/`, `assets/`, `src/styles.qss` dans `_internal/`
-3. **Résultat** : `ChiffrageHET.exe` (dans le dossier `dist/`)
-4. **Déploiement** : copie vers le partage réseau
+Commencer par verifier si la modification releve d'un fichier JSON dans `data/`. C'est le cas de la plupart des taches, coefficients, categories et repartitions ORTEMS.
 
-### Exécution manuelle
+### Modifier le comportement d'un onglet
 
-```batch
-build.bat
-```
+Regarder d'abord dans `src/tabs/`, puis dans `src/utils/BaseTaskTabController.py` et `src/utils/TabTasks.py` pour la logique commune.
 
----
+### Modifier un calcul global
 
-## 15. Référence API — Classes et méthodes
+Les points d'entree sont principalement dans `Project` :
 
-### `ApplicationData` (`src/utils/ApplicationData.py`)
+- `apply_defaults()` ;
+- `compute_first_machine_subtotal()` ;
+- `compute_first_machine_total()` ;
+- `compute_n_machines_total()` ;
+- `calculate_total_with_rex()` ;
+- `make_ortems_repartition()` ;
+- `compute_delai_etude()`.
 
-| Méthode | Description |
-|---------|-------------|
-| `__init__()` | Charge `config.xml`, tous les fichiers JSON, appelle `sort_raw_data()` |
-| `load_config()` | Parse `config.xml` → chemins, thème, dimensions |
-| `sort_raw_data()` | Transforme les données brutes en objets Python typés |
+### Modifier le look and feel
 
-Attributs principaux :
-- `tasks`, `lpdc_docs`, `options`, `calculs`, `labo` — données de référence
-- `people`, `product_types`, `products`, `types_affaires`, `DAS`, `sectors` — catalogue
-- `*_categories`, `*_coeff_*`, `*_ortems` — coefficients et distributions
+Le style applicatif est charge depuis `src/styles.qss` via `config.yaml`.
 
 ---
 
-### `Project` (`src/model.py`)
+## 11. Resume
 
-| Méthode | Description |
-|---------|-------------|
-| `context()` | Retourne le dictionnaire de contexte pour les calculs |
-| `apply_defaults()` | Copie profonde des données de référence, filtre selon le contexte |
-| `get_all_tasks()` | Aplatit la hiérarchie des tâches en liste |
-| `grouped_calculs()` | Retourne `dict[catégorie] → list[Calcul]` |
-| `grouped_options()` | Retourne `dict[catégorie] → list[Option]` |
-| `grouped_lpdc()` | Retourne `dict[catégorie] → list[LPDCDocument]` |
-| `grouped_labo()` | Retourne `dict[catégorie] → list[Labo]` |
-| `compute_first_machine_subtotal()` | Somme de toutes les heures effectives |
-| `compute_first_machine_total()` | Sous-total × (1 + divers%) |
-| `_compute_multi_machine_coeff(qty)` | Calcul du coefficient multi-machines |
-| `compute_n_machines_total()` | Total incluant toutes les machines |
-| `calculate_total_with_rex()` | Total final avec REX |
-| `make_ortems_repartition()` | Distribution sur postes de travail |
-| `generate_summary_tree()` | Arbre récapitulatif pour l'affichage |
-| `compute_tree_hours(node)` | Somme récursive des heures d'un nœud |
-| `save_project()` | Sérialisation JSON avec delta |
+Chiffrage HET est une application de chiffrage pilotee par des donnees JSON, organisee autour d'un modele `Project`, de tableaux de taches generiques et d'un onglet de synthese qui centralise calcul, delai et exports.
 
----
+La cle pour maintenir le projet sans casser le comportement est de distinguer clairement :
 
-### `Model` (`src/model.py`)
-
-| Méthode | Description |
-|---------|-------------|
-| `save_project()` | Délègue à `project.save_project()` |
-| `load_project(data)` | Restaure un projet depuis un dict JSON |
-
-| Signal | Description |
-|--------|-------------|
-| `project_changed` | Émis après reconstruction complète |
-| `data_updated` | Émis après modification mineure |
-
----
-
-### `Controller` (`src/controller.py`)
-
-| Méthode | Description |
-|---------|-------------|
-| `__init__(app_data, app)` | Crée la vue, le modèle, tous les contrôleurs d'onglets |
-| Import/export wiring | Connecte les boutons import/export aux dialogues fichiers |
-
----
-
-### `MachineDatabase` (`src/utils/MachineDatabase.py`)
-
-Charge et interroge la base de machines REX depuis un fichier Excel.
-
-| Méthode | Description |
-|---------|-------------|
-| `load()` | Charge les feuilles « Machines » et « Projets », normalise IP, extrait les valeurs uniques |
-| `search(filters, tolerance)` | Filtre le DataFrame selon les critères (texte, numérique ± tolérance, dropdown) |
-| `get_project_machines(project_id)` | Retourne toutes les machines d'un projet |
-| `get_project_hours(project_id)` | Retourne les heures du projet (ventilation par code job) |
-| `update_machine_cell(df_index, column, value)` | Met à jour une cellule en mémoire et dans le fichier Excel via openpyxl |
-| `get_original_df_indices(project_id)` | Retourne les indices du DataFrame principal pour un projet |
-
-Attributs principaux :
-- `df` — DataFrame des machines
-- `df_projets` — DataFrame des heures projet
-- `unique_values` — dict des valeurs uniques par colonne (pour les filtres)
-
----
-
-### `MachineSearchController` (`src/tabs/TabMachineSearch.py`)
-
-| Méthode | Description |
-|---------|-------------|
-| `_on_search()` | Lance la recherche avec les filtres courants |
-| `_on_double_click(index)` | Ouvre le `ProjectDetailDialog` pour le projet sélectionné |
-| `_on_reset()` | Réinitialise les filtres et pré-remplit depuis le projet courant |
-| `_update_produit_combo()` | Met à jour Produit selon Type produit |
-| `_update_secteur_combo()` | Met à jour Secteur selon DAS |
-| `_prefill_from_project()` | Pré-remplit Type produit, Produit, DAS depuis le projet courant |
-| `_build_label_maps()` | Construit les mappings code → label pour l'affichage |
-
----
-
-### `BaseTaskTabController` (`src/utils/BaseTaskTabController.py`)
-
-| Méthode | Type | Description |
-|---------|------|-------------|
-| `_get_all_tasks()` | Abstraite | Retourne la liste des tâches à afficher |
-| `_build_tables()` | Abstraite | Construit les widgets tableaux |
-| `_connect_table(table)` | Concrète | Connecte les signaux d'un tableau |
-| `_on_project_changed()` | Concrète | Reconstruit les tableaux |
-| `_on_manual_change()` | Concrète | Met à jour `manual_hours` d'une tâche |
-| `_on_checkbox_toggle()` | Concrète | Met à jour `is_selected` d'une tâche |
-
----
-
-### `TaskTableWidget` (`src/utils/TabTasks.py`)
-
-| Méthode | Description |
-|---------|-------------|
-| `add_category(name)` | Ajoute un en-tête de catégorie |
-| `add_task(task, context)` | Ajoute une ligne de tâche |
-| `show_table()` | Affiche le tableau complet |
-| `update_table()` | Rafraîchit les valeurs sans recréer les widgets |
-| `refresh()` | Reconstruction complète du tableau |
-
-| Signal | Description |
-|--------|-------------|
-| `manual_value_modified(index, value)` | Modification manuelle d'heures |
-| `checkbox_toggled(index, state)` | Changement de sélection |
-
----
-
-### Widgets personnalisés (`src/utils/widgets.py`)
-
-| Widget | Description |
-|--------|-------------|
-| `NoWheelSpinBox` | SpinBox qui ignore les événements de molette (évite les modifications accidentelles) |
-| `CoefficientSpinBox` | SpinBox spécialisée pour la saisie de coefficients |
-
----
-
-### Fonctions d'export (`src/utils/exports.py`)
-
-| Fonction | Description |
-|----------|-------------|
-| `export_ortems_excel(project, path)` | Génère le fichier Excel ORTEMS |
-| `export_excel_report(project, path)` | Génère le rapport de chiffrage Excel |
-
----
-
-## 16. Problèmes connus
-
-*(Issus de `notes.txt`)*
-
-| # | Description | Impact |
-|---|-------------|--------|
-| 1 | La feuille 'tri1 LPDC' cellule C2:I2 référence incorrectement des lignes calculs pour le flag asynchrone | Erreur de calcul LPDC pour machines asynchrones |
-| 2 | La feuille 'chiffrage' cellule D19 (tâche réunion) référence la mauvaise ligne de données pour le cas marine militaire | Heures incorrectes pour les projets MIL |
-| 3 | La section Labo nécessite des tests complets sur tous les types d'affaire | Fiabilité incertaine des calculs labo |
-| 4 | La logique de calcul ORTEMS est incomplète et nécessite une validation par rapport à la référence Excel | Distribution ORTEMS potentiellement incorrecte |
-
----
-
-*Documentation générée le 19 mars 2026. Basée sur l'analyse complète du code source HET_3.*
+- ce qui releve des donnees metier dans `data/` ;
+- ce qui releve du calcul dans `src/model.py` et `src/utils/Task.py` ;
+- ce qui releve de l'interface dans `src/tabs/` et `src/utils/TabTasks.py`.
