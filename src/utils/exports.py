@@ -1,5 +1,6 @@
 from __future__ import annotations
 from copy import copy
+import os
 from typing import TYPE_CHECKING, Dict, List, Any
 
 import openpyxl
@@ -105,9 +106,7 @@ def export_excel_report(project: "Project", path: str):
     ctx = project.context()
     rex = project.manual_rex_coeff
 
-    # Recalcul des totaux
-    project.compute_first_machine_subtotal()
-    project.compute_first_machine_total()
+    # Recalcul des totaux (cascade : nrc_subtotal, rc_subtotal, nrc_total, rc_total)
     project.compute_n_machines_total()
     project.calculate_total_with_rex()
 
@@ -115,112 +114,116 @@ def export_excel_report(project: "Project", path: str):
 
     summary_tree = project.generate_summary_tree()
 
-    # Enclenchement (rows 17-20, ordre des données = ordre template)
+    # Enclenchement (rows 17-20)
     for r, task in zip(range(17, 21), summary_tree['Enclenchement']):
-        ws.cell(row=r, column=4).value = task.default_hours(ctx)
-        ws.cell(row=r, column=5).value = task.effective_hours(ctx)
-        ws.cell(row=r, column=6).value = task.effective_hours(ctx) * rex
+        _write_d_e_f(ws, r, task.default_hours(ctx), task.effective_hours(ctx), rex)
 
     # Calculs (rows 21-25, 1 ligne par catégorie)
     for r, (cat_label, calcul_list) in zip(range(21, 26), summary_tree['Calculs'].items()):
         active = [c for c in calcul_list if c.is_active(ctx)]
         ws.cell(row=r, column=3).value = cat_label
-        ws.cell(row=r, column=4).value = sum(c.default_hours(ctx) for c in active)
-        ws.cell(row=r, column=5).value = sum(c.effective_hours(ctx) for c in active)
-        ws.cell(row=r, column=6).value = sum(c.effective_hours(ctx) for c in active) * rex
+        _write_d_e_f(ws, r,
+                     sum(c.default_hours(ctx) for c in active),
+                     sum(c.effective_hours(ctx) for c in active), rex)
 
-    # Plans fab
+    # Plans fab (dynamique)
     row = 26
     fonts = [copy(ws.cell(row=21, column=c).font) for c in range(2, 7)]
     borders = [copy(ws.cell(row=21, column=c).border) for c in range(2, 7)]
-    allignments = [copy(ws.cell(row=21, column=c).alignment) for c in range(2, 7)]
+    alignments = [copy(ws.cell(row=21, column=c).alignment) for c in range(2, 7)]
     number_formats = [copy(ws.cell(row=21, column=c).number_format) for c in range(2, 7)]
     fills = [copy(ws.cell(row=row, column=c).fill) for c in range(2, 7)]
     ws.delete_rows(row)
 
     tasks: Dict[str, List[GeneralTask]] = summary_tree['Plans / Specs / LDN']
     for subcat, tlist in tasks.items():
-        # Ne pas afficher les catégories à 0h
         if sum(t.effective_hours(ctx) for t in tlist) == 0:
             continue
         first_row = row
         for t in tlist:
             ws.insert_rows(row)
             ws.cell(row=row, column=3).value = t.label
-            ws.cell(row=row, column=4).value = t.default_hours(ctx)
-            ws.cell(row=row, column=5).value = t.effective_hours(ctx)
-            ws.cell(row=row, column=6).value = t.effective_hours(ctx) * rex
+            _write_d_e_f(ws, row, t.default_hours(ctx), t.effective_hours(ctx), rex)
             for c in range(2, 7):
                 ws.cell(row=row, column=c).font = fonts[c-2]
                 ws.cell(row=row, column=c).border = borders[c-2]
                 ws.cell(row=row, column=c).fill = fills[c-2]
-                ws.cell(row=row, column=c).alignment = allignments[c-2]
+                ws.cell(row=row, column=c).alignment = alignments[c-2]
                 ws.cell(row=row, column=c).number_format = number_formats[c-2]
             row += 1
-        ws.cell(row=first_row, column=2).value = f"Plans FAB: {subcat}"
-        ws.merge_cells(start_row=first_row, start_column=2, end_row=row-1, end_column=2)
+        _merge_col_b(ws, first_row, row - 1, f"Plans FAB: {subcat}")
 
-    # Options
+    # Options (dynamique)
     fills = [copy(ws.cell(row=row, column=c).fill) for c in range(2, 7)]
     ws.delete_rows(row)
     options: Dict[str, List[GeneralTask]] = summary_tree['Options']
-
     first_row = row
     for cat_label, option_list in options.items():
         if sum(o.effective_hours(ctx) for o in option_list) == 0:
             continue
         ws.insert_rows(row)
         ws.cell(row=row, column=3).value = cat_label
-        ws.cell(row=row, column=4).value = sum(o.default_hours(ctx) for o in option_list if o.is_active(ctx))
-        ws.cell(row=row, column=5).value = sum(o.effective_hours(ctx) for o in option_list)
-        ws.cell(row=row, column=6).value = sum(o.effective_hours(ctx) for o in option_list) * rex
+        _write_d_e_f(ws, row,
+                     sum(o.default_hours(ctx) for o in option_list if o.is_active(ctx)),
+                     sum(o.effective_hours(ctx) for o in option_list), rex)
         for c in range(2, 7):
             ws.cell(row=row, column=c).font = fonts[c-2]
             ws.cell(row=row, column=c).border = borders[c-2]
             ws.cell(row=row, column=c).fill = fills[c-2]
-            ws.cell(row=row, column=c).alignment = allignments[c-2]
+            ws.cell(row=row, column=c).alignment = alignments[c-2]
             ws.cell(row=row, column=c).number_format = number_formats[c-2]
         row += 1
     if row > first_row:
-        ws.cell(row=first_row, column=2).value = "Options"
-        ws.merge_cells(start_row=first_row, start_column=2, end_row=row-1, end_column=2)
+        _merge_col_b(ws, first_row, row - 1, "Options")
 
-    # LPDC (2 lignes, labels déjà dans le template)
+    # LPDC (2 lignes : BASE et PART)
     for cat_label, lpdc_list in summary_tree['Plans et documents contractuels'].items():
         active = [d for d in lpdc_list if d.is_active(ctx)]
-        ws.cell(row=row, column=4).value = sum(d.default_hours(ctx) for d in active)
-        ws.cell(row=row, column=5).value = sum(d.effective_hours(ctx) for d in active)
-        ws.cell(row=row, column=6).value = sum(d.effective_hours(ctx) for d in active) * rex
+        _write_d_e_f(ws, row,
+                     sum(d.default_hours(ctx) for d in active),
+                     sum(d.effective_hours(ctx) for d in active), rex)
         row += 1
 
-    # LABO (2 lignes, labels déjà dans le template)
+    # LABO (2 lignes : LAB_METAL et LAB_ISOL)
     for cat_label, labo_list in summary_tree['Laboratoire'].items():
-        active = [l for l in labo_list if l.is_active(ctx)]
-        ws.cell(row=row, column=4).value = sum(l.default_hours(ctx) for l in active)
-        ws.cell(row=row, column=5).value = sum(l.effective_hours(ctx) for l in active)
-        ws.cell(row=row, column=6).value = sum(l.effective_hours(ctx) for l in active) * rex
+        active = [la for la in labo_list if la.is_active(ctx)]
+        _write_d_e_f(ws, row,
+                     sum(la.default_hours(ctx) for la in active),
+                     sum(la.effective_hours(ctx) for la in active), rex)
         row += 1
 
-    # Suivi (6 lignes, labels déjà dans le template, ordre données = ordre template)
+    # NRC — Divers risques techniques
+    nrc_divers = project.nrc_subtotal * project.divers_percent
+    _write_d_e_f(ws, row, nrc_divers, nrc_divers, rex)
+    row += 1
+
+    # TOTAL NRC
+    ws.cell(row=row, column=5).value = project.nrc_total
+    ws.cell(row=row, column=6).value = project.nrc_total * rex
+    row += 1
+
+    # Suivi (6 lignes RC, labels déjà dans le template)
     for task in summary_tree['Suivi']:
-        ws.cell(row=row, column=4).value = task.default_hours(ctx)
-        ws.cell(row=row, column=5).value = task.effective_hours(ctx)
-        ws.cell(row=row, column=6).value = task.effective_hours(ctx) * rex
+        _write_d_e_f(ws, row, task.default_hours(ctx), task.effective_hours(ctx), rex)
         row += 1
 
-    # DIVERS
-    divers_hours = (project.first_machine_subtotal or 0) * project.divers_percent
-    ws.cell(row=row, column=4).value = divers_hours
-    ws.cell(row=row, column=5).value = divers_hours
-    ws.cell(row=row, column=6).value = divers_hours * rex
+    # RC — Divers risques techniques (pour 1 machine)
+    rc_divers = project.rc_subtotal * project.divers_percent
+    _write_d_e_f(ws, row, rc_divers, rc_divers, rex)
     row += 1
 
-    # Machine N°1 : E = avant REX, F = après REX
-    ws.cell(row=row, column=5).value = project.first_machine_total
-    ws.cell(row=row, column=6).value = (project.first_machine_total or 0) * rex
+    # TOTAL RC (1 machine avec divers)
+    rc_total_1machine = project.rc_subtotal * (1 + project.divers_percent)
+    ws.cell(row=row, column=5).value = rc_total_1machine
+    ws.cell(row=row, column=6).value = rc_total_1machine * rex
     row += 1
 
-    # TOTAL pour N machines : E = avant REX, F = après REX
+    # RC POUR N machines (heures RC totales après application du coefficient multi-machine)
+    ws.cell(row=row, column=5).value = project.rc_total
+    ws.cell(row=row, column=6).value = project.rc_total * rex
+    row += 1
+
+    # TOTAL RC + NRC
     ws.cell(row=row, column=5).value = project.n_machines_total
     ws.cell(row=row, column=6).value = project.total_with_rex
 
@@ -230,9 +233,16 @@ def export_excel_report(project: "Project", path: str):
 def quick_export(model: "Model") -> Dict[str, str]:
     prj = model.project
     file_name = f"{prj.crm_number}{prj.revision}"
-    excel_path = prj.app_data.quick_export_path
-    rapport_path = excel_path + file_name + "_rapport.xlsx"
-    ortems_path = excel_path + file_name + "_ortems.xlsx"
+
+    # Garantit un dossier d'export valide, même si la config pointe sur le dossier parent.
+    base_export_dir = prj.app_data.quick_export_path or prj.app_data.project_save_dir or "."
+    base_export_dir = os.path.normpath(base_export_dir)
+    if os.path.basename(base_export_dir).lower() != "chiffrages het":
+        base_export_dir = os.path.join(base_export_dir, "Chiffrages HET")
+    os.makedirs(base_export_dir, exist_ok=True)
+
+    rapport_path = os.path.join(base_export_dir, f"{file_name}_rapport.xlsx")
+    ortems_path = os.path.join(base_export_dir, f"{file_name}_ortems.xlsx")
     export_excel_report(prj, rapport_path)
     export_ortems_excel(prj, ortems_path)
     return {"rapport": rapport_path, "ortems": ortems_path}

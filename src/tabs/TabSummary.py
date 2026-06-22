@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QLabel, QFrame, QTreeWidget, 
                              QDialog, QDialogButtonBox, QGroupBox, QFormLayout, QScrollArea,
                              QToolButton)
 from PyQt6.QtCore import Qt, pyqtSignal, QRegularExpression
+from PyQt6.QtGui import QResizeEvent
 from PyQt6.QtGui import QFont, QRegularExpressionValidator, QIcon
 from src.model import Model, Project
 from src.utils.Task import AbstractTask
@@ -16,11 +17,26 @@ class CollapsibleSection(QTreeWidget):
     def __init__(self, title: str, parent=None):
         super().__init__(parent)
         self.title = title
-        self.setColumnCount(2)  # Nom et Heures
-        self.setHeaderLabels(["Description", "Heures"])
+        self.setColumnCount(3)  # Nom, Heures finales avant REX, Heures finales après REX
+        if title == "RC":
+            self.setHeaderLabels(["RC", "Finale", "REX"])
+        else:
+            self.setHeaderLabels(["Heures d'études NRC finales", "Finale", "REX"])
         self.setAlternatingRowColors(True)
         self.setIndentation(15)
-        self.resizeColumnToContents(0)
+        # Empêche Qt d'élargir automatiquement la dernière colonne.
+        self.header().setStretchLastSection(False)
+
+    def _apply_column_widths(self):
+        """Applique le ratio de colonnes 6/1/1."""
+        width_8th = int(self.viewport().width() / 8)
+        self.setColumnWidth(0, 6 * width_8th)
+        self.setColumnWidth(1, width_8th)
+        self.setColumnWidth(2, width_8th)
+
+    def resizeEvent(self, event: QResizeEvent):
+        super().resizeEvent(event)
+        self._apply_column_widths()
 
     def _get_expanded_paths(self) -> set:
         """Sauvegarde les chemins des noeuds dépliés."""
@@ -48,24 +64,26 @@ class CollapsibleSection(QTreeWidget):
         for i in range(item.childCount()):
             self._apply_expand(item.child(i), current, paths)
 
-    def build_tree(self, items: Dict[str, Any], context: Dict[str, Any], rex_coeff: float = 1.0):
+    def build_tree(self, items: Dict[str, Any], context: Dict[str, Any], rex_coeff: float = 1.0, display_multiplier: float = 1.0):
         """Construit l'arbre à partir d'un dictionnaire de données."""
         self._rex_coeff = rex_coeff
+        self._display_multiplier = display_multiplier
         expanded = self._get_expanded_paths()
 
         self.clear()
         for label, value in items.items():
             self._add_node(label, value, None, context)
 
-        self.setColumnWidth(0, self.width()-100)
+        self._apply_column_widths()
         if expanded:
             self._restore_expanded(expanded)
         else:
             self.collapseAll()
 
-    def _add_node(self, label: str, value: Any, parent: QTreeWidgetItem | None, context: Dict[str, Any]):
+    def _add_node(self, label: str, value: Any, parent: QTreeWidgetItem | None, context: Dict[str, Any]) -> tuple[float, float]:
         """Ajoute récursivement un noeud à l'arbre."""
-        item = QTreeWidgetItem([label, ""])
+        item = QTreeWidgetItem([label, "", ""])
+        has_manual_category_override = False
         
         if parent is None:
             self.addTopLevelItem(item)
@@ -75,38 +93,56 @@ class CollapsibleSection(QTreeWidget):
 
         # Calculer les heures selon le type
         if isinstance(value, dict):
-            total_hours = sum(self._add_node(sub_label, subvalue, item, context) 
-                            for sub_label, subvalue in value.items())
+            base_total = 0.0
+            corrected_total = 0.0
+            for sub_label, subvalue in value.items():
+                sub_base, sub_corrected = self._add_node(sub_label, subvalue, item, context)
+                base_total += sub_base
+                corrected_total += sub_corrected
             is_bold = parent is None
         elif isinstance(value, list):
-            total_hours = sum(self._add_task_node(task, item, context) 
-                            for task in value if isinstance(task, AbstractTask))
+            base_total = 0.0
+            corrected_total = 0.0
+            for task in value:
+                if isinstance(task, AbstractTask):
+                    if task.category_override_hours is not None:
+                        has_manual_category_override = True
+                    task_base, task_corrected = self._add_task_node(task, item, context)
+                    base_total += task_base
+                    corrected_total += task_corrected
             is_bold = parent is None
         elif isinstance(value, AbstractTask):
             return self._add_task_node(value, parent, context)
         else:
-            return 0.0
+            return 0.0, 0.0
         
         # Masquer si aucune heure, sinon afficher
         item.setFlags(Qt.ItemFlag.ItemIsEnabled)
-        if total_hours == 0:
+        if base_total == 0:
             item.setHidden(True)
         else:
-            item.setText(1, f"{total_hours:.2f} h")
+            item.setText(1, f"{base_total:.2f} h")
+            item.setText(2, f"{corrected_total:.2f} h")
             if is_bold:
+                item.setFont(1, QFont("Arial", 11))
+                item.setFont(2, QFont("Arial", 11, QFont.Weight.Bold))
+            if has_manual_category_override:
+                item.setFont(0, QFont("Arial", 11, QFont.Weight.Bold))
                 item.setFont(1, QFont("Arial", 11, QFont.Weight.Bold))
+                item.setToolTip(1, "Valeur manuelle de categorie")
         
-        return total_hours
+        return base_total, corrected_total
 
-    def _add_task_node(self, task: AbstractTask, parent: QTreeWidgetItem, context: Dict[str, Any]) -> float:
-        """Ajoute un noeud de tâche et retourne ses heures effectives (× REX)."""
-        hours = task.effective_hours(context) * self._rex_coeff
-        
+    def _add_task_node(self, task: AbstractTask, parent: QTreeWidgetItem, context: Dict[str, Any]) -> tuple[float, float]:
+        """Ajoute un noeud de tâche et retourne (heures base, heures corrigées REX)."""
+        base_hours = task.effective_hours(context)
+        corrected_hours = base_hours * self._rex_coeff
+
         # Cacher les tâches à 0h
-        if hours == 0:
-            return 0.0
-        
-        item = QTreeWidgetItem([task.label, f"{hours:.2f} h"])
+        if base_hours == 0:
+            return 0.0, 0.0
+
+        item = QTreeWidgetItem([task.label, f"{base_hours:.2f} h", f"{corrected_hours:.2f} h"])
         item.setData(0, Qt.ItemDataRole.UserRole, task)
         item.setFlags(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable)
         
@@ -117,7 +153,7 @@ class CollapsibleSection(QTreeWidget):
         
         if parent:
             parent.addChild(item)
-        return hours
+        return base_hours, corrected_hours
 
 
 class TabSummary(QWidget):
@@ -139,10 +175,37 @@ class TabSummary(QWidget):
         self.main_layout = QHBoxLayout(self)
         self.main_layout.setContentsMargins(10, 10, 10, 10)
         self.main_layout.setSpacing(10)
-        
-        # Arbre déroulant
-        self.tree = CollapsibleSection("Détails")
-        self.main_layout.addWidget(self.tree, stretch=1)
+
+        # Zone des arbres récapitulatifs
+        summary_panel = QWidget()
+        summary_layout = QVBoxLayout(summary_panel)
+        summary_layout.setContentsMargins(0, 0, 0, 0)
+        summary_layout.setSpacing(8)
+
+        self.tree_nrc = CollapsibleSection("NRC")
+        self.tree = self.tree_nrc
+        summary_layout.addWidget(self.tree_nrc, stretch=1)
+
+        summary_separator = QFrame()
+        summary_separator.setFrameShape(QFrame.Shape.HLine)
+        summary_separator.setObjectName("rowSeparator")
+        summary_layout.addWidget(summary_separator)
+
+        self.tree_rc = CollapsibleSection("RC")
+        summary_layout.addWidget(self.tree_rc, stretch=1)
+
+        rc_factor_row = QHBoxLayout()
+        rc_factor_row.setSpacing(4)
+        self.rc_factor_prefix = QLabel()
+        self.rc_factor_prefix.setObjectName("important")
+        self.rc_factor_value = QLabel()
+        self.rc_factor_value.setObjectName("veryImportant")
+        rc_factor_row.addWidget(self.rc_factor_prefix)
+        rc_factor_row.addWidget(self.rc_factor_value)
+        rc_factor_row.addStretch(1)
+        summary_layout.addLayout(rc_factor_row)
+
+        self.main_layout.addWidget(summary_panel, stretch=1)
         
         # Pied de page avec totaux
         self.bottom_frame = self._create_totals_section()
@@ -173,6 +236,7 @@ class TabSummary(QWidget):
         sep.setObjectName("rowSeparator")
         sep.setFrameShape(QFrame.Shape.HLine)
         layout.addWidget(sep, row, 0, 1, 2)
+        layout.setRowMinimumHeight(row, 18)
 
     def _create_totals_section(self) -> QFrame:
         """Crée la section des totaux en bas de l'onglet."""
@@ -180,7 +244,7 @@ class TabSummary(QWidget):
         frame.setObjectName("totalsFrame")
         layout = QGridLayout(frame)
         layout.setContentsMargins(10, 10, 10, 10)
-        layout.setSpacing(6)
+        layout.setSpacing(3)
 
         row = 0
 
@@ -205,39 +269,49 @@ class TabSummary(QWidget):
         row += 1
         self._add_row_separator(layout, row); row += 1
 
-        # Subtotal 1ère machine (sans divers)
-        label_first_machine = self._create_styled_label(text="Sous-total 1ère machine:")
-        self.val_first_machine_subtotal = self._create_styled_label(object_name="important")
-        layout.addWidget(label_first_machine, row, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
-        layout.addWidget(self.val_first_machine_subtotal, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
-        row += 1
-        self._add_row_separator(layout, row); row += 1
-        
-        # Divers (%)
+        # Divers risques techniques + Heures supplémentaires
         divers_label = self._create_styled_label(text="Divers risques techniques:")
         divers_container, self.edit_divers = self._create_percentage_input("0.0")
         self.edit_divers.editingFinished.connect(self._on_divers_text_changed)
         layout.addWidget(divers_label, row, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
         layout.addLayout(divers_container, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
         row += 1
-        self._add_row_separator(layout, row); row += 1
-        
-        # Total 1ère machine (avec divers)
-        total_label = self._create_styled_label(text="Total 1ère machine :")
-        self.val_first_machine_total = self._create_styled_label(object_name="important")
-        layout.addWidget(total_label, row, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
-        layout.addWidget(self.val_first_machine_total, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
+
+        divers_hours_label = self._create_styled_label(text="Heures supplémentaires :")
+        self.val_divers_hours = self._create_styled_label(object_name="important")
+        layout.addWidget(divers_hours_label, row, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(self.val_divers_hours, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
         row += 1
         self._add_row_separator(layout, row); row += 1
-        
-        # Total n machines
-        self.label_n_machines = self._create_styled_label()
-        self.val_n_machines_total = self._create_styled_label(object_name="important")
-        layout.addWidget(self.label_n_machines, row, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
-        layout.addWidget(self.val_n_machines_total, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
+
+        # Total NRC + Corrigé REX NRC
+        nrc_total_label = self._create_styled_label(text="Total NRC :")
+        self.val_nrc_total = self._create_styled_label(object_name="important")
+        layout.addWidget(nrc_total_label, row, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(self.val_nrc_total, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
+        row += 1
+
+        nrc_rex_label = self._create_styled_label(text="Corrigé REX :")
+        self.val_nrc_rex = self._create_styled_label(object_name="veryImportant")
+        layout.addWidget(nrc_rex_label, row, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(self.val_nrc_rex, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
         row += 1
         self._add_row_separator(layout, row); row += 1
-        
+
+        # Total RC + Corrigé REX RC
+        rc_total_label = self._create_styled_label(text="Total RC :")
+        self.val_rc_total = self._create_styled_label(object_name="important")
+        layout.addWidget(rc_total_label, row, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(self.val_rc_total, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
+        row += 1
+
+        rc_rex_label = self._create_styled_label(text="Corrigé REX :")
+        self.val_rc_rex = self._create_styled_label(object_name="veryImportant")
+        layout.addWidget(rc_rex_label, row, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(self.val_rc_rex, row, 1, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
+        row += 1
+        self._add_row_separator(layout, row); row += 1
+
         # REX - Coefficient
         rex_coeff_label = self._create_styled_label(text="Coefficient REX:")
         rex_percent_container, self.edit_rex_percent = self._create_percentage_input("100")
@@ -308,14 +382,21 @@ class TabSummary(QWidget):
             except ValueError:
                 pass
 
-    def update_totals(self, first_machine_subtotal: float, first_machine_total: float, quantity: int, n_machines_total: float, total_with_rex: float, delai_etude: float = 0.0):
+    def update_totals(self, divers_hours: float, nrc_total: float, nrc_rex: float,
+                      rc_total: float, rc_rex: float, total_with_rex: float, delai_etude: float = 0.0):
         """Met à jour l'affichage des totaux."""
-        self.val_first_machine_subtotal.setText(f"{first_machine_subtotal:.2f} h")
-        self.val_first_machine_total.setText(f"{first_machine_total:.2f} h")
-        self.label_n_machines.setText(f"Total {quantity} machines:")
-        self.val_n_machines_total.setText(f"{n_machines_total:.2f} h")
+        self.val_divers_hours.setText(f"{divers_hours:.2f} h")
+        self.val_nrc_total.setText(f"{nrc_total:.2f} h")
+        self.val_nrc_rex.setText(f"{nrc_rex:.2f} h")
+        self.val_rc_total.setText(f"{rc_total:.2f} h")
+        self.val_rc_rex.setText(f"{rc_rex:.2f} h")
         self.total_with_rex_val.setText(f"{total_with_rex:.2f} h")
         self.val_delai_etude.setText(f"{delai_etude:.1f}")
+
+    def update_rc_factor(self, quantity: int, rc_factor: float, rc_hours: float, rex_coeff: float = 1.0):
+        """Affiche le facteur RC et la valeur finale des heures RC corrigée REX."""
+        self.rc_factor_prefix.setText(f"Facteur RC pour {quantity} machines : ")
+        self.rc_factor_value.setText(f"{rc_factor:.2f} \u2192 {rc_hours * rc_factor * rex_coeff:.2f} h")
 
     def sync_rex_fields(self, coeff_pct: float, rex_hours: float):
         """Synchronise les deux champs REX sans déclencher de signaux."""
@@ -454,7 +535,14 @@ class TabSummaryController:
         """Reconstruit l'arbre récapitulatif avec le coefficient REX courant."""
         project = self.model.project
         tree_items = project.generate_summary_tree()
-        self.view.tree.build_tree(tree_items, project.context(), rex_coeff=project.manual_rex_coeff)
+        nrc_items = {label: value for label, value in tree_items.items() if label != "Suivi"}
+        rc_items = {"Suivi": tree_items.get("Suivi", [])}
+        rc_factor = project._compute_multi_machine_coeff(project.quantity)
+        rc_hours = project._compute_recurrent_hours()
+
+        self.view.tree_nrc.build_tree(nrc_items, project.context(), rex_coeff=project.manual_rex_coeff)
+        self.view.tree_rc.build_tree(rc_items, project.context(), rex_coeff=project.manual_rex_coeff, display_multiplier=rc_factor)
+        self.view.update_rc_factor(project.quantity, rc_factor, rc_hours, rex_coeff=project.manual_rex_coeff)
 
     def _on_project_changed(self):
         """Appelé quand le projet change - reconstruit l'arbre."""
@@ -477,21 +565,23 @@ class TabSummaryController:
         """Recalcule et affiche tous les totaux."""
         project: Project = self.model.project
 
-        first_machine_subtotal = project.compute_first_machine_subtotal()
-        first_machine_total = project.compute_first_machine_total()
-        n_machines_total = project.compute_n_machines_total()
+        n_machines_total = project.compute_n_machines_total()  # calcule aussi nrc/rc subtotals/totals
+        project.compute_divers_hours()
         total_with_rex = project.calculate_total_with_rex()
+        nrc_rex = project.nrc_total * project.manual_rex_coeff
+        rc_rex = project.rc_total * project.manual_rex_coeff
 
         # Délai d'étude
         self._delai_results = project.compute_delai_etude()
         delai_etude = self._delai_results.get("delai_reel", 0.0)
-        
+
         # Mettre à jour l'affichage
         self.view.update_totals(
-            first_machine_subtotal=first_machine_subtotal,
-            first_machine_total=first_machine_total,
-            quantity=project.quantity,
-            n_machines_total=n_machines_total,
+            divers_hours=project.divers_hours,
+            nrc_total=project.nrc_total,
+            nrc_rex=nrc_rex,
+            rc_total=project.rc_total,
+            rc_rex=rc_rex,
             total_with_rex=total_with_rex,
             delai_etude=delai_etude,
         )

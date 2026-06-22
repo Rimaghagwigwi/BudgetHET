@@ -23,7 +23,7 @@ rex-database-path: S:\COMMUN_OFFRES\SUIVI archive\Budget_HET_python\data\REX_HET
 
 # Emplacement des modèles excel pour Ortems et Rapport
 ortems-template-path: template/ortems_template.xlsx
-excel-report-template-path: template/chiffrage_template.xlsx
+excel-report-template-path: template/chiffrage_template_new.xlsx
 
 # Configuration de l'interface utilisateur
 ui:

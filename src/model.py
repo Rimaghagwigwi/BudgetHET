@@ -4,6 +4,7 @@ from src.utils.ApplicationData import ApplicationData
 from src.utils.Task import AbstractTask, GeneralTask, LPDCDocument, Labo, Option, Calcul
 from src.utils.exports import export_ortems_excel as _export_ortems, export_excel_report as _export_report
 from PyQt6.QtCore import QObject, pyqtSignal
+from math import log
 
 class Project:
     def __init__(self, app_data: ApplicationData):
@@ -38,6 +39,11 @@ class Project:
         self.first_machine_total: Optional[float] = None
         self.n_machines_total: Optional[float] = None
         self.total_with_rex: Optional[float] = None
+        self.nrc_subtotal: Optional[float] = None
+        self.rc_subtotal: Optional[float] = None
+        self.nrc_total: Optional[float] = None
+        self.rc_total: Optional[float] = None
+        self.divers_hours: Optional[float] = None
 
         # Corrections de catégorie : clé = "table_label/category_name" → valeur
         self.category_corrections: Dict[str, float] = {}
@@ -89,6 +95,11 @@ class Project:
         self.first_machine_total = None
         self.n_machines_total = None
         self.total_with_rex = None
+        self.nrc_subtotal = None
+        self.rc_subtotal = None
+        self.nrc_total = None
+        self.rc_total = None
+        self.divers_hours = None
 
         self.category_corrections = {}
         
@@ -180,23 +191,59 @@ class Project:
         return self.first_machine_total
     
     def _compute_multi_machine_coeff(self, quantity: int) -> float:
-        """Calcule le coefficient pour machines multiples."""
-        if quantity == 2:
+        """Calcule le multiplicateur total pour les tâches RC."""
+        if quantity < 1:
             return 1.0
-        elif quantity <= 5:
-            return (quantity - 1) * 0.75
-        elif quantity <= 25:
-            return (quantity - 1) * 0.35
         else:
-            return (quantity - 1) * 0.15
-        
-    def compute_n_machines_total(self) -> float:
-        """Calcule le total pour n machines."""
-        multiplicative_tasks_hours = sum([t.effective_hours(self.context()) for t in self.get_all_tasks() if t.multiplicative])
-        coeff = self._compute_multi_machine_coeff(self.quantity)
-        additional_hours = multiplicative_tasks_hours * coeff
+            return 1.9*log(quantity) + 1.0
 
-        self.n_machines_total = self.first_machine_total + additional_hours 
+    def _compute_recurrent_hours(self) -> float:
+        """Retourne les heures RC (tâches multiplicatives) pour une machine."""
+        return sum(t.effective_hours(self.context()) for t in self.get_all_tasks() if t.multiplicative)
+
+    def compute_nrc_subtotal(self) -> float:
+        """Sous-total NRC : toutes les tâches non-récurrentes."""
+        nrc_tasks = sum(
+            t.effective_hours(self.context())
+            for t in self.get_all_tasks()
+            if not t.multiplicative
+        )
+        other = sum(
+            self.compute_tree_hours(data)
+            for data in [self.lpdc_docs, self.options, self.calculs, self.labo]
+        )
+        self.nrc_subtotal = nrc_tasks + other
+        return self.nrc_subtotal
+
+    def compute_rc_subtotal(self) -> float:
+        """Sous-total RC pour 1 machine (tâches Suivi)."""
+        self.rc_subtotal = self._compute_recurrent_hours()
+        return self.rc_subtotal
+
+    def compute_nrc_total(self) -> float:
+        """Total NRC = sous-total NRC * (1 + divers)."""
+        self.nrc_total = self.nrc_subtotal * (1 + self.divers_percent)
+        return self.nrc_total
+
+    def compute_rc_total(self) -> float:
+        """Total RC = sous-total RC * coeff_multi_machine * (1 + divers)."""
+        coeff = self._compute_multi_machine_coeff(self.quantity)
+        self.rc_total = self.rc_subtotal * coeff * (1 + self.divers_percent)
+        return self.rc_total
+
+    def compute_divers_hours(self) -> float:
+        """Heures supplémentaires dues au divers risques techniques."""
+        rc_scaled = self.rc_subtotal * self._compute_multi_machine_coeff(self.quantity)
+        self.divers_hours = (self.nrc_subtotal + rc_scaled) * self.divers_percent
+        return self.divers_hours
+
+    def compute_n_machines_total(self) -> float:
+        """Calcule le total pour n machines = Total NRC + Total RC."""
+        self.compute_nrc_subtotal()
+        self.compute_rc_subtotal()
+        self.compute_nrc_total()
+        self.compute_rc_total()
+        self.n_machines_total = self.nrc_total + self.rc_total
         return self.n_machines_total
     
     def calculate_total_with_rex(self) -> float:
@@ -224,7 +271,7 @@ class Project:
         """
         repartition = dict.fromkeys(self.app_data.jobs.keys(), 0.0)
         ctx = self.context()
-        self.quantity_mult = self._compute_multi_machine_coeff(self.quantity) + 1  # Coeff total incluant la machine de base
+        self.quantity_mult = self._compute_multi_machine_coeff(self.quantity)
 
         # 1. Tâches générales (répartition per-task)
         for task in self.get_all_tasks():
@@ -329,6 +376,8 @@ class Model(QObject):
                 "created_by":   prj.created_by,
                 "validated_by": prj.validated_by,
                 "description":  prj.description,
+                "lpdc_coeff_secteur": prj.lpdc_coeff_secteur,
+                "lpdc_coeff_affaire": prj.lpdc_coeff_affaire,
                 "divers_percent":    prj.divers_percent,
                 "manual_rex_coeff":  prj.manual_rex_coeff,
             },
@@ -387,6 +436,8 @@ class Model(QObject):
         prj.apply_defaults()
 
         # Restaurer divers/rex APRÈS apply_defaults (qui les réinitialise)
+        prj.lpdc_coeff_secteur = pd.get("lpdc_coeff_secteur", prj.lpdc_coeff_secteur)
+        prj.lpdc_coeff_affaire = pd.get("lpdc_coeff_affaire", prj.lpdc_coeff_affaire)
         prj.divers_percent   = pd.get("divers_percent", 0.05)
         prj.manual_rex_coeff = pd.get("manual_rex_coeff", 1.0)
 
