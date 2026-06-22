@@ -186,11 +186,6 @@ class TabSummary(QWidget):
         self.tree = self.tree_nrc
         summary_layout.addWidget(self.tree_nrc, stretch=1)
 
-        summary_separator = QFrame()
-        summary_separator.setFrameShape(QFrame.Shape.HLine)
-        summary_separator.setObjectName("rowSeparator")
-        summary_layout.addWidget(summary_separator)
-
         self.tree_rc = CollapsibleSection("RC")
         summary_layout.addWidget(self.tree_rc, stretch=1)
 

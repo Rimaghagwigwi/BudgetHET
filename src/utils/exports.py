@@ -192,12 +192,28 @@ def export_excel_report(project: "Project", path: str):
                      sum(la.effective_hours(ctx) for la in active), rex)
         row += 1
 
+    # Auto subtotals (heures de base, sans modifications manuelles)
+    nrc_subtotal_auto = (
+        sum(t.default_hours(ctx) for t in summary_tree['Enclenchement'])
+        + sum(c.default_hours(ctx) for lst in summary_tree['Calculs'].values() for c in lst if c.is_active(ctx))
+        + sum(t.default_hours(ctx) for lst in summary_tree['Plans / Specs / LDN'].values() for t in lst)
+        + sum(o.default_hours(ctx) for lst in summary_tree['Options'].values() for o in lst if o.is_active(ctx))
+        + sum(d.default_hours(ctx) for lst in summary_tree['Plans et documents contractuels'].values() for d in lst if d.is_active(ctx))
+        + sum(la.default_hours(ctx) for lst in summary_tree['Laboratoire'].values() for la in lst if la.is_active(ctx))
+    )
+    rc_subtotal_auto = sum(task.default_hours(ctx) for task in summary_tree['Suivi'])
+    nrc_total_auto = nrc_subtotal_auto * (1 + project.divers_percent)
+    rc_total_1machine_auto = rc_subtotal_auto * (1 + project.divers_percent)
+
     # NRC — Divers risques techniques
     nrc_divers = project.nrc_subtotal * project.divers_percent
-    _write_d_e_f(ws, row, nrc_divers, nrc_divers, rex)
+    divers_pct_label = f"Risques techniques (+{project.divers_percent * 100:.0f}%)"
+    ws.cell(row=row, column=3).value = divers_pct_label
+    _write_d_e_f(ws, row, nrc_subtotal_auto * project.divers_percent, nrc_divers, rex)
     row += 1
 
     # TOTAL NRC
+    ws.cell(row=row, column=4).value = nrc_total_auto
     ws.cell(row=row, column=5).value = project.nrc_total
     ws.cell(row=row, column=6).value = project.nrc_total * rex
     row += 1
@@ -209,21 +225,27 @@ def export_excel_report(project: "Project", path: str):
 
     # RC — Divers risques techniques (pour 1 machine)
     rc_divers = project.rc_subtotal * project.divers_percent
-    _write_d_e_f(ws, row, rc_divers, rc_divers, rex)
+    ws.cell(row=row, column=3).value = divers_pct_label
+    _write_d_e_f(ws, row, rc_subtotal_auto * project.divers_percent, rc_divers, rex)
     row += 1
 
     # TOTAL RC (1 machine avec divers)
     rc_total_1machine = project.rc_subtotal * (1 + project.divers_percent)
+    ws.cell(row=row, column=4).value = rc_total_1machine_auto
     ws.cell(row=row, column=5).value = rc_total_1machine
     ws.cell(row=row, column=6).value = rc_total_1machine * rex
     row += 1
 
     # RC POUR N machines (heures RC totales après application du coefficient multi-machine)
+    multi_coeff = project._compute_multi_machine_coeff(project.quantity)
+    ws.cell(row=row, column=2).value = f"RC pour {project.quantity} machines"
+    ws.cell(row=row, column=4).value = rc_total_1machine_auto * multi_coeff
     ws.cell(row=row, column=5).value = project.rc_total
     ws.cell(row=row, column=6).value = project.rc_total * rex
     row += 1
 
     # TOTAL RC + NRC
+    ws.cell(row=row, column=4).value = nrc_total_auto + rc_total_1machine_auto * multi_coeff
     ws.cell(row=row, column=5).value = project.n_machines_total
     ws.cell(row=row, column=6).value = project.total_with_rex
 
