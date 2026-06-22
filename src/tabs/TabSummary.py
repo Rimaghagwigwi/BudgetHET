@@ -2,8 +2,8 @@
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QLabel, QFrame, QTreeWidget, QTreeWidgetItem,
                              QHBoxLayout, QGridLayout, QLineEdit, QPushButton, QMenu,
                              QDialog, QDialogButtonBox, QGroupBox, QFormLayout, QScrollArea,
-                             QToolButton)
-from PyQt6.QtCore import Qt, pyqtSignal, QRegularExpression
+                             QToolButton, QSizePolicy)
+from PyQt6.QtCore import Qt, pyqtSignal, QRegularExpression, QSize
 from PyQt6.QtGui import QResizeEvent
 from PyQt6.QtGui import QFont, QRegularExpressionValidator, QIcon
 from src.model import Model, Project
@@ -26,6 +26,48 @@ class CollapsibleSection(QTreeWidget):
         self.setIndentation(15)
         # Empêche Qt d'élargir automatiquement la dernière colonne.
         self.header().setStretchLastSection(False)
+
+        self._auto_resize = (title == "RC")
+        if self._auto_resize:
+            self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+            self.itemExpanded.connect(self.updateGeometry)
+            self.itemCollapsed.connect(self.updateGeometry)
+
+    def _count_visible_rows(self) -> int:
+        """Compte les lignes visibles (top-level + enfants dépliés)."""
+        count = 0
+        for i in range(self.topLevelItemCount()):
+            item = self.topLevelItem(i)
+            if not item.isHidden():
+                count += 1
+                if item.isExpanded():
+                    count += self._count_visible_children(item)
+        return count
+
+    def _count_visible_children(self, item: QTreeWidgetItem) -> int:
+        count = 0
+        for i in range(item.childCount()):
+            child = item.child(i)
+            if not child.isHidden():
+                count += 1
+                if child.isExpanded():
+                    count += self._count_visible_children(child)
+        return count
+
+    def sizeHint(self) -> QSize:
+        if not self._auto_resize:
+            return super().sizeHint()
+        row_h = self.sizeHintForRow(0)
+        if row_h <= 0:
+            row_h = 24
+        n = self._count_visible_rows()
+        h = row_h * n + self.header().height() + 4
+        return QSize(super().sizeHint().width(), max(h, self.header().height() + 4))
+
+    def minimumSizeHint(self) -> QSize:
+        if not self._auto_resize:
+            return super().minimumSizeHint()
+        return self.sizeHint()
 
     def _apply_column_widths(self):
         """Applique le ratio de colonnes 6/1/1."""
@@ -79,6 +121,8 @@ class CollapsibleSection(QTreeWidget):
             self._restore_expanded(expanded)
         else:
             self.collapseAll()
+        if self._auto_resize:
+            self.updateGeometry()
 
     def _add_node(self, label: str, value: Any, parent: QTreeWidgetItem | None, context: Dict[str, Any]) -> tuple[float, float]:
         """Ajoute récursivement un noeud à l'arbre."""
@@ -187,7 +231,7 @@ class TabSummary(QWidget):
         summary_layout.addWidget(self.tree_nrc, stretch=1)
 
         self.tree_rc = CollapsibleSection("RC")
-        summary_layout.addWidget(self.tree_rc, stretch=1)
+        summary_layout.addWidget(self.tree_rc, stretch=0)
 
         rc_factor_row = QHBoxLayout()
         rc_factor_row.setSpacing(4)
