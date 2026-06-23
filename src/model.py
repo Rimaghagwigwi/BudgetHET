@@ -195,7 +195,7 @@ class Project:
         if quantity < 1:
             return 1.0
         else:
-            return 1.9*log(quantity) + 1.0
+            return 2.212*log(quantity+0.751) - 0.239
 
     def _compute_recurrent_hours(self) -> float:
         """Retourne les heures RC (tâches multiplicatives) pour une machine."""
