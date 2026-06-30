@@ -153,6 +153,15 @@ class TabGeneralController:
         self.create_signals()
 
         self.view.field_changed.connect(self.update_project_from_ui)
+        self.model.description_updated.connect(self._sync_description_from_model)
+
+    def _sync_description_from_model(self):
+        """Met à jour le widget description si modifié en dehors de l'UI (ex: copie REX)."""
+        new_text = self.model.project.description
+        if self.view.text_description.toPlainText() != new_text:
+            self.view.text_description.blockSignals(True)
+            self.view.text_description.setPlainText(new_text)
+            self.view.text_description.blockSignals(False)
 
     def populate_general_tab(self):
         try:

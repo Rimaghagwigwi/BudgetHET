@@ -3,18 +3,18 @@ from __future__ import annotations
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QGroupBox,
     QLabel, QLineEdit, QComboBox, QPushButton, QTableWidget,
-    QTableWidgetItem, QToolButton,
+    QTableWidgetItem, QToolButton, QToolTip,
     QFrame, QScrollArea, QAbstractScrollArea, QScrollBar,
     QDialog, QStyledItemDelegate, QMessageBox
 )
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QPoint, QRect
 
 from src.model import Model
 from src.utils.MachineDatabase import (
     MachineDatabase,
     STRING_FIELDS, NUMERIC_FIELDS, DROPDOWN_FIELDS,
     LABEL_MAP_COLUMNS, HIDDEN_COLUMNS, PROJET_HOURS_COLUMNS,
-    COL_DATE, COL_NB_POLES, COL_IP, COL_NUM_PROJET,
+    COL_DATE, COL_NB_POLES, COL_IP, COL_NUM_PROJET, COL_NOM_PROJET,
     COL_TYPE_PRODUIT, COL_PRODUIT, COL_TYPE_AFFAIRE, COL_DAS, COL_SECTEUR,
     COL_IC, COL_IM, COL_EEX,
 )
@@ -156,7 +156,7 @@ class ProjectDetailDialog(QDialog):
 
     def __init__(self, project_id: str, machines_df,
                  hours: dict, label_maps: dict = None,
-                 app_data=None, db=None, parent=None):
+                 app_data=None, db=None, on_copy_rex=None, parent=None):
         import pandas as pd
         super().__init__(parent)
         self.setWindowTitle(f"Projet {project_id}")
@@ -170,18 +170,37 @@ class ProjectDetailDialog(QDialog):
         layout = QVBoxLayout(self)
 
         # ── Heures du projet ─────────────────────────────────────────
+        self._on_copy_rex_cb = on_copy_rex
+        self._project_name = ""
+        if not machines_df.empty and COL_NOM_PROJET in machines_df.columns:
+            _val = machines_df[COL_NOM_PROJET].iloc[0]
+            if pd.notna(_val):
+                self._project_name = str(_val).strip()
+        self._total_hours = float(hours.get("Total général", 0.0))
+
         hours_group = QGroupBox("Heures du projet")
-        hours_lay = QGridLayout(hours_group)
-        col = 0
+        hours_lay = QHBoxLayout(hours_group)
+        hours_lay.setContentsMargins(8, 6, 8, 6)
+        hours_lay.setSpacing(16)
         for code in PROJET_HOURS_COLUMNS:
             val = hours.get(code, 0.0)
-            hours_lay.addWidget(QLabel(code), 0, col)
+            pair = QVBoxLayout()
+            pair.setSpacing(2)
+            lbl_code = QLabel(code)
+            lbl_code.setAlignment(Qt.AlignmentFlag.AlignCenter)
             lbl_val = QLabel(f"{val:.2f}" if isinstance(val, float) else str(val))
             lbl_val.setAlignment(Qt.AlignmentFlag.AlignCenter)
             if code == "Total général":
                 lbl_val.setObjectName("totalValue")
-            hours_lay.addWidget(lbl_val, 1, col)
-            col += 1
+            pair.addWidget(lbl_code)
+            pair.addWidget(lbl_val)
+            hours_lay.addLayout(pair, 1)
+        self._btn_copy_rex = QPushButton("📋")
+        self._btn_copy_rex.setToolTip("Copier dans la description du projet actif")
+        self._btn_copy_rex.setFixedSize(40, 40)
+        self._btn_copy_rex.setEnabled(on_copy_rex is not None)
+        self._btn_copy_rex.clicked.connect(self._on_copy_rex_clicked)
+        hours_lay.addWidget(self._btn_copy_rex, 0, Qt.AlignmentFlag.AlignVCenter)
         layout.addWidget(hours_group)
 
         # ── Machines du projet (éditable) ────────────────────────────
@@ -251,6 +270,20 @@ class ProjectDetailDialog(QDialog):
         lay_btn.addStretch()
         lay_btn.addWidget(btn_close)
         layout.addLayout(lay_btn)
+
+    # ── Copie REX dans la description ────────────────────────────────
+    def _on_copy_rex_clicked(self):
+        """Copie les infos REX dans la description du projet actif."""
+        text = f"{self.project_id} {self._project_name} : {self._total_hours:.0f}h"
+        if self._on_copy_rex_cb:
+            self._on_copy_rex_cb(text)
+        QToolTip.showText(
+            self._btn_copy_rex.mapToGlobal(QPoint(0, -self._btn_copy_rex.height() - 4)),
+            "✓ REX copié",
+            self._btn_copy_rex,
+            QRect(),
+            2000,
+        )
 
     # ── Choix pour les colonnes dropdown ─────────────────────────────
     def _get_choices_for(self, col_name: str, row: int):
@@ -727,9 +760,17 @@ class MachineSearchController:
             label_maps=self._build_label_maps(),
             app_data=self.model.app_data,
             db=self.db,
+            on_copy_rex=self._append_rex_to_description,
             parent=self.view,
         )
         dlg.exec()
+
+    def _append_rex_to_description(self, text: str):
+        """Ajoute une ligne de REX dans la description du projet actif."""
+        prj = self.model.project
+        current = prj.description.strip()
+        prj.description = (current + "\n" + text) if current else text
+        self.model.description_updated.emit()
 
     def _build_label_maps(self) -> dict:
         """Construit les mappings code → label pour les colonnes à traduire."""

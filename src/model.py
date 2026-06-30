@@ -344,8 +344,9 @@ class Project:
 
 
 class Model(QObject):
-    project_changed = pyqtSignal()  # Émis lors de l'application des paramètres par défaut
-    data_updated = pyqtSignal()     # Émis lors de modifications mineures (valeurs, checkboxes)
+    project_changed = pyqtSignal()   # Émis lors de l'application des paramètres par défaut
+    data_updated = pyqtSignal()      # Émis lors de modifications mineures (valeurs, checkboxes)
+    description_updated = pyqtSignal()  # Émis lors d'une modification externe de la description
 
     def __init__(self, app_data: ApplicationData):
         super().__init__()
